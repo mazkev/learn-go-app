@@ -4,6 +4,7 @@ import RoadmapView from "./components/roadmap/RoadmapView";
 import LessonStudio from "./components/editor/LessonStudio";
 import ConcurrencyVisualizer from "./components/visualizer/ConcurrencyVisualizer";
 import APITester from "./components/apitester/APITester";
+import GrpcCompareLab from "./components/grpccompare/GrpcCompareLab";
 import GormLab from "./components/gormlab/GormLab";
 import CheatSheet from "./components/cheatsheet/CheatSheet";
 import { useLearningProgress } from "./store/learningStore";
@@ -18,7 +19,7 @@ export default function App() {
       const saved = localStorage.getItem(THEME_STORAGE_KEY);
       if (saved) return saved;
     } catch {}
-    return "light"; // Default ke tema terang sesuai request
+    return "light";
   });
 
   useEffect(() => {
@@ -91,6 +92,8 @@ export default function App() {
         {activeTab === "concurrency" && <ConcurrencyVisualizer />}
 
         {activeTab === "apitester" && <APITester />}
+
+        {activeTab === "grpc" && <GrpcCompareLab />}
 
         {activeTab === "gorm" && <GormLab />}
 

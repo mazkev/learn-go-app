@@ -33,6 +33,7 @@ export default function Navbar({
     { id: "studio", label: "Code Studio", icon: Code2 },
     { id: "concurrency", label: "Concurrency Lab", icon: Activity },
     { id: "apitester", label: "REST API", icon: Globe },
+    { id: "grpc", label: "gRPC Lab", icon: Zap },
     { id: "gorm", label: "GORM Lab", icon: Database },
     { id: "cheatsheet", label: "Cheatsheet", icon: BookOpen },
   ];
@@ -70,7 +71,7 @@ export default function Navbar({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all duration-150 ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs md:text-sm font-semibold transition-all duration-150 ${
                   isActive
                     ? "bg-gradient-to-r from-[#00ADD8] to-[#0284C7] text-white shadow-md shadow-[#00ADD8]/30 scale-[1.02]"
                     : "theme-muted hover:theme-heading hover:bg-black/5 dark:hover:bg-white/5"
