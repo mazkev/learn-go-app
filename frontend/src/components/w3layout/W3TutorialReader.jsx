@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -9,9 +9,13 @@ import {
   Check,
   X,
   Code,
-  ArrowRight
+  Zap,
+  Terminal,
+  RotateCcw,
+  Copy
 } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
+import { executeGoCode } from "../../services/goRunner";
 
 export default function W3TutorialReader({
   currentLessonId,
@@ -45,9 +49,92 @@ export default function W3TutorialReader({
 
   const isCompleted = progress.completedLessons.includes(currentLesson.id);
 
+  // Inline Quick Runner State for Example Box
+  const [exampleRun, setExampleRun] = useState({
+    isRunning: false,
+    isOpen: false,
+    text: "",
+    isError: false,
+    executionTime: null,
+  });
+
+  // Inline Quick Runner State for Exercise Box
+  const [exerciseRun, setExerciseRun] = useState({
+    isRunning: false,
+    isOpen: false,
+    text: "",
+    isError: false,
+    executionTime: null,
+  });
+
   // Quiz State
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+
+  useEffect(() => {
+    setExampleRun({ isRunning: false, isOpen: false, text: "", isError: false, executionTime: null });
+    setExerciseRun({ isRunning: false, isOpen: false, text: "", isError: false, executionTime: null });
+    setSelectedAnswers({});
+    setQuizSubmitted(false);
+  }, [currentLessonId]);
+
+  const handleRunExampleDirect = async () => {
+    setExampleRun({
+      isRunning: true,
+      isOpen: true,
+      text: "⚡ Mengompilasi kode Go...",
+      isError: false,
+      executionTime: null,
+    });
+
+    try {
+      const result = await executeGoCode(currentLesson.codeSnippet);
+      setExampleRun({
+        isRunning: false,
+        isOpen: true,
+        text: result.output,
+        isError: result.isError,
+        executionTime: result.executionTime,
+      });
+    } catch (e) {
+      setExampleRun({
+        isRunning: false,
+        isOpen: true,
+        text: `Error: ${e.message}`,
+        isError: true,
+        executionTime: null,
+      });
+    }
+  };
+
+  const handleRunExerciseDirect = async () => {
+    setExerciseRun({
+      isRunning: true,
+      isOpen: true,
+      text: "⚡ Mengompilasi kode latihan...",
+      isError: false,
+      executionTime: null,
+    });
+
+    try {
+      const result = await executeGoCode(currentLesson.exercise.starterCode);
+      setExerciseRun({
+        isRunning: false,
+        isOpen: true,
+        text: result.output,
+        isError: result.isError,
+        executionTime: result.executionTime,
+      });
+    } catch (e) {
+      setExerciseRun({
+        isRunning: false,
+        isOpen: true,
+        text: `Error: ${e.message}`,
+        isError: true,
+        executionTime: null,
+      });
+    }
+  };
 
   const handleQuizAnswer = (qIdx, optIdx) => {
     if (quizSubmitted) return;
@@ -147,7 +234,7 @@ export default function W3TutorialReader({
         })}
       </div>
 
-      {/* W3 Example Box with Iconic "Try it Yourself »" Button */}
+      {/* W3 Example Box with BOTH "Run Direct" & "Try it Yourself »" */}
       <div className="w3-example-box space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
           <h3 className="text-base md:text-lg font-black theme-heading">
@@ -160,14 +247,53 @@ export default function W3TutorialReader({
           {currentLesson.codeSnippet}
         </pre>
 
-        <div>
+        {/* Action Buttons: Run Direct vs Try It */}
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <button
+            onClick={handleRunExampleDirect}
+            disabled={exampleRun.isRunning}
+            className="w3-btn-green px-5 py-2 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-md cursor-pointer disabled:opacity-50"
+          >
+            <Play size={14} className={exampleRun.isRunning ? "animate-spin" : "fill-white"} />
+            <span>{exampleRun.isRunning ? "Menjalankan..." : "⚡ Jalankan di Tempat (Run Direct)"}</span>
+          </button>
+
           <button
             onClick={() => onOpenTryIt(currentLesson.codeSnippet)}
-            className="w3-btn-green px-5 py-2.5 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 shadow-md cursor-pointer"
+            className="px-4 py-2 rounded-lg theme-card-subtle theme-heading text-xs md:text-sm font-bold flex items-center gap-1.5 transition-colors cursor-pointer hover:bg-black/5 dark:hover:bg-white/5"
           >
-            <span>Try it Yourself »</span>
+            <span>Buka di Tryit Editor »</span>
           </button>
         </div>
+
+        {/* Inline Mini Terminal for Example */}
+        {exampleRun.isOpen && (
+          <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-950 text-slate-100 shadow-lg">
+            <div className="flex items-center justify-between bg-slate-900 px-4 py-2 text-xs font-mono font-bold">
+              <div className="flex items-center gap-2">
+                <Terminal size={14} className="text-[#04AA6D]" />
+                <span className="text-slate-200">Terminal Output (Di Tempat):</span>
+              </div>
+              <div className="flex items-center gap-3">
+                {exampleRun.executionTime && (
+                  <span className="text-emerald-400 text-[11px]">⏱ {exampleRun.executionTime}</span>
+                )}
+                <button
+                  onClick={() => setExampleRun((prev) => ({ ...prev, isOpen: false }))}
+                  className="text-slate-400 hover:text-white cursor-pointer"
+                  title="Tutup Terminal"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            </div>
+            <div className="p-4 font-mono text-xs overflow-x-auto bg-slate-950 shadow-inner">
+              <pre className={exampleRun.isError ? "text-rose-400" : "text-emerald-400 leading-relaxed"}>
+                {exampleRun.text}
+              </pre>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* W3 Exercise Section ("Test Yourself With Exercises") */}
@@ -187,17 +313,58 @@ export default function W3TutorialReader({
             <pre>{currentLesson.exercise.starterCode}</pre>
           </div>
 
-          <div className="pt-2 flex items-center justify-between flex-wrap gap-2">
+          <div className="pt-2 flex items-center justify-between flex-wrap gap-2.5">
             <span className="text-xs theme-muted">
               💡 {currentLesson.exercise.expectedHint}
             </span>
-            <button
-              onClick={() => onOpenTryIt(currentLesson.exercise.starterCode)}
-              className="w3-btn-green px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer"
-            >
-              <span>Buka Latihan di Tryit Editor »</span>
-            </button>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleRunExerciseDirect}
+                disabled={exerciseRun.isRunning}
+                className="w3-btn-green px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <Play size={13} className={exerciseRun.isRunning ? "animate-spin" : "fill-white"} />
+                <span>{exerciseRun.isRunning ? "Menguji..." : "⚡ Uji Latihan di Tempat"}</span>
+              </button>
+
+              <button
+                onClick={() => onOpenTryIt(currentLesson.exercise.starterCode)}
+                className="px-3.5 py-2 rounded-lg theme-card-subtle theme-heading text-xs font-bold transition-colors cursor-pointer hover:bg-black/5 dark:hover:bg-white/5"
+              >
+                <span>Edit di Tryit »</span>
+              </button>
+            </div>
           </div>
+
+          {/* Inline Mini Terminal for Exercise */}
+          {exerciseRun.isOpen && (
+            <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-950 text-slate-100 shadow-lg">
+              <div className="flex items-center justify-between bg-slate-900 px-4 py-2 text-xs font-mono font-bold">
+                <div className="flex items-center gap-2">
+                  <Terminal size={14} className="text-[#04AA6D]" />
+                  <span className="text-slate-200">Hasil Uji Latihan:</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {exerciseRun.executionTime && (
+                    <span className="text-emerald-400 text-[11px]">⏱ {exerciseRun.executionTime}</span>
+                  )}
+                  <button
+                    onClick={() => setExerciseRun((prev) => ({ ...prev, isOpen: false }))}
+                    className="text-slate-400 hover:text-white cursor-pointer"
+                    title="Tutup Terminal"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              </div>
+              <div className="p-4 font-mono text-xs overflow-x-auto bg-slate-950 shadow-inner">
+                <pre className={exerciseRun.isError ? "text-rose-400" : "text-emerald-400 leading-relaxed"}>
+                  {exerciseRun.text}
+                </pre>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
