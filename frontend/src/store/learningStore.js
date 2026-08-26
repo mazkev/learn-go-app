@@ -85,6 +85,22 @@ export function useLearningProgress() {
     }));
   };
 
+  const importProgress = (importedData) => {
+    if (!importedData || typeof importedData !== "object") return false;
+    const merged = {
+      completedLessons: Array.isArray(importedData.completedLessons) ? importedData.completedLessons : ["1-1"],
+      completedQuizzes: importedData.completedQuizzes || {},
+      totalXP: typeof importedData.totalXP === "number" ? importedData.totalXP : 50,
+      badges: Array.isArray(importedData.badges) ? importedData.badges : ["Gopher Rookie"],
+      userCodes: importedData.userCodes || {},
+    };
+    setProgress(merged);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+    } catch {}
+    return true;
+  };
+
   const resetAllProgress = () => {
     const fresh = {
       completedLessons: ["1-1"],
@@ -102,6 +118,7 @@ export function useLearningProgress() {
     markLessonComplete,
     recordQuizResult,
     saveUserCode,
+    importProgress,
     resetAllProgress,
   };
 }

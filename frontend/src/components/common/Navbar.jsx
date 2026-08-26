@@ -8,7 +8,8 @@ import {
   FileCode,
   Sun,
   Moon,
-  Award
+  Award,
+  FolderSync
 } from "lucide-react";
 
 export default function Navbar({
@@ -19,6 +20,7 @@ export default function Navbar({
   onToggleTheme,
   onToggleSidebar,
   isSidebarOpen,
+  onOpenSyncModal,
   totalLessonsCount = 32
 }) {
   const completedCount = progress.completedLessons.length;
@@ -88,8 +90,8 @@ export default function Navbar({
           })}
         </nav>
 
-        {/* Right: Stats, Progress, Theme */}
-        <div className="flex items-center gap-2.5">
+        {/* Right: Stats, Sync, Progress, Theme */}
+        <div className="flex items-center gap-2">
           {/* XP & Level */}
           <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg theme-card-subtle text-xs font-mono font-bold">
             <span className="text-amber-500">⚡ {progress.totalXP} XP</span>
@@ -100,8 +102,8 @@ export default function Navbar({
           </div>
 
           {/* Progress % */}
-          <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono theme-muted">
-            <div className="w-16 bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+          <div className="hidden lg:flex items-center gap-1.5 text-xs font-mono theme-muted">
+            <div className="w-14 bg-slate-200 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
               <div
                 className="bg-[#04AA6D] h-full transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
@@ -109,6 +111,15 @@ export default function Navbar({
             </div>
             <span className="font-bold text-[#04AA6D]">{progressPercent}%</span>
           </div>
+
+          {/* Backup & Sync Button */}
+          <button
+            onClick={onOpenSyncModal}
+            className="p-2 rounded-lg theme-card-subtle theme-heading hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            title="Backup & Sync Progres (Ekspor / Impor JSON)"
+          >
+            <FolderSync size={15} className="text-[#04AA6D]" />
+          </button>
 
           {/* Theme Toggle */}
           <button

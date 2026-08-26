@@ -6,6 +6,7 @@ import W3TryItStudio from "./components/w3layout/W3TryItStudio";
 import LabsHub from "./components/labs/LabsHub";
 import InterviewPrepLab from "./components/interview/InterviewPrepLab";
 import CheatSheet from "./components/cheatsheet/CheatSheet";
+import BackupSyncModal from "./components/sync/BackupSyncModal";
 import { useLearningProgress } from "./store/learningStore";
 
 const THEME_STORAGE_KEY = "w3_golearn_theme";
@@ -16,6 +17,7 @@ export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [tryItCode, setTryItCode] = useState(null);
   const [isTryItMode, setIsTryItMode] = useState(false);
+  const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
 
   const [theme, setTheme] = useState(() => {
     try {
@@ -41,6 +43,7 @@ export default function App() {
     markLessonComplete,
     recordQuizResult,
     saveUserCode,
+    importProgress,
     resetAllProgress,
   } = useLearningProgress();
 
@@ -75,6 +78,7 @@ export default function App() {
         onToggleTheme={toggleTheme}
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         isSidebarOpen={isSidebarOpen}
+        onOpenSyncModal={() => setIsSyncModalOpen(true)}
       />
 
       {/* Main App Body */}
@@ -141,6 +145,15 @@ export default function App() {
           </main>
         )}
       </div>
+
+      {/* Backup & Sync Modal */}
+      <BackupSyncModal
+        isOpen={isSyncModalOpen}
+        onClose={() => setIsSyncModalOpen(false)}
+        progress={progress}
+        onImportProgress={importProgress}
+        onResetProgress={resetAllProgress}
+      />
     </div>
   );
 }
