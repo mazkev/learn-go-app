@@ -12,7 +12,10 @@ import {
   Code,
   Sparkles,
   Check,
-  X
+  X,
+  Eye,
+  ArrowRight,
+  AlertCircle
 } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
 import { executeGoCode } from "../../services/goRunner";
@@ -62,6 +65,13 @@ export default function LessonStudio({
 
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [showSolution, setShowSolution] = useState(false);
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   useEffect(() => {
     setCode(progress.userCodes[currentLesson.id] || currentLesson.codeSnippet);
@@ -73,6 +83,7 @@ export default function LessonStudio({
     });
     setSelectedAnswers({});
     setQuizSubmitted(false);
+    setShowSolution(false);
     setActiveLeftTab("theory");
   }, [currentLesson.id]);
 
@@ -111,13 +122,23 @@ export default function LessonStudio({
     if (window.confirm("Kembalikan kode ke template awal materi ini?")) {
       setCode(currentLesson.codeSnippet);
       saveUserCode(currentLesson.id, currentLesson.codeSnippet);
+      showToast("Kode di-reset ke contoh materi awal.");
     }
   };
 
   const handleLoadExercise = () => {
     if (currentLesson.exercise?.starterCode) {
       setCode(currentLesson.exercise.starterCode);
-      setActiveLeftTab("exercise");
+      saveUserCode(currentLesson.id, currentLesson.exercise.starterCode);
+      showToast("✓ Kode latihan berhasil dimuat ke editor!");
+    }
+  };
+
+  const handleApplySolution = () => {
+    if (currentLesson.exercise?.starterCode) {
+      setCode(currentLesson.exercise.starterCode);
+      saveUserCode(currentLesson.id, currentLesson.exercise.starterCode);
+      showToast("✓ Solusi berhasil diterapkan ke editor!");
     }
   };
 
@@ -147,7 +168,15 @@ export default function LessonStudio({
   const monacoTheme = theme === "light" ? "light" : "vs-dark";
 
   return (
-    <div className="max-w-[1700px] mx-auto px-4 py-4 flex flex-col h-[calc(100vh-76px)] min-h-[720px] gap-3">
+    <div className="max-w-[1700px] mx-auto px-4 py-4 flex flex-col h-[calc(100vh-76px)] min-h-[720px] gap-3 relative">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="absolute top-6 right-6 z-50 bg-emerald-600 text-white px-4 py-2 rounded-2xl shadow-xl font-bold text-xs flex items-center gap-2 animate-bounce">
+          <Check size={16} />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Top Bar Navigation */}
       <div className="flex flex-wrap items-center justify-between gap-3 theme-card px-4 py-2.5 rounded-2xl shrink-0 shadow-md">
         <div className="flex items-center gap-3 flex-wrap">
@@ -310,14 +339,52 @@ export default function LessonStudio({
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs theme-muted">Gunakan starter template:</span>
+                {/* Actions: Muat Kode & Lihat Solusi */}
+                <div className="flex items-center gap-2.5 flex-wrap pt-1">
                   <button
                     onClick={handleLoadExercise}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/25 transition-all"
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/25 transition-all flex items-center gap-1.5"
                   >
-                    Muat Kode Latihan
+                    <Code size={14} />
+                    <span>Muat Kode Latihan</span>
                   </button>
+
+                  <button
+                    onClick={() => setShowSolution(!showSolution)}
+                    className="px-4 py-2 rounded-xl theme-card-subtle theme-heading text-xs font-bold transition-all flex items-center gap-1.5"
+                  >
+                    <Eye size={14} />
+                    <span>{showSolution ? "Tutup Solusi" : "Lihat Solusi Lengkap"}</span>
+                  </button>
+                </div>
+
+                {/* Solution Accordion */}
+                {showSolution && (
+                  <div className="p-4 rounded-2xl theme-inset border border-indigo-500/30 space-y-3 shadow-inner">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-indigo-500 flex items-center gap-1.5">
+                        <Sparkles size={14} /> Solusi Kode Terverifikasi:
+                      </span>
+                      <button
+                        onClick={handleApplySolution}
+                        className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                      >
+                        <span>Terapkan ke Editor</span>
+                        <ArrowRight size={12} />
+                      </button>
+                    </div>
+                    <pre className="bg-slate-900 text-emerald-400 p-3.5 rounded-xl border border-slate-800 font-mono text-xs overflow-x-auto leading-relaxed">
+                      {currentLesson.exercise?.starterCode || currentLesson.codeSnippet}
+                    </pre>
+                  </div>
+                )}
+
+                {/* Syntax Notice Alert */}
+                <div className="p-3.5 rounded-2xl bg-amber-500/[0.08] border border-amber-500/25 text-xs text-amber-700 dark:text-amber-300 flex items-start gap-2 leading-relaxed">
+                  <AlertCircle size={15} className="shrink-0 mt-0.5 text-amber-500" />
+                  <span>
+                    <strong>Tips Penulisan Go:</strong> Hindari memotong baris (Enter) di dalam tanda petik ganda <code>"..."</code>. Jika teks panjang, gunakan backtick <code>`...`</code> atau tulis dalam satu baris.
+                  </span>
                 </div>
               </div>
             )}
