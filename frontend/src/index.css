@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-app: #f8fafc;
+  --bg-header: rgba(255, 255, 255, 0.92);
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f1f5f9;
+  --bg-surface-inset: #f8fafc;
+  --border-app: #e2e8f0;
+  --border-app-subtle: #edf2f7;
+  
+  --text-heading: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  
+  --color-gopher: #00add8;
+  --color-gopher-hover: #0090b4;
+  --color-gopher-light: #e0f7fc;
+  
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-body);
+  background-color: var(--bg-app);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-theme="dark"] {
+  --bg-app: #070b14;
+  --bg-header: rgba(7, 11, 20, 0.92);
+  --bg-surface: #0e1626;
+  --bg-surface-subtle: #131c30;
+  --bg-surface-inset: #05080f;
+  --border-app: rgba(255, 255, 255, 0.09);
+  --border-app-subtle: rgba(255, 255, 255, 0.05);
+  
+  --text-heading: #f8fafc;
+  --text-body: #e2e8f0;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  
+  --color-gopher: #00add8;
+  --color-gopher-hover: #38bdf8;
+  --color-gopher-light: rgba(0, 173, 216, 0.15);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg-app);
+  color: var(--text-body);
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Light Theme Background Pattern */
+[data-theme="light"] body, :root:not([data-theme="dark"]) body {
+  background: 
+    radial-gradient(circle at 10% 10%, rgba(0, 173, 216, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 40%),
+    #f8fafc;
+}
+
+/* Dark Theme Background Pattern */
+[data-theme="dark"] body {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 173, 216, 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 85% 60%, rgba(139, 92, 246, 0.1), transparent),
+    #070b14;
+}
+
+code, pre, .font-mono {
+  font-family: 'Fira Code', monospace;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00add8;
+}
+
+/* Card & Surface Classes */
+.theme-navbar {
+  background-color: var(--bg-header);
+  border-bottom: 1px solid var(--border-app);
+}
+
+.theme-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-app);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .theme-card {
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.4);
+}
+
+.theme-card-subtle {
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-app);
+}
+
+.theme-inset {
+  background-color: var(--bg-surface-inset);
+  border: 1px solid var(--border-app);
+}
+
+.theme-heading {
+  color: var(--text-heading);
+}
+
+.theme-muted {
+  color: var(--text-muted);
+}
+
+.gopher-gradient-text {
+  background: linear-gradient(135deg, #00add8 0%, #0284c7 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
