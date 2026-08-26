@@ -55,6 +55,8 @@ export default function LessonStudio({
   const [code, setCode] = useState(
     progress.userCodes[currentLesson.id] || currentLesson.codeSnippet
   );
+  const editorRef = React.useRef(null);
+  const codeRef = React.useRef(progress.userCodes[currentLesson.id] || currentLesson.codeSnippet);
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState({
     text: "Klik tombol 'Jalankan Kode' di atas untuk mengompilasi dan melihat output terminal.",
@@ -76,6 +78,10 @@ export default function LessonStudio({
   useEffect(() => {
     const saved = progress.userCodes[currentLesson.id] || currentLesson.codeSnippet;
     setCode(saved);
+    codeRef.current = saved;
+    if (editorRef.current && editorRef.current.getValue() !== saved) {
+      editorRef.current.setValue(saved);
+    }
     setOutput({
       text: "Program siap dikompilasi.",
       isError: false,
@@ -532,10 +538,15 @@ export default function LessonStudio({
                 height="100%"
                 defaultLanguage="go"
                 theme={monacoTheme}
-                value={code}
+                defaultValue={code}
+                onMount={(editor) => {
+                  editorRef.current = editor;
+                }}
                 onChange={(value) => {
-                  setCode(value || "");
-                  saveUserCode(currentLesson.id, value || "");
+                  const val = value || "";
+                  codeRef.current = val;
+                  setCode(val);
+                  saveUserCode(currentLesson.id, val);
                 }}
                 options={{
                   fontSize: 13,

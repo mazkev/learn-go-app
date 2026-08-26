@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun } from "lucide-react";
 import { executeGoCode } from "../../services/goRunner";
@@ -11,6 +11,9 @@ export default function W3TryItStudio({
   onToggleTheme
 }) {
   const [code, setCode] = useState(initialCode || "");
+  const codeRef = useRef(initialCode || "");
+  const editorRef = useRef(null);
+
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState({
     text: "Klik tombol hijau 'Run ❯' untuk melihat output kompilasi.",
@@ -27,10 +30,27 @@ export default function W3TryItStudio({
   };
 
   useEffect(() => {
-    if (initialCode) setCode(initialCode);
+    if (initialCode !== undefined && initialCode !== null) {
+      setCode(initialCode);
+      codeRef.current = initialCode;
+      if (editorRef.current && editorRef.current.getValue() !== initialCode) {
+        editorRef.current.setValue(initialCode);
+      }
+    }
   }, [initialCode]);
 
+  const handleEditorDidMount = (editor) => {
+    editorRef.current = editor;
+  };
+
+  const handleEditorChange = (value) => {
+    const val = value || "";
+    codeRef.current = val;
+    setCode(val);
+  };
+
   const handleRun = async () => {
+    const codeToRun = editorRef.current ? editorRef.current.getValue() : codeRef.current;
     setIsRunning(true);
     setOutput({
       text: "⚡ Mengompilasi kode Go...",
@@ -40,7 +60,7 @@ export default function W3TryItStudio({
     });
 
     try {
-      const result = await executeGoCode(code);
+      const result = await executeGoCode(codeToRun);
       setOutput({
         text: result.output,
         isError: result.isError,
@@ -60,7 +80,12 @@ export default function W3TryItStudio({
   };
 
   const handleReset = () => {
-    setCode(initialCode);
+    const resetTarget = initialCode || "";
+    setCode(resetTarget);
+    codeRef.current = resetTarget;
+    if (editorRef.current) {
+      editorRef.current.setValue(resetTarget);
+    }
     setOutput({
       text: "Kode di-reset. Klik 'Run ❯' untuk menguji.",
       isError: false,
@@ -147,8 +172,9 @@ export default function W3TryItStudio({
               height="100%"
               defaultLanguage="go"
               theme={monacoTheme}
-              value={code}
-              onChange={(v) => setCode(v || "")}
+              defaultValue={initialCode || ""}
+              onMount={handleEditorDidMount}
+              onChange={handleEditorChange}
               options={{
                 fontSize: 13,
                 fontFamily: "'Fira Code', monospace",
