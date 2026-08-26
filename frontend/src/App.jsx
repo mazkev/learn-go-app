@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/common/Navbar";
-import RoadmapView from "./components/roadmap/RoadmapView";
-import LessonStudio from "./components/editor/LessonStudio";
+import W3Sidebar from "./components/w3layout/W3Sidebar";
+import W3TutorialReader from "./components/w3layout/W3TutorialReader";
+import W3TryItStudio from "./components/w3layout/W3TryItStudio";
 import ConcurrencyVisualizer from "./components/visualizer/ConcurrencyVisualizer";
 import APITester from "./components/apitester/APITester";
 import GrpcCompareLab from "./components/grpccompare/GrpcCompareLab";
@@ -9,11 +10,15 @@ import GormLab from "./components/gormlab/GormLab";
 import CheatSheet from "./components/cheatsheet/CheatSheet";
 import { useLearningProgress } from "./store/learningStore";
 
-const THEME_STORAGE_KEY = "golearn_theme_mode";
+const THEME_STORAGE_KEY = "w3_golearn_theme";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("roadmap");
+  const [activeTab, setActiveTab] = useState("tutorial");
   const [currentLessonId, setCurrentLessonId] = useState("1-1");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [tryItCode, setTryItCode] = useState(null);
+  const [isTryItMode, setIsTryItMode] = useState(false);
+
   const [theme, setTheme] = useState(() => {
     try {
       const saved = localStorage.getItem(THEME_STORAGE_KEY);
@@ -43,71 +48,111 @@ export default function App() {
 
   const handleSelectLesson = (lessonId) => {
     setCurrentLessonId(lessonId);
-    setActiveTab("studio");
+    setIsTryItMode(false);
+    setActiveTab("tutorial");
   };
 
-  const handleOpenLab = (labTab) => {
-    setActiveTab(labTab);
+  const handleOpenTryIt = (codeSnippet) => {
+    setTryItCode(codeSnippet);
+    setIsTryItMode(true);
   };
 
-  const handleLoadSnippetToStudio = (customCode) => {
-    saveUserCode(currentLessonId, customCode);
-    setActiveTab("studio");
+  const handleLoadSnippetToTryIt = (customCode) => {
+    setTryItCode(customCode);
+    setIsTryItMode(true);
+    setActiveTab("tutorial");
   };
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-[#00ADD8]/25 selection:text-[#00ADD8] transition-colors duration-200">
-      {/* Top Navigation */}
+    <div className="min-h-screen flex flex-col selection:bg-[#04AA6D]/20 selection:text-[#04AA6D]">
+      {/* Top Header Navbar */}
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(tab) => {
+          setActiveTab(tab);
+          setIsTryItMode(false);
+        }}
         progress={progress}
-        onResetProgress={resetAllProgress}
         theme={theme}
         onToggleTheme={toggleTheme}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+        isSidebarOpen={isSidebarOpen}
       />
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-x-hidden">
-        {activeTab === "roadmap" && (
-          <RoadmapView
-            onSelectLesson={handleSelectLesson}
-            progress={progress}
-            onOpenLab={handleOpenLab}
-          />
+      {/* Main App Body */}
+      <div className="flex-1 flex min-h-0">
+        {/* W3 Tutorial Mode */}
+        {activeTab === "tutorial" && (
+          <>
+            {!isTryItMode ? (
+              <div className="flex-1 flex min-h-0">
+                {/* W3 Collapsible Sidebar */}
+                <W3Sidebar
+                  currentLessonId={currentLessonId}
+                  onSelectLesson={handleSelectLesson}
+                  progress={progress}
+                  isOpen={isSidebarOpen}
+                  onCloseMobile={() => setIsSidebarOpen(false)}
+                />
+
+                {/* Central Tutorial Article Reader */}
+                <main className="flex-1 overflow-y-auto">
+                  <W3TutorialReader
+                    currentLessonId={currentLessonId}
+                    onSelectLesson={handleSelectLesson}
+                    onOpenTryIt={handleOpenTryIt}
+                    progress={progress}
+                    markLessonComplete={markLessonComplete}
+                    recordQuizResult={recordQuizResult}
+                  />
+                </main>
+              </div>
+            ) : (
+              /* W3 Split-Screen Tryit Editor */
+              <div className="flex-1">
+                <W3TryItStudio
+                  initialCode={tryItCode}
+                  lessonTitle={`Lesson ${currentLessonId}`}
+                  onBackToTutorial={() => setIsTryItMode(false)}
+                  theme={theme}
+                  onToggleTheme={toggleTheme}
+                />
+              </div>
+            )}
+          </>
         )}
 
-        {activeTab === "studio" && (
-          <LessonStudio
-            currentLessonId={currentLessonId}
-            setCurrentLessonId={setCurrentLessonId}
-            progress={progress}
-            markLessonComplete={markLessonComplete}
-            recordQuizResult={recordQuizResult}
-            saveUserCode={saveUserCode}
-            theme={theme}
-          />
+        {/* Labs & Extras */}
+        {activeTab === "concurrency" && (
+          <main className="flex-1 overflow-y-auto">
+            <ConcurrencyVisualizer />
+          </main>
         )}
 
-        {activeTab === "concurrency" && <ConcurrencyVisualizer />}
+        {activeTab === "apitester" && (
+          <main className="flex-1 overflow-y-auto">
+            <APITester />
+          </main>
+        )}
 
-        {activeTab === "apitester" && <APITester />}
+        {activeTab === "grpc" && (
+          <main className="flex-1 overflow-y-auto">
+            <GrpcCompareLab />
+          </main>
+        )}
 
-        {activeTab === "grpc" && <GrpcCompareLab />}
-
-        {activeTab === "gorm" && <GormLab />}
+        {activeTab === "gorm" && (
+          <main className="flex-1 overflow-y-auto">
+            <GormLab />
+          </main>
+        )}
 
         {activeTab === "cheatsheet" && (
-          <CheatSheet onLoadSnippetToStudio={handleLoadSnippetToStudio} />
+          <main className="flex-1 overflow-y-auto">
+            <CheatSheet onLoadSnippetToStudio={handleLoadSnippetToTryIt} />
+          </main>
         )}
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-200 dark:border-white/[0.08] py-4 px-6 text-center text-xs theme-muted theme-card-subtle transition-colors">
-        <p>
-          GoLearn Hub • Platform Belajar Golang & React Interaktif • Dibuat dengan 💙 untuk Gophers Indonesia
-        </p>
-      </footer>
+      </div>
     </div>
   );
 }
