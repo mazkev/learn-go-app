@@ -7,6 +7,7 @@ import {
   Globe,
   Zap,
   Database,
+  Briefcase,
   FileCode,
   Sun,
   Moon,
@@ -30,10 +31,11 @@ export default function Navbar({
 
   const navLinks = [
     { id: "tutorial", label: "Tutorial", icon: BookOpen },
-    { id: "concurrency", label: "Concurrency Lab", icon: Activity },
+    { id: "concurrency", label: "Concurrency", icon: Activity },
     { id: "apitester", label: "REST API", icon: Globe },
     { id: "grpc", label: "gRPC Lab", icon: Zap },
     { id: "gorm", label: "GORM Lab", icon: Database },
+    { id: "interview", label: "Interview Prep", icon: Briefcase },
     { id: "cheatsheet", label: "Cheatsheet", icon: FileCode },
   ];
 
@@ -79,7 +81,7 @@ export default function Navbar({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`px-3.5 py-1.5 rounded-md text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
                   isActive
                     ? "bg-[#04AA6D] text-white shadow-sm"
                     : "theme-body hover:bg-black/5 dark:hover:bg-white/5"

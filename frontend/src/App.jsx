@@ -7,6 +7,7 @@ import ConcurrencyVisualizer from "./components/visualizer/ConcurrencyVisualizer
 import APITester from "./components/apitester/APITester";
 import GrpcCompareLab from "./components/grpccompare/GrpcCompareLab";
 import GormLab from "./components/gormlab/GormLab";
+import InterviewPrepLab from "./components/interview/InterviewPrepLab";
 import CheatSheet from "./components/cheatsheet/CheatSheet";
 import { useLearningProgress } from "./store/learningStore";
 
@@ -144,6 +145,12 @@ export default function App() {
         {activeTab === "gorm" && (
           <main className="flex-1 overflow-y-auto">
             <GormLab />
+          </main>
+        )}
+
+        {activeTab === "interview" && (
+          <main className="flex-1 overflow-y-auto">
+            <InterviewPrepLab />
           </main>
         )}
 
