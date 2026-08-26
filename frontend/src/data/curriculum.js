@@ -45,7 +45,7 @@ import "fmt"
 
 func main() {
     // Tulis kodemu di sini
-    fmt.Println("Halo, nama saya [Nama Anda]! Target saya adalah menguasai Backend Go.")
+    fmt.Println("Halo, nama saya Alex! Target saya adalah menguasai Backend Go berstandar industri.")
 }`,
           expectedHint: "Gunakan fmt.Println() untuk menampilkan pesan ke terminal."
         },
@@ -189,7 +189,6 @@ import "fmt"
 func main() {
     statusCode := 404
 
-    // Lengkapi logika pengkondisian di bawah
     switch statusCode {
     case 200:
         fmt.Println("Status 200: OK")
@@ -384,17 +383,14 @@ if ada {
 import "fmt"
 
 func main() {
-    // Map Literal
     hargaBarang := map[string]int{
         "Laptop":   12000000,
         "Keyboard": 750000,
         "Mouse":    300000,
     }
 
-    // Menambah item
     hargaBarang["Monitor"] = 2500000
 
-    // Cek keberadaan key dengan comma-ok idiom
     itemCari := "Headset"
     if harga, exists := hargaBarang[itemCari]; exists {
         fmt.Printf("%s ditemukan seharga Rp %d\n", itemCari, harga)
@@ -470,7 +466,6 @@ type Alamat struct {
     Negara  string
 }
 
-// User menyematkan Alamat (Composition)
 type User struct {
     ID       int
     Nama     string
@@ -536,7 +531,6 @@ func main() {
 Fungsi di Go adalah *first-class citizens* (bisa disimpan di variabel, dikirim sebagai argumen, atau dikembalikan dari fungsi lain).
 
 #### 🌟 Multiple Return Values:
-Salah satu ciri khas Go yang sangat populer untuk penanganan error:
 \`\`\`go
 func bagi(a, b float64) (float64, error) {
     if b == 0 {
@@ -544,27 +538,19 @@ func bagi(a, b float64) (float64, error) {
     }
     return a / b, nil
 }
-\`\`\`
-
-#### 📦 Variadic Function:
-Menerima jumlah argumen dinamis dengan tanda \`...\`:
-\`\`\`go
-func jumlahSemua(angka ...int) int
 \`\`\``,
         codeSnippet: `package main
 
 import "fmt"
 
-// Fungsi dengan multiple return (hasil & boolean sukses)
 func hitungDiskon(totalBelanja float64) (float64, bool) {
     if totalBelanja >= 100000 {
-        diskon := totalBelanja * 0.10 // Diskon 10%
+        diskon := totalBelanja * 0.10
         return totalBelanja - diskon, true
     }
     return totalBelanja, false
 }
 
-// Variadic function
 func totalSkor(skor ...int) int {
     total := 0
     for _, s := range skor {
@@ -577,7 +563,6 @@ func main() {
     total := 150000.0
     bayar, dapetDiskon := hitungDiskon(total)
     fmt.Printf("Belanja: Rp %.0f | Bayar: Rp %.0f | Dapat Diskon: %t\n", total, bayar, dapetDiskon)
-
     fmt.Printf("Total skor game: %d\n", totalSkor(10, 25, 40, 15))
 }`,
         exercise: {
@@ -613,7 +598,7 @@ func main() {
               "Hanya untuk keperluan kompatibilitas dengan bahasa C"
             ],
             correctAnswer: 0,
-            explanation: "Pola idiomatis Go dalam menangani error adalah mengembalikan pasangan nilai `(result, err)`. Hal ini membuat pemanggilan fungsi eksplisit dalam mengecek apakah operasi berhasil atau menghasilkan error."
+            explanation: "Pola idiomatis Go dalam menangani error adalah mengembalikan pasangan nilai `(result, err)`."
           }
         ]
       }
@@ -639,21 +624,15 @@ Secara default, Go menggunakan prinsip **Pass by Value** (menyalin salinan data 
 
 #### 🗝️ Operator Pointer:
 1. **\`&variable\`** (*Address-of*): Mengambil alamat memori tempat variabel disimpan (contoh: \`0xc000014070\`).
-2. **\`*pointer\`** (*Dereferencing*): Mengakses atau mengubah nilai asli di alamat memori yang ditunjuk.
-
-> 💡 **Kapan Menggunakan Pointer?**
-> - Ketika ingin fungsi mengubah nilai variabel pemanggil secara langsung.
-> - Ketika struct berukuran besar, agar tidak boros memori karena dicopy berkali-kali.`,
+2. **\`*pointer\`** (*Dereferencing*): Mengakses atau mengubah nilai asli di alamat memori yang ditunjuk.`,
         codeSnippet: `package main
 
 import "fmt"
 
-// Tanpa pointer (Pass by Value - Nilai asli TIDAK berubah)
 func tambahSatu(x int) {
     x = x + 1
 }
 
-// Dengan pointer (Pass by Reference - Nilai asli BERUBAH)
 func tambahSatuPointer(x *int) {
     *x = *x + 1
 }
@@ -727,12 +706,10 @@ type RekeningBank struct {
     Saldo   float64
 }
 
-// Value receiver (hanya membaca data)
 func (r RekeningBank) Info() {
     fmt.Printf("Pemilik: %s | Saldo: Rp %.2f\n", r.Pemilik, r.Saldo)
 }
 
-// Pointer receiver (memodifikasi saldo asli)
 func (r *RekeningBank) Setor(jumlah float64) {
     r.Saldo += jumlah
     fmt.Printf("Berhasil setor Rp %.2f ke rekening %s\n", jumlah, r.Pemilik)
@@ -780,7 +757,7 @@ func main() {
               "Tidak pernah, Go otomatis mengubah semua receiver menjadi pointer"
             ],
             correctAnswer: 1,
-            explanation: "Pointer receiver mengizinkan method untuk memutasi (mengubah) nilai field pada struct pemanggil secara langsung tanpa membuat duplikat."
+            explanation: "Pointer receiver mengizinkan method untuk memutasi (mengubah) nilai field pada struct pemanggil secara langsung."
           }
         ]
       },
@@ -793,13 +770,14 @@ Interface di Go adalah kontrak kumpulan method (*method set*).
 
 > **"Jika ia berjalan seperti bebek dan bersuara seperti bebek, maka ia adalah bebek."**
 
-Di Go, sebuah struct **TIDAK PERLU** menulis \`implements InterfaceName\`. Cukup buat method dengan nama dan signature yang sesuai, maka otomatis mengimplementasikan interface tersebut (*Implicit Implementation*)!`,
+Di Go, sebuah struct **TIDAK PERLU** menulis \`implements InterfaceName\`. Cukup buat method dengan nama dan signature yang sesuai, maka otomatis mengimplementasikan interface tersebut!`,
         codeSnippet: `package main
 
-import "fmt"
-import "math"
+import (
+    "fmt"
+    "math"
+)
 
-// Kontrak Interface
 type BangunDatar interface {
     HitungLuas() float64
 }
@@ -820,7 +798,6 @@ func (l Lingkaran) HitungLuas() float64 {
     return math.Pi * l.Radius * l.Radius
 }
 
-// Fungsi polimorfik yang menerima jenis bangun datar apapun
 func CetakLuas(b BangunDatar) {
     fmt.Printf("Luas bangun datar: %.2f\n", b.HitungLuas())
 }
@@ -868,7 +845,7 @@ func main() {
               "Mendaftarkannya di file config go.mod"
             ],
             correctAnswer: 1,
-            explanation: "Go menggunakan sistem 'implicit interface implementation'. Jika struct memiliki semua method yang dideklarasikan di interface, Go secara otomatis menganggapnya memenuhi interface tersebut."
+            explanation: "Go menggunakan sistem 'implicit interface implementation'."
           }
         ]
       },
@@ -882,13 +859,9 @@ Go tidak menggunakan \`try-catch\`. Error diperlakukan sebagai nilai biasa (*Val
 \`\`\`go
 hasil, err := prosesData()
 if err != nil {
-    // Tangani error di sini
     return err
 }
-\`\`\`
-
-#### ⏱️ Defer:
-Menjadwalkan eksekusi fungsi agar berjalan tepat sebelum fungsi pembungkus selesai (sangat berguna untuk closing file, database connection, atau unlock mutex).`,
+\`\`\``,
         codeSnippet: `package main
 
 import (
@@ -953,7 +926,7 @@ func main() {
               "Dijalankan di background goroutine terpisah"
             ],
             correctAnswer: 1,
-            explanation: "`defer` menunda eksekusi suatu fungsi sampai fungsi di sekitarnya selesai (return), biasanya digunakan untuk cleanup resource seperti menutup koneksi atau file."
+            explanation: "`defer` menunda eksekusi suatu fungsi sampai fungsi di sekitarnya selesai (return)."
           }
         ]
       }
@@ -979,13 +952,7 @@ Goroutine adalah fungsi yang dieksekusi secara asinkron/konkuren bersamaan denga
 
 #### Perbandingan dengan OS Thread Tradisional:
 - **OS Thread**: Membutuhkan memori stack awal ~1-2 MB.
-- **Goroutine**: Hanya butuh ~2 KB memori stack (bisa menjalankan 100.000+ goroutine sekaligus tanpa kehabisan RAM!).
-
-#### Cara Menjalankan Goroutine:
-Cukup tambahkan kata kunci \`go\` sebelum memanggil fungsi:
-\`\`\`go
-go prosesData(data)
-\`\`\``,
+- **Goroutine**: Hanya butuh ~2 KB memori stack.`,
         codeSnippet: `package main
 
 import (
@@ -1003,11 +970,9 @@ func cetakPesan(pesan string, delay time.Duration) {
 func main() {
     fmt.Println("🚦 Memulai Goroutines...")
 
-    // Jalankan di background goroutines
     go cetakPesan("Worker-A", 100*time.Millisecond)
     go cetakPesan("Worker-B", 150*time.Millisecond)
 
-    // Beri waktu agar goroutine selesai sebelum main exit
     time.Sleep(500 * time.Millisecond)
     fmt.Println("🏁 Semua pekerjaan selesai!")
 }`,
@@ -1044,7 +1009,7 @@ func main() {
               "Sama persis dengan ukuran 1 thread CPU (4MB)"
             ],
             correctAnswer: 0,
-            explanation: "Goroutine sangat ringan karena hanya memerlukan stack awal sekitar 2 KB yang dapat tumbuh dan menyusut secara dinamis sesuai kebutuhan runtime."
+            explanation: "Goroutine sangat ringan karena hanya memerlukan stack awal sekitar 2 KB."
           }
         ]
       },
@@ -1057,31 +1022,24 @@ Channel adalah media pipa untuk mengirim dan menerima data antar goroutine denga
 
 #### 🛠️ Operasi Channel:
 - **Buat Channel**: \`ch := make(chan string)\`
-- **Kirim Data (Send)**: \`ch <- "Pesan"\`
-- **Terima Data (Receive)**: \`pesan := <-ch\`
-- **Tutup Channel**: \`close(ch)\`
-
-#### Unbuffered vs Buffered Channel:
-- **Unbuffered (\`make(chan T)\`)**: Pengirim akan diblokir (*wait*) sampai penerima siap mengambil data.
-- **Buffered (\`make(chan T, 3)\`)**: Pengirim tidak diblokir selama kapasitas antrian channel belum penuh.`,
+- **Kirim Data**: \`ch <- "Pesan"\`
+- **Terima Data**: \`pesan := <-ch\`
+- **Tutup Channel**: \`close(ch)\``,
         codeSnippet: `package main
 
 import "fmt"
 
 func hitungKuadrat(angka int, out chan int) {
     hasil := angka * angka
-    out <- hasil // Mengirim hasil ke channel
+    out <- hasil
 }
 
 func main() {
-    // Membuat unbuffered channel integer
     ch := make(chan int)
 
-    // Jalankan worker di goroutine
     go hitungKuadrat(9, ch)
     go hitungKuadrat(12, ch)
 
-    // Menerima nilai dari channel (blocking sampai data tiba)
     hasil1 := <-ch
     hasil2 := <-ch
 
@@ -1089,7 +1047,7 @@ func main() {
     fmt.Printf("Hasil 2: %d\n", hasil2)
 }`,
         exercise: {
-          instruction: "Buat buffered channel `msgChan := make(chan string, 2)`, kirim 2 pesan ke dalam channel tanpa goroutine, lalu baca dan cetak keduanya.",
+          instruction: "Buat buffered channel `msgChan := make(chan string, 2)`, kirim 2 pesan ke dalam channel, lalu cetak keduanya.",
           starterCode: `package main
 
 import "fmt"
@@ -1115,7 +1073,7 @@ func main() {
               "Data disimpan di memori disk"
             ],
             correctAnswer: 1,
-            explanation: "Pada unbuffered channel, proses kirim dan terima bersifat sinkron (handshake). Pengirim akan diblokir sampai penerima siap menerima data."
+            explanation: "Pada unbuffered channel, proses kirim dan terima bersifat sinkron (handshake)."
           }
         ]
       },
@@ -1124,20 +1082,7 @@ func main() {
         title: "4.3 Select Statement & Timeout",
         summary: "Multiplexing channel: mendengarkan banyak channel sekaligus dengan 'select'.",
         content: `### 🎛️ Select: Switch-Case Khusus Channel
-\`select\` memungkinkan sebuah goroutine menunggu pada beberapa operasi channel sekaligus.
-
-\`\`\`go
-select {
-case msg1 := <-ch1:
-    fmt.Println("Menerima dari ch1:", msg1)
-case msg2 := <-ch2:
-    fmt.Println("Menerima dari ch2:", msg2)
-case <-time.After(2 * time.Second):
-    fmt.Println("Timeout! Tidak ada data dalam 2 detik.")
-default:
-    fmt.Println("Non-blocking fallback")
-}
-\`\`\``,
+\`select\` memungkinkan sebuah goroutine menunggu pada beberapa operasi channel sekaligus.`,
         codeSnippet: `package main
 
 import (
@@ -1162,7 +1107,6 @@ func main() {
     go serverA(chA)
     go serverB(chB)
 
-    // Menangkap mana server yang merespons duluan
     for i := 0; i < 2; i++ {
         select {
         case msgA := <-chA:
@@ -1196,7 +1140,7 @@ func main() {
         fmt.Println("Waktu tunggu habis (Timeout)!")
     }
 }`,
-          expectedHint: "time.After mengembalikan channel yang mengirim sinyal waktu setelah durasi berlalu."
+          expectedHint: "time.After mengembalikan channel yang mengirim sinyal waktu."
         },
         quiz: [
           {
@@ -1208,7 +1152,7 @@ func main() {
               "Mengirim pesan broadcast ke semua channel"
             ],
             correctAnswer: 0,
-            explanation: "Jika tidak ada channel yang siap dan ada `default` case, `select` tidak akan memblokir dan langsung mengeksekusi blok default."
+            explanation: "Jika tidak ada channel yang siap dan ada `default` case, `select` tidak akan memblokir."
           }
         ]
       },
@@ -1218,10 +1162,7 @@ func main() {
         summary: "Menghindari race condition dengan sync.Mutex dan sinkronisasi goroutine dengan sync.WaitGroup.",
         content: `### 🛡️ Mengamankan Data & Menunggu Goroutine
 1. **\`sync.WaitGroup\`**: Menunggu sekumpulan goroutine selesai tanpa perlu \`time.Sleep()\`.
-   - \`wg.Add(n)\`: Menambah hitungan tugas.
-   - \`wg.Done()\`: Menandai 1 tugas selesai (sering ditaruh di \`defer wg.Done()\`).
-   - \`wg.Wait()\`: Memblokir eksekusi sampai hitungan menjadi 0.
-2. **\`sync.Mutex\`**: Mengunci resource bersama agar hanya 1 goroutine yang bisa menulis dalam satu waktu (*Mutual Exclusion*).`,
+2. **\`sync.Mutex\`**: Mengunci resource bersama agar hanya 1 goroutine yang bisa menulis dalam satu waktu.`,
         codeSnippet: `package main
 
 import (
@@ -1235,8 +1176,8 @@ type CounterAman struct {
 }
 
 func (c *CounterAman) Tambah() {
-    c.mu.Lock()         // Kunci
-    defer c.mu.Unlock() // Buka kunci saat fungsi selesai
+    c.mu.Lock()
+    defer c.mu.Unlock()
     c.nilai++
 }
 
@@ -1244,7 +1185,6 @@ func main() {
     var wg sync.WaitGroup
     counter := CounterAman{}
 
-    // Menjalankan 50 goroutine bersamaan
     jumlahWorker := 50
     wg.Add(jumlahWorker)
 
@@ -1255,11 +1195,11 @@ func main() {
         }()
     }
 
-    wg.Wait() // Tunggu ke-50 worker selesai
+    wg.Wait()
     fmt.Printf("Total akhir counter aman: %d (Sempurna!)\n", counter.nilai)
 }`,
         exercise: {
-          instruction: "Gunakan `sync.WaitGroup` untuk menunggu 3 goroutine yang mencetak angka 1, 2, 3 selesai.",
+          instruction: "Gunakan `sync.WaitGroup` untuk menunggu 3 goroutine selesai.",
           starterCode: `package main
 
 import (
@@ -1285,7 +1225,7 @@ func main() {
         },
         quiz: [
           {
-            question: "Apa bahaya yang terjadi jika banyak goroutine mengakses dan mengubah variabel yang sama tanpa `sync.Mutex`?",
+            question: "Apa bahaya yang terjadi jika banyak goroutine mengakses variabel yang sama tanpa `sync.Mutex`?",
             options: [
               "Kompilasi akan gagal",
               "Terjadi Race Condition (data corrupt atau hasil perhitungan tidak konsisten)",
@@ -1293,7 +1233,7 @@ func main() {
               "Sistem operasi akan me-restart aplikasi"
             ],
             correctAnswer: 1,
-            explanation: "Race condition terjadi ketika beberapa thread/goroutine membaca dan menulis memori bersama secara serentak tanpa koordinasi penguncian (mutex)."
+            explanation: "Race condition terjadi ketika beberapa goroutine membaca dan menulis memori bersama secara serentak tanpa proteksi."
           }
         ]
       }
@@ -1315,13 +1255,7 @@ func main() {
         title: "5.1 HTTP Server Standar (net/http)",
         summary: "Membuat web server dasar, ResponseWriter, Request struct, dan ListenAndServe.",
         content: `### 🌐 Web Server Bawaan Go (\`net/http\`)
-Tanpa perlu framework eksternal, Go sudah memiliki library web server bawaan tingkat produksi yang sangat kencang dan mampu menangani ribuan koneksi konkuren per detik.
-
-#### 📌 Komponen Utama:
-1. **\`http.ResponseWriter\`**: Objek untuk menulis respon HTTP (Status code, Header, Body JSON/HTML) kembali ke client.
-2. **\`*http.Request\`**: Objek yang memuat semua data request dari client (URL, Query params, Body, Headers).
-3. **\`http.HandleFunc(pattern, handler)\`**: Mendaftarkan URL endpoint.
-4. **\`http.ListenAndServe(port, handler)\`**: Menyalakan server.`,
+Tanpa perlu framework eksternal, Go sudah memiliki library web server bawaan tingkat produksi yang sangat kencang.`,
         codeSnippet: `package main
 
 import (
@@ -1337,9 +1271,7 @@ func haloHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
     http.HandleFunc("/api/halo", haloHandler)
-
     fmt.Println("🚀 Server berjalan di http://localhost:8080")
-    // http.ListenAndServe(":8080", nil) // Menjalankan server
 }`,
         exercise: {
           instruction: "Buat handler `/api/status` yang mengembalikan status code 200 dan pesan text 'Server Sehat!'.",
@@ -1363,7 +1295,7 @@ func main() {
         },
         quiz: [
           {
-            question: "Bagaimana cara `net/http` di Go menangani setiap request HTTP yang masuk dari browser/client?",
+            question: "Bagaimana cara `net/http` di Go menangani setiap request HTTP yang masuk?",
             options: [
               "Semua request diproses antre satu per satu secara sekuensial",
               "Setiap request HTTP otomatis dijalankan di dalam goroutine terpisah yang independen",
@@ -1371,7 +1303,7 @@ func main() {
               "Menggunakan Web Worker di browser"
             ],
             correctAnswer: 1,
-            explanation: "HTTP server bawaan Go secara otomatis men-spawn sebuah goroutine baru untuk setiap koneksi HTTP yang masuk. Hal ini yang membuat Go sangat efisien untuk high-traffic backend."
+            explanation: "HTTP server bawaan Go secara otomatis men-spawn sebuah goroutine baru untuk setiap koneksi HTTP yang masuk."
           }
         ]
       },
@@ -1380,15 +1312,7 @@ func main() {
         title: "5.2 Routing & Path Matching (Go 1.22+)",
         summary: "Peningkatan ServeMux di Go terbaru dengan HTTP method matching dan path parameters wildcard.",
         content: `### 🎯 Routing Modern di Go (Go 1.22+)
-Mulai Go versi 1.22, \`http.ServeMux\` bawaan mendukung method routing (\`GET /users\`, \`POST /users\`) dan wildcard parameter (\`/users/{id}\`) langsung tanpa third-party router!
-
-\`\`\`go
-mux := http.NewServeMux()
-mux.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) {
-    userID := r.PathValue("id")
-    fmt.Fprintf(w, "Detail user ID: %s", userID)
-})
-\`\`\``,
+Mulai Go versi 1.22, \`http.ServeMux\` bawaan mendukung method routing (\`GET /users\`, \`POST /users\`) dan wildcard parameter (\`/users/{id}\`) langsung!`,
         codeSnippet: `package main
 
 import (
@@ -1399,7 +1323,6 @@ import (
 func main() {
     mux := http.NewServeMux()
 
-    // Route dengan method spesifik dan path parameter
     mux.HandleFunc("GET /api/gophers", func(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintln(w, "[GET] Menampilkan semua Gopher")
     })
@@ -1438,7 +1361,7 @@ func main() {
               "r.Body.Read(\"id\")"
             ],
             correctAnswer: 1,
-            explanation: "Di Go 1.22+, method `r.PathValue(\"namaParam\")` adalah cara standar untuk mengekstrak path variable yang didefinisikan di pola route `{namaParam}`."
+            explanation: "Di Go 1.22+, method `r.PathValue(\"namaParam\")` adalah cara standar mengekstrak path variable."
           }
         ]
       },
@@ -1447,16 +1370,7 @@ func main() {
         title: "5.3 Middleware Pattern",
         summary: "Mendesain middleware untuk Logging, Timing request, dan Autentikasi token.",
         content: `### 🛡️ Middleware di Go
-Middleware adalah fungsi yang mencegat (*intercept*) request sebelum mencapai handler utama dan dapat mengeksekusi kode sebelum atau sesudah handler berjalan.
-
-\`\`\`go
-func LoggingMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        log.Println("Request masuk:", r.Method, r.URL.Path)
-        next.ServeHTTP(w, r) // Lanjut ke handler berikutnya
-    })
-}
-\`\`\``,
+Middleware adalah fungsi yang mencegat (*intercept*) request sebelum mencapai handler utama.`,
         codeSnippet: `package main
 
 import (
@@ -1465,14 +1379,10 @@ import (
     "time"
 )
 
-// Middleware untuk mencatat waktu eksekusi
 func TimerMiddleware(next http.HandlerFunc) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         mulai := time.Now()
-        
-        // Panggil handler asli
         next(w, r)
-        
         durasi := time.Since(mulai)
         fmt.Printf("⏱️ [%s] %s selesai dalam %v\n", r.Method, r.URL.Path, durasi)
     }
@@ -1483,12 +1393,11 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    // Bungkus handler dengan middleware
     http.HandleFunc("/api/dashboard", TimerMiddleware(mainHandler))
     fmt.Println("Middleware terpasang dengan sukses.")
 }`,
         exercise: {
-          instruction: "Buat middleware sederhana yang menambahkan Header `X-Powered-By: GoLearn` ke response sebelum memanggil `next(w, r)`.",
+          instruction: "Buat middleware yang menambahkan Header `X-Powered-By: GoLearn` ke response.",
           starterCode: `package main
 
 import (
@@ -1518,35 +1427,21 @@ func main() {
             question: "Apa tujuan utama dari arsitektur Middleware pada backend web?",
             options: [
               "Menghubungkan ke database secara eksklusif",
-              "Menjalankan logic cross-cutting concerns (seperti auth, logging, cors, caching) secara modular sebelum request mencapai handler utama",
+              "Menjalankan logic cross-cutting concerns (auth, logging, cors) secara modular sebelum request mencapai handler utama",
               "Mengubah bahasa pemrograman di backend",
               "Mempercepat refresh browser"
             ],
             correctAnswer: 1,
-            explanation: "Middleware memungkinkan pemisahan logic umum (auth, logging, metric, security headers) dari business logic utama di handler."
+            explanation: "Middleware memungkinkan pemisahan logic umum dari business logic utama di handler."
           }
         ]
       },
       {
         id: "5-4",
         title: "5.4 RESTful API & JSON Serialization",
-        summary: "Parsing request JSON (Unmarshal / Decoder), encoding response JSON, dan Struct Tags (`json:\"name\"`).",
+        summary: "Parsing request JSON (Unmarshal / Decoder), encoding response JSON, dan Struct Tags.",
         content: `### 📦 JSON & REST API di Go
-Go memiliki package bawaan \`encoding/json\` yang sangat kuat.
-
-#### 🏷️ Struct Tags:
-Menentukan nama key saat struct diubah ke JSON:
-\`\`\`go
-type Gopher struct {
-    ID     int    \`json:"id"\`
-    Nama   string \`json:"nama"\`
-    Role   string \`json:"role,omitempty"\` // Sembunyikan jika kosong
-    Secret string \`json:"-"\`              // Jangan diexport ke JSON
-}
-\`\`\`
-
-- **Encode (Struct $\\rightarrow$ JSON)**: \`json.Marshal(data)\` atau \`json.NewEncoder(w).Encode(data)\`
-- **Decode (JSON $\\rightarrow$ Struct)**: \`json.Unmarshal(bytes, &data)\` atau \`json.NewDecoder(r.Body).Decode(&data)\``,
+Go memiliki package bawaan \`encoding/json\` yang sangat kuat.`,
         codeSnippet: `package main
 
 import (
@@ -1570,7 +1465,6 @@ func getCoursesHandler(w http.ResponseWriter, r *http.Request) {
         Data:    []string{"Dasar Go", "Concurrency", "REST API", "GORM"},
     }
 
-    // Encode struct langsung ke HTTP ResponseWriter
     json.NewEncoder(w).Encode(res)
 }
 
@@ -1603,11 +1497,11 @@ func main() {
     jsonBytes, _ := json.MarshalIndent(u, "", "  ")
     fmt.Println(string(jsonBytes))
 }`,
-          expectedHint: "Gunakan json.Marshal atau json.MarshalIndent untuk format JSON rapi."
+          expectedHint: "Gunakan json.Marshal atau json.MarshalIndent."
         },
         quiz: [
           {
-            question: "Bagaimana cara menyembunyikan sebuah field sensitif (seperti password) agar tidak muncul saat struct di-encode ke JSON?",
+            question: "Bagaimana cara menyembunyikan sebuah field sensitif agar tidak muncul saat struct di-encode ke JSON?",
             options: [
               "Beri tag json:\"-\"",
               "Hapus field dari memori saat runtime",
@@ -1615,7 +1509,7 @@ func main() {
               "Gunakan tag json:\"hidden\""
             ],
             correctAnswer: 0,
-            explanation: "Tag `json:\"-\"` memberi tahu encoder JSON bawaan Go untuk mengabaikan field tersebut sepenuhnya dari output JSON."
+            explanation: "Tag `json:\"-\"` memberi tahu encoder JSON bawaan Go untuk mengabaikan field tersebut sepenuhnya."
           }
         ]
       }
@@ -1626,7 +1520,7 @@ func main() {
     order: 6,
     title: "6. Manajemen Database & GORM",
     subtitle: "Koneksi Database, GORM ORM, Migrasi & Relasi Data",
-    description: "Menghubungkan aplikasi Go ke database SQL (SQLite, PostgreSQL, MySQL) menggunakan GORM. Mempelajari auto migration, operasi CRUD penuh, dan relasi data (1-N, N-N).",
+    description: "Menghubungkan aplikasi Go ke database SQL (SQLite, PostgreSQL, MySQL) menggunakan GORM. Mempelajari auto migration, operasi CRUD penuh, dan relasi data.",
     icon: "Database",
     badge: "Database Architect",
     color: "#EC4899",
@@ -1637,22 +1531,11 @@ func main() {
         title: "6.1 Driver Database & database/sql",
         summary: "Koneksi database pool di Go, konfigurasi MaxOpenConns, MaxIdleConns, dan ping.",
         content: `### 🗄️ Konektivitas Database di Go
-Go memiliki abstraksi bawaan \`database/sql\` yang bekerja bersama driver SQL spesifik (seperti SQLite, PostgreSQL, MySQL).
-
-#### 🏊 Connection Pooling Otomatis:
-\`database/sql\` secara otomatis mengelola *pool* koneksi database:
-\`\`\`go
-db.SetMaxOpenConns(25)                 // Maksimal koneksi aktif
-db.SetMaxIdleConns(10)                 // Koneksi standby
-db.SetConnMaxLifetime(5 * time.Minute) // Waktu refresh koneksi
-\`\`\``,
+Go memiliki abstraksi bawaan \`database/sql\` yang bekerja bersama driver SQL spesifik.`,
         codeSnippet: `package main
 
-import (
-    "fmt"
-)
+import "fmt"
 
-// Simulasi konfigurasi DB Connection Pool
 type DBConfig struct {
     Driver       string
     Host         string
@@ -1704,7 +1587,7 @@ func main() {
               "Karena hanya mendukung mode single-thread"
             ],
             correctAnswer: 1,
-            explanation: "Struct `*sql.DB` di Go dirancang thread-safe dan memelihara connection pool secara otomatis sehingga aman diakses oleh banyak goroutine serentak."
+            explanation: "Struct `*sql.DB` di Go dirancang thread-safe dan memelihara connection pool secara otomatis."
           }
         ]
       },
@@ -1713,23 +1596,7 @@ func main() {
         title: "6.2 Pengenalan GORM & Model Definition",
         summary: "Apa itu GORM, gorm.Model base struct (ID, CreatedAt, UpdatedAt, DeletedAt / Soft Delete), dan AutoMigrate.",
         content: `### 💎 GORM: ORM Populer untuk Go
-**GORM** (*Go Object Relational Mapping*) adalah library ORM yang sangat kaya fitur untuk Golang.
-
-#### 🏛️ Definisi Model dengan \`gorm.Model\`:
-\`\`\`go
-type Product struct {
-    gorm.Model           // Menyematkan ID uint, CreatedAt, UpdatedAt, DeletedAt
-    KodeProduk string    \`gorm:"type:varchar(50);uniqueIndex"\`
-    Nama       string    \`gorm:"size:255;not null"\`
-    Harga      float64   \`gorm:"default:0"\`
-}
-\`\`\`
-
-#### 🔄 Auto Migration:
-GORM dapat secara otomatis menyesuaikan skema tabel database dengan struct Go:
-\`\`\`go
-db.AutoMigrate(&Product{})
-\`\`\``,
+**GORM** (*Go Object Relational Mapping*) adalah library ORM yang sangat kaya fitur untuk Golang.`,
         codeSnippet: `package main
 
 import (
@@ -1737,12 +1604,11 @@ import (
     "time"
 )
 
-// Simulasi Model GORM
 type GormModel struct {
     ID        uint
     CreatedAt time.Time
     UpdatedAt time.Time
-    DeletedAt *time.Time // Soft delete pointer
+    DeletedAt *time.Time
 }
 
 type Article struct {
@@ -1786,12 +1652,12 @@ func main() {
             question: "Apa fungsi dari field `DeletedAt` yang ada di dalam `gorm.Model`?",
             options: [
               "Menghapus data permanen seketika",
-              "Mendukung fitur Soft Delete (record tidak langsung dihapus dari disk, melainkan ditandai timestamp hapus)",
+              "Mendukung fitur Soft Delete (record ditandai timestamp hapus tanpa dibuang permanen)",
               "Menghitung umur data dalam hari",
               "Mencegah user mengedit data"
             ],
             correctAnswer: 1,
-            explanation: "Dengan Soft Delete di GORM, saat perintah `Delete` dipanggil, record tidak dihapus dari tabel melainkan kolom `deleted_at` diisi waktu saat itu, sehingga query biasa tidak akan memunculkannya lagi."
+            explanation: "Dengan Soft Delete, saat perintah `Delete` dipanggil, kolom `deleted_at` diisi waktu saat itu."
           }
         ]
       },
@@ -1800,36 +1666,11 @@ func main() {
         title: "6.3 GORM CRUD Operations",
         summary: "Create, First/Find, Where, Updates, dan Delete dengan GORM API.",
         content: `### 📝 Operasi CRUD di GORM
-GORM menyediakan sintaks method-chaining yang elegan:
-
-#### 1. Create (Insert):
-\`\`\`go
-user := User{Nama: "Budi", Email: "budi@mail.com"}
-db.Create(&user) // user.ID otomatis terisi nilai autoincrement
-\`\`\`
-
-#### 2. Read (Query):
-\`\`\`go
-var user User
-db.First(&user, 1) // Cari berdasarkan Primary Key 1
-db.Where("email = ?", "budi@mail.com").First(&user)
-\`\`\`
-
-#### 3. Update:
-\`\`\`go
-db.Model(&user).Update("Nama", "Budi Baru")
-db.Model(&user).Updates(User{Nama: "Budi", Email: "budi2@mail.com"})
-\`\`\`
-
-#### 4. Delete:
-\`\`\`go
-db.Delete(&user, 1)
-\`\`\``,
+GORM menyediakan sintaks method-chaining yang elegan.`,
         codeSnippet: `package main
 
 import "fmt"
 
-// Simulasi hasil query GORM
 func main() {
     fmt.Println("--- Simulasi GORM CRUD Operations ---")
     fmt.Println("1. [CREATE] db.Create(&User{Nama: 'Farhan'}) -> INSERT INTO users ...")
@@ -1852,7 +1693,7 @@ func main() {
         },
         quiz: [
           {
-            question: "Mengapa pada GORM query parameterized `db.Where(\"nama = ?\", inputNama)` lebih disarankan daripada string formatting `fmt.Sprintf`?",
+            question: "Mengapa pada GORM parameterized query `db.Where(\"nama = ?\", inputNama)` lebih disarankan?",
             options: [
               "Agar kode lebih panjang",
               "Mencegah celah keamanan SQL Injection",
@@ -1860,7 +1701,7 @@ func main() {
               "Hanya aturan penulisan style guide"
             ],
             correctAnswer: 1,
-            explanation: "Menggunakan placeholder `?` memastikan driver database melakukan sanitasi input dan prepared statement sehingga aman dari serangan SQL Injection."
+            explanation: "Menggunakan placeholder `?` memastikan sanitasi input dan prepared statement aman dari serangan SQL Injection."
           }
         ]
       },
@@ -1871,25 +1712,11 @@ func main() {
         content: `### 🔗 Relasi Data & Preloading
 GORM memudahkan relasi antar tabel (One-to-One, One-to-Many, Many-to-Many).
 
-\`\`\`go
-type User struct {
-    gorm.Model
-    Nama     string
-    Orders   []Order // Has Many (1 User punya banyak Order)
-}
-
-type Order struct {
-    gorm.Model
-    UserID      uint   // Foreign Key
-    TotalHarga  float64
-}
-\`\`\`
-
 #### 🚀 Eager Loading dengan \`Preload()\`:
 Mencegah masalah performa N+1 Query:
 \`\`\`go
 var users []User
-db.Preload("Orders").Find(&users) // Otomatis JOIN / Fetch tabel Orders
+db.Preload("Orders").Find(&users)
 \`\`\``,
         codeSnippet: `package main
 
@@ -1904,7 +1731,7 @@ type Order struct {
 type Customer struct {
     ID      uint
     Nama    string
-    Pesanan []Order // Relasi One-to-Many
+    Pesanan []Order
 }
 
 func main() {
@@ -1954,12 +1781,723 @@ func main() {
             question: "Apa fungsi method `db.Preload(\"Relasi\")` pada GORM?",
             options: [
               "Menghapus relasi tabel",
-              "Melakukan Eager Loading untuk memuat data dari tabel relasi secara otomatis dan efisien",
+              "Melakukan Eager Loading untuk memuat data dari tabel relasi secara efisien anti N+1 query",
               "Mengunci tabel agar tidak bisa diakses user lain",
               "Mereset foreign key menjadi null"
             ],
             correctAnswer: 1,
-            explanation: "`Preload` melakukan eager loading data berelasi (seperti memuat data Orders milik User) secara otomatis dalam query yang dioptimasi untuk menghindari N+1 query problem."
+            explanation: "`Preload` melakukan eager loading data berelasi secara otomatis dalam query yang dioptimasi."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "module-7",
+    order: 7,
+    title: "7. Konteks, Testing & Arsitektur Backend",
+    subtitle: "context.Context, Table-Driven Unit Testing, Mocking & Clean Architecture",
+    description: "Mempelajari standar produksi industri: membatalkan goroutine dengan context timeout, menulis unit test komprehensif (go test), mocking interface, dan memisahkan layer Clean Architecture.",
+    icon: "Layers",
+    badge: "Production Engineer",
+    color: "#6366F1",
+    xp: 800,
+    lessons: [
+      {
+        id: "7-1",
+        title: "7.1 context.Context & Cancellation Signal",
+        summary: "Mengontrol lifecycle goroutine, timeout API request, dan menghindari Goroutine Leak.",
+        content: `### ⏱️ Package \`context\` di Go
+Package \`context\` adalah komponen paling fundamental di backend Go berstandar produksi untuk membawa sinyal pembatalan (*cancellation*), batas waktu (*deadline/timeout*), dan metadata antar goroutine.
+
+#### 📌 Jenis-Jenis Context:
+1. **\`context.Background()\`**: Root context kosong untuk titik awal request.
+2. **\`context.WithTimeout(parent, duration)\`**: Otomatis mengirim sinyal cancel jika proses melebihi batas waktu (misal: query DB lambat).
+3. **\`context.WithCancel(parent)\`**: Membatalkan proses manual saat user menutup browser / abort request.
+4. **\`context.WithValue(parent, key, val)\`**: Membawa data request-scoped seperti UserID atau TraceID.
+
+> ⚠️ **Mencegah Goroutine Leak:**
+> Selalu pastikan goroutine mendengarkan \`case <-ctx.Done():\` agar tidak terus berjalan di memori selamanya saat client sudah disconnect!`,
+        codeSnippet: `package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+func prosesDataLambat(ctx context.Context) {
+    select {
+    case <-time.After(200 * time.Millisecond):
+        fmt.Println("✅ Data berhasil diproses!")
+    case <-ctx.Done():
+        // Terpanggil jika timeout atau dibatalkan
+        fmt.Printf("❌ Proses dibatalkan oleh context: %v\n", ctx.Err())
+    }
+}
+
+func main() {
+    // Beri batas waktu maksimal 100ms
+    ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+    defer cancel() // Wajib dipanggil untuk membersihkan resource
+
+    fmt.Println("🚀 Menjalankan proses dengan timeout 100ms...")
+    prosesDataLambat(ctx)
+}`,
+        exercise: {
+          instruction: "Buat context dengan timeout 500ms dan panggil fungsi pekerja yang selesai dalam 200ms (sehingga proses sukses).",
+          starterCode: `package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
+    defer cancel()
+
+    select {
+    case <-time.After(200 * time.Millisecond):
+        fmt.Println("✅ Sukses selesai sebelum timeout!")
+    case <-ctx.Done():
+        fmt.Println("Timeout:", ctx.Err())
+    }
+}`,
+          expectedHint: "Set timeout lebih besar daripada durasi time.After untuk mensimulasikan proses berhasil."
+        },
+        quiz: [
+          {
+            question: "Mengapa memanggil `defer cancel()` sangat diwajibkan setelah membuat `context.WithTimeout`?",
+            options: [
+              "Untuk menghapus seluruh variabel di fungsi main",
+              "Untuk menghentikan timer internal context dan membebaskan resource memori secara tepat waktu",
+              "Supaya program otomatis me-restart jika error",
+              "Hanya kebiasaan penulisan kode tanpa efek fungsional"
+            ],
+            correctAnswer: 1,
+            explanation: "Memanggil fungsi `cancel()` memastikan timer internal yang dialokasikan oleh runtime Go dihentikan sehingga mencegah kebocoran memori (resource leak)."
+          }
+        ]
+      },
+      {
+        id: "7-2",
+        title: "7.2 Unit Testing & Table-Driven Tests",
+        summary: "Menulis unit testing idiomatis dengan `testing.T`, Table-Driven Test pattern, dan benchmark `testing.B`.",
+        content: `### 🧪 Unit Testing Standar Industri di Go
+Go memiliki toolchain pengujian bawaan yang sangat cepat melalui perintah \`go test\`.
+
+#### 📋 Pola Table-Driven Tests (Idiomatic Go):
+Alih-alih menulis banyak fungsi test terpisah, industri Go menggunakan struktur array of test cases:
+\`\`\`go
+tests := []struct {
+    name     string
+    input    int
+    expected bool
+}{
+    {"Angka Positif", 5, true},
+    {"Angka Negatif", -2, false},
+}
+\`\`\``,
+        codeSnippet: `package main
+
+import "fmt"
+
+// Fungsi yang akan diuji
+func HitungDiskon(member bool, total float64) float64 {
+    if member && total >= 100000 {
+        return total * 0.85 // 15%
+    }
+    return total
+}
+
+// Simulasi Test Runner
+func main() {
+    // Definisi Table-Driven Test Case
+    tests := []struct {
+        nama     string
+        isMember bool
+        total    float64
+        expected float64
+    }{
+        {"Member Belanja Besar", true, 100000, 85000},
+        {"Non Member Belanja Besar", false, 100000, 100000},
+        {"Member Belanja Kecil", true, 50000, 50000},
+    }
+
+    fmt.Println("=== RUN Unit Test: TestHitungDiskon ===")
+    semuaLulus := true
+
+    for _, tc := range tests {
+        hasil := HitungDiskon(tc.isMember, tc.total)
+        if hasil == tc.expected {
+            fmt.Printf("  --- PASS: %s (Hasil: %.0f)\n", tc.nama, hasil)
+        } else {
+            fmt.Printf("  --- FAIL: %s (Ekspektasi: %.0f, Dapat: %.0f)\n", tc.nama, tc.expected, hasil)
+            semuaLulus = false
+        }
+    }
+
+    if semuaLulus {
+        fmt.Println("PASS: Semua 3 test case berhasil lolos! (Coverage: 100%)")
+    }
+}`,
+        exercise: {
+          instruction: "Tambahkan satu test case baru pada slice table tests untuk menguji kasus belanja 0 rupiah.",
+          starterCode: `package main
+
+import "fmt"
+
+func CekKelulusan(nilai int) string {
+    if nilai >= 75 {
+        return "LULUS"
+    }
+    return "GAGAL"
+}
+
+func main() {
+    testCases := []struct {
+        skor     int
+        expected string
+    }{
+        {80, "LULUS"},
+        {60, "GAGAL"},
+        {75, "LULUS"},
+    }
+
+    for _, tc := range testCases {
+        res := CekKelulusan(tc.skor)
+        fmt.Printf("Skor %d -> Hasil: %s (Match: %t)\n", tc.skor, res, res == tc.expected)
+    }
+}`,
+          expectedHint: "Tambahkan elemen struct baru ke slice testCases."
+        },
+        quiz: [
+          {
+            question: "File unit test di Golang harus diakhiri dengan akhiran apa agar dikenali oleh `go test`?",
+            options: [
+              ".test.go",
+              "_test.go (misal: user_test.go)",
+              "_spec.go",
+              ".unit.go"
+            ],
+            correctAnswer: 1,
+            explanation: "Perintah `go test` secara otomatis mencari file yang memiliki nama berakhiran `_test.go` dan fungsi yang diawali `TestXxx(t *testing.T)`."
+          }
+        ]
+      },
+      {
+        id: "7-3",
+        title: "7.3 Clean Architecture di Golang",
+        summary: "Pemisahan Domain Entity, Repository (Data layer), Service/UseCase (Business logic), dan Handler.",
+        content: `### 🏛️ Clean Architecture (Separation of Concerns)
+Pada aplikasi enterprise, kode dipisahkan menjadi 4 layer independen:
+
+1. **Domain Layer**: Struct entitas murni dan interface kontrak repository.
+2. **Repository Layer**: Berisi query SQL/GORM ke database.
+3. **Service / UseCase Layer**: Berisi semua business logic, validasi aturan bisnis, dan transaksi.
+4. **Handler / Delivery Layer**: Menerima request HTTP JSON, memanggil Service, dan mengembalikan response JSON.
+
+\`\`\`mermaid
+graph TD
+    Handler[HTTP Handler] -->|Panggil Interface| Service[Service / UseCase]
+    Service -->|Panggil Interface| Repository[Repository GORM/SQL]
+    Repository -->|Query| DB[(Database)]
+\`\`\``,
+        codeSnippet: `package main
+
+import "fmt"
+
+// 1. DOMAIN LAYER
+type GopherUser struct {
+    ID   int
+    Nama string
+    Role string
+}
+
+// 2. REPOSITORY LAYER (Data Access Interface & Impl)
+type UserRepository interface {
+    GetByID(id int) (*GopherUser, error)
+}
+
+type UserRepositoryMock struct{}
+
+func (r *UserRepositoryMock) GetByID(id int) (*GopherUser, error) {
+    return &GopherUser{ID: id, Nama: "Rian Hendrawan", Role: "Tech Lead"}, nil
+}
+
+// 3. SERVICE / USECASE LAYER (Business Logic)
+type UserService struct {
+    repo UserRepository
+}
+
+func (s *UserService) DapatkanProfil(id int) (string, error) {
+    user, err := s.repo.GetByID(id)
+    if err != nil {
+        return "", err
+    }
+    return fmt.Sprintf("Gopher: %s (Jabatan: %s)", user.Nama, user.Role), nil
+}
+
+// 4. DELIVERY LAYER (Main / Handler)
+func main() {
+    repo := &UserRepositoryMock{}
+    service := UserService{repo: repo}
+
+    profil, _ := service.DapatkanProfil(101)
+    fmt.Println("🚀 Response Handler Clean Architecture:")
+    fmt.Println(profil)
+}`,
+        exercise: {
+          instruction: "Periksa bagaimana UserService bergantung pada interface `UserRepository`, bukan struct konkret, sehingga mudah di-mock dalam testing.",
+          starterCode: `package main
+
+import "fmt"
+
+type Logger interface {
+    Log(msg string)
+}
+
+type ConsoleLogger struct{}
+
+func (c *ConsoleLogger) Log(msg string) {
+    fmt.Println("[LOG]:", msg)
+}
+
+type OrderService struct {
+    logger Logger
+}
+
+func (o *OrderService) CreateOrder(item string) {
+    o.logger.Log("Pesanan dibuat untuk: " + item)
+}
+
+func main() {
+    svc := OrderService{logger: &ConsoleLogger{}}
+    svc.CreateOrder("MacBook Pro M3")
+}`,
+          expectedHint: "Interface injection memungkinkan decoupling penuh antar komponen."
+        },
+        quiz: [
+          {
+            question: "Mengapa UseCase/Service layer di Clean Architecture harus bergantung pada Interface Repository dan bukan langsung pada instance DB GORM?",
+            options: [
+              "Agar kode terlihat rumit",
+              "Supaya business logic independen dari jenis database dan dapat diuji (Unit Test) dengan mudah menggunakan Mock",
+              "Karena Go melarang pemanggilan database langsung di struct",
+              "Hanya untuk mempercepat waktu kompilasi"
+            ],
+            correctAnswer: 1,
+            explanation: "Dengan teknik Dependency Inversion (Interface Injection), business logic tidak terikat pada database tertentu dan unit testing dapat dilakukan tanpa perlu menyalakan database asli."
+          }
+        ]
+      },
+      {
+        id: "7-4",
+        title: "7.4 Validasi Request & Standard Response Envelope",
+        summary: "Mendesain standar response JSON API enterprise dan sanitasi input validasi.",
+        content: `### 📋 Standardized JSON Response Format
+Di industri backend, semua response API mengikuti format standar (*Envelope Pattern*):
+
+\`\`\`json
+{
+  "success": true,
+  "message": "Data berhasil dimuat",
+  "data": { ... },
+  "errors": null,
+  "meta": { "page": 1, "total": 100 }
+}
+\`\`\``,
+        codeSnippet: `package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type APIResponse struct {
+    Success bool        \`json:"success"\`
+    Message string      \`json:"message"\`
+    Data    interface{} \`json:"data,omitempty"\`
+    Errors  []string    \`json:"errors,omitempty"\`
+}
+
+func main() {
+    // Contoh Response Sukses
+    resSukses := APIResponse{
+        Success: true,
+        Message: "Registrasi Gopher berhasil",
+        Data:    map[string]string{"user_id": "GPH-992", "status": "active"},
+    }
+
+    // Contoh Response Error
+    resError := APIResponse{
+        Success: false,
+        Message: "Validasi data gagal",
+        Errors:  []string{"Email tidak valid", "Password minimal 8 karakter"},
+    }
+
+    jsonSukses, _ := json.MarshalIndent(resSukses, "", "  ")
+    jsonError, _ := json.MarshalIndent(resError, "", "  ")
+
+    fmt.Println("--- Standar Response Sukses ---")
+    fmt.Println(string(jsonSukses))
+    fmt.Println("\n--- Standar Response Gagal ---")
+    fmt.Println(string(jsonError))
+}`,
+        exercise: {
+          instruction: "Buat response struct standar untuk endpoint pembayaran.",
+          starterCode: `package main
+
+import (
+    "encoding/json"
+    "fmt"
+)
+
+type PaymentResponse struct {
+    Success   bool    \`json:"success"\`
+    InvoiceID string  \`json:"invoice_id"\`
+    Amount    float64 \`json:"amount"\`
+}
+
+func main() {
+    p := PaymentResponse{Success: true, InvoiceID: "INV-2026-001", Amount: 250000}
+    b, _ := json.Marshal(p)
+    fmt.Println(string(b))
+}`,
+          expectedHint: "Marshal struct ke string JSON."
+        },
+        quiz: [
+          {
+            question: "Apa manfaat utama menggunakan format Response Envelope standar `{success, message, data, errors}`?",
+            options: [
+              "Membuat frontend lebih mudah menangani state sukses maupun error secara seragam dan konsisten",
+              "Mengurangi ukuran binary Go",
+              "Mengaktifkan fitur HTTPS otomatis",
+              "Menghindari penggunaan status code HTTP"
+            ],
+            correctAnswer: 0,
+            explanation: "Format envelope yang seragam mempermudah tim frontend (React/Mobile) dalam membuat interceptor dan error handler terpusat."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "module-8",
+    order: 8,
+    title: "8. Microservices, Caching & Deployment",
+    subtitle: "gRPC Protobuf, Redis Caching, Event Broker & Docker",
+    description: "Tingkat arsitek: komunikasi antar service ultra-cepat dengan gRPC, Redis caching (Cache-Aside), pengolahan pesan asynchronous, dan multi-stage Docker build.",
+    icon: "Boxes",
+    badge: "Cloud Architect",
+    color: "#059669",
+    xp: 1000,
+    lessons: [
+      {
+        id: "8-1",
+        title: "8.1 gRPC & Protocol Buffers (Protobuf)",
+        summary: "Komunikasi mikroservis binary berkecepatan tinggi via HTTP/2 vs REST JSON.",
+        content: `### ⚡ gRPC vs REST API
+**gRPC** (*Google Remote Procedure Call*) menggunakan format serialisasi biner **Protocol Buffers** di atas protokol **HTTP/2**:
+
+| Fitur | REST API | gRPC |
+|---|---|---|
+| Format Data | Teks JSON (Lebih besar) | Biner Protocol Buffer (7-10x lebih hemat & cepat) |
+| Protokol | HTTP/1.1 atau HTTP/2 | HTTP/2 (Multiplexing, Streaming 2 arah) |
+| Kontrak API | OpenAPI / Swagger (Opsional) | File \`.proto\` ketat (*Strict Type Contract*) |
+| Penggunaan Utama | Public Client ke Backend | Antar Microservice Internal |`,
+        codeSnippet: `package main
+
+import (
+    "fmt"
+)
+
+// Simulasi Kontrak Proto Message
+type UserRequestProto struct {
+    UserID int64 \`protobuf:"varint,1,opt,name=user_id"\`
+}
+
+type UserResponseProto struct {
+    UserID int64  \`protobuf:"varint,1,opt,name=user_id"\`
+    Name   string \`protobuf:"bytes,2,opt,name=name"\`
+    Email  string \`protobuf:"bytes,3,opt,name=email"\`
+}
+
+func main() {
+    req := UserRequestProto{UserID: 88401}
+    fmt.Printf("📡 [gRPC Client] Mengirim RPC Request: GetUserByID(%d)\n", req.UserID)
+
+    // Simulasi respons gRPC
+    res := UserResponseProto{
+        UserID: req.UserID,
+        Name:   "Ahmad Gopher",
+        Email:  "ahmad@microservice.internal",
+    }
+
+    fmt.Println("⚡ [gRPC Server via HTTP/2 Multiplexing] Respons diterima:")
+    fmt.Printf("   User: %s | Email: %s (Latensi: 1.2ms)\n", res.Name, res.Email)
+}`,
+        exercise: {
+          instruction: "Lengkapi simulasi payload gRPC response untuk service produk.",
+          starterCode: `package main
+
+import "fmt"
+
+type ProductProto struct {
+    ID    int64
+    Title string
+    Price float64
+}
+
+func main() {
+    p := ProductProto{ID: 10, Title: "Server Bare Metal", Price: 15000000}
+    fmt.Printf("gRPC Payload: #%d %s ($%.0f)\n", p.ID, p.Title, p.Price)
+}`,
+          expectedHint: "Definisikan field struct ProductProto."
+        },
+        quiz: [
+          {
+            question: "Mengapa gRPC jauh lebih cepat dan hemat bandwidth dibanding REST JSON untuk komunikasi internal antar microservices?",
+            options: [
+              "Karena gRPC tidak menggunakan koneksi jaringan",
+              "Karena gRPC mentransmisikan data dalam format biner yang dipadatkan (Protobuf) dan memanfaatkan multiplexing HTTP/2",
+              "Karena gRPC ditulis dalam bahasa Assembly",
+              "Karena gRPC hanya berjalan di sistem operasi Linux"
+            ],
+            correctAnswer: 1,
+            explanation: "Format serialisasi biner Protocol Buffers jauh lebih kecil daripada string JSON, serta multiplexing HTTP/2 memungkinkan banyak panggilan RPC dalam 1 koneksi TCP."
+          }
+        ]
+      },
+      {
+        id: "8-2",
+        title: "8.2 Redis Caching & In-Memory Storage",
+        summary: "Pola Cache-Aside, Time-To-Live (TTL), dan mempercepat response query database.",
+        content: `### 🚀 Redis Caching: Akses Data Berkecepatan Memori
+Menyimpan hasil query yang sering dibaca di RAM (Redis) untuk mengurangi beban database PostgreSQL/MySQL:
+
+#### 🔄 Pola Cache-Aside Pattern:
+1. Client meminta data produk ID #5.
+2. Server mengecek ke Redis (*Cache Hit?*).
+3. Jika ada $\\rightarrow$ Langsung kembalikan (*0.5ms*).
+4. Jika tidak ada (*Cache Miss*) $\\rightarrow$ Query ke SQL DB, simpan ke Redis dengan TTL 10 menit, lalu kembalikan ke client.`,
+        codeSnippet: `package main
+
+import (
+    "fmt"
+    "time"
+)
+
+// Simulasi Redis In-Memory Store
+var redisCache = make(map[string]string)
+
+func AmbilDataProduk(id string) string {
+    // 1. Cek Cache Redis
+    if val, hit := redisCache[id]; hit {
+        fmt.Printf("⚡ [CACHE HIT] Data '%s' diambil dari Redis RAM (0.3ms)\n", id)
+        return val
+    }
+
+    // 2. Cache Miss: Ambil dari DB Lambat
+    fmt.Printf("🐢 [CACHE MISS] Mengambil '%s' dari SQL Database (45ms)...\n", id)
+    time.Sleep(50 * time.Millisecond) // Simulasi latency DB
+    data := fmt.Sprintf("Detail Laptop Gaming ID:%s", id)
+
+    // 3. Simpan ke Redis Cache
+    redisCache[id] = data
+    fmt.Printf("💾 Data '%s' berhasil disimpan ke Redis (TTL: 10 menit)\n", id)
+    return data
+}
+
+func main() {
+    // Pemanggilan pertama (Cache Miss)
+    AmbilDataProduk("PROD-101")
+
+    // Pemanggilan kedua (Cache Hit instan!)
+    fmt.Println()
+    AmbilDataProduk("PROD-101")
+}`,
+        exercise: {
+          instruction: "Jalankan simulasi cache-aside untuk melihat perbedaan antara Cache Miss dan Cache Hit.",
+          starterCode: `package main
+
+import "fmt"
+
+func main() {
+    cache := map[string]int{"user_count": 4500}
+    val, exists := cache["user_count"]
+    fmt.Printf("Cache Status: %t | Nilai: %d\n", exists, val)
+}`,
+          expectedHint: "Gunakan map lookup untuk simulasi cache."
+        },
+        quiz: [
+          {
+            question: "Apa tujuan dari memberikan TTL (Time-To-Live) pada data yang disimpan di Redis Cache?",
+            options: [
+              "Menghapus seluruh database secara permanen",
+              "Mencegah memori RAM penuh dan memastikan data yang basi (stale data) otomatis kedaluwarsa",
+              "Mengubah tipe data integer menjadi string",
+              "Mengunci database SQL"
+            ],
+            correctAnswer: 1,
+            explanation: "TTL memastikan data di cache memiliki masa berlaku tertentu sehingga RAM tidak over-capacity dan data otomatis ter-refresh secara berkala."
+          }
+        ]
+      },
+      {
+        id: "8-3",
+        title: "8.3 Event-Driven Architecture & Message Broker",
+        summary: "Mengirim tugas berat ke background queue dengan Kafka / RabbitMQ secara asinkron.",
+        content: `### 📨 Message Broker di Backend Go
+Untuk operasi yang memakan waktu lama (seperti kirim email, generate PDF, pemrosesan video), backend web tidak boleh membuat user menunggu.
+
+\`\`\`mermaid
+graph LR
+    API[Go API Server] -->|Publish Event| Kafka[(Message Broker Kafka/RabbitMQ)]
+    Kafka -->|Consume Task| Worker1[Go Background Worker 1]
+    Kafka -->|Consume Task| Worker2[Go Background Worker 2]
+\`\`\``,
+        codeSnippet: `package main
+
+import (
+    "fmt"
+    "time"
+)
+
+type EmailEvent struct {
+    ToEmail string
+    Subject string
+}
+
+func BackgroundEmailWorker(queue chan EmailEvent) {
+    for event := range queue {
+        fmt.Printf("📧 [Worker Asinkron] Mengirim email '%s' ke %s...\n", event.Subject, event.ToEmail)
+        time.Sleep(50 * time.Millisecond)
+        fmt.Printf("✅ [Worker] Email ke %s sukses terkirim!\n", event.ToEmail)
+    }
+}
+
+func main() {
+    eventQueue := make(chan EmailEvent, 10)
+
+    // Nyalakan background worker
+    go BackgroundEmailWorker(eventQueue)
+
+    // API Handler mem-publish event tanpa memblokir response ke user
+    fmt.Println("🌐 [HTTP Handler] Menerima pendaftaran user...")
+    eventQueue <- EmailEvent{ToEmail: "alex@mail.com", Subject: "Aktivasi Akun"}
+    fmt.Println("🚀 [HTTP Handler] Response 201 Created langsung dikirim ke browser (Cepat!)")
+
+    time.Sleep(100 * time.Millisecond)
+}`,
+        exercise: {
+          instruction: "Kirim 2 event tugas ke channel background worker dan amati eksekusi asinkronnya.",
+          starterCode: `package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+    taskChan := make(chan string, 5)
+
+    go func() {
+        for t := range taskChan {
+            fmt.Println("Processing:", t)
+        }
+    }()
+
+    taskChan <- "Generate Invoice #001"
+    taskChan <- "Send WhatsApp Notification"
+
+    time.Sleep(50 * time.Millisecond)
+}`,
+          expectedHint: "Gunakan channel buffered untuk menampung event antrian."
+        },
+        quiz: [
+          {
+            question: "Apa keuntungan utama memproses tugas berat (seperti kirim email atau proses pembayaran) via Message Broker asinkron?",
+            options: [
+              "Response HTTP ke user tetap instan (milidetik) tanpa tertahan oleh proses berat di background",
+              "Biaya server otomatis menjadi gratis",
+              "Tidak memerlukan database",
+              "Mengurangi baris kode hingga 90%"
+            ],
+            correctAnswer: 0,
+            explanation: "Arsitektur asinkron membuat API web responsif dan handal karena tugas berat diproses di latar belakang oleh worker terpisah."
+          }
+        ]
+      },
+      {
+        id: "8-4",
+        title: "8.4 Dockerization & Production Build Optimization",
+        summary: "Multi-stage Dockerfile, flag kompilasi CGO_ENABLED=0, dan binary Go super ramping (~15MB).",
+        content: `### 🐳 Multi-Stage Dockerfile untuk Go
+Salah satu keunggulan terbesar Golang di dunia cloud native adalah kemampuan menghasilkan biner mesin mandiri (*Single Static Binary*) tanpa perlu runtime terinstall!
+
+#### 📦 Contoh Multi-Stage Dockerfile:
+\`\`\`dockerfile
+# Stage 1: Build binary
+FROM golang:1.22-alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/server
+
+# Stage 2: Minimal Runtime (Ukuran image hanya ~15MB!)
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/server .
+EXPOSE 8080
+CMD ["./server"]
+\`\`\``,
+        codeSnippet: `package main
+
+import (
+    "fmt"
+    "runtime"
+)
+
+func main() {
+    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")
+    fmt.Printf("Sistem Operasi Target : %s\n", runtime.GOOS)
+    fmt.Printf("Arsitektur CPU         : %s\n", runtime.GOARCH)
+    fmt.Printf("Versi Compiler Go     : %s\n", runtime.Version())
+    fmt.Println("\nFlag Optimasi Biner:")
+    fmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")
+    fmt.Println("2. -ldflags=\"-s -w\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")
+    fmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
+}`,
+        exercise: {
+          instruction: "Pelajari bagaimana runtime.GOOS dan runtime.GOARCH mendeteksi target kompilasi lintas platform (*Cross Compilation*).",
+          starterCode: `package main
+
+import (
+    "fmt"
+    "runtime"
+)
+
+func main() {
+    fmt.Println("Target OS:", runtime.GOOS)
+    fmt.Println("Target Arch:", runtime.GOARCH)
+}`,
+          expectedHint: "Cetak runtime.GOOS dan runtime.GOARCH."
+        },
+        quiz: [
+          {
+            question: "Apa fungsi dari flag `-ldflags=\"-s -w\"` saat menjalankan perintah `go build`?",
+            options: [
+              "Mencegah kompilasi berjalan",
+              "Menghapus tabel simbol debug (symbol table & DWARF) sehingga ukuran berkas biner menjadi jauh lebih kecil",
+              "Mengubah bahasa Go menjadi Python",
+              "Mengaktifkan mode debug runtime"
+            ],
+            correctAnswer: 1,
+            explanation: "Flag `-s` (strip symbol table) dan `-w` (strip DWARF debugging info) memangkas ukuran binary Go secara signifikan untuk deployment produksi."
           }
         ]
       }
@@ -2008,6 +2546,14 @@ export const CHEATSHEET_CATEGORIES = [
       { label: "HTTP Server", code: "http.HandleFunc(\"GET /ping\", func(w http.ResponseWriter, r *http.Request) {\n    fmt.Fprintln(w, \"pong\")\n})\nhttp.ListenAndServe(\":8080\", nil)" },
       { label: "JSON Encode", code: "w.Header().Set(\"Content-Type\", \"application/json\")\njson.NewEncoder(w).Encode(data)" },
       { label: "GORM CRUD", code: "db.Create(&user)\ndb.First(&user, id)\ndb.Model(&user).Update(\"Nama\", \"Baru\")\ndb.Delete(&user, id)" }
+    ]
+  },
+  {
+    title: "6. Production Context, Testing & Docker",
+    snippets: [
+      { label: "Context with Timeout", code: "ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)\ndefer cancel()\n<-ctx.Done()" },
+      { label: "Table-Driven Test", code: "func TestAdd(t *testing.T) {\n    tests := []struct{ a, b, want int }{\n        {1, 2, 3},\n        {2, 3, 5},\n    }\n    for _, tt := range tests {\n        if got := Add(tt.a, tt.b); got != tt.want {\n            t.Errorf(\"Add() = %v, want %v\", got, tt.want)\n        }\n    }\n}" },
+      { label: "Docker Build Command", code: "CGO_ENABLED=0 GOOS=linux go build -ldflags=\"-s -w\" -o server ./cmd/server" }
     ]
   }
 ];

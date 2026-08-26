@@ -20,7 +20,7 @@ export default function Navbar({
   onResetProgress,
   theme,
   onToggleTheme,
-  totalLessonsCount = 24
+  totalLessonsCount = 32
 }) {
   const completedCount = progress.completedLessons.length;
   const progressPercent = Math.min(100, Math.round((completedCount / totalLessonsCount) * 100));
