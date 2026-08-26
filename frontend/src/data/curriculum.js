@@ -34,8 +34,7 @@ import "fmt"
 
 func main() {
     // Mencetak teks ucapan selamat datang
-    fmt.Println("Halo, Calon Master Golang! 🚀")
-    fmt.Println("Mari kita mulai perjalanan dari nol hingga mahir.")
+    fmt.Println("Halo, Calon Master Golang! 🚀")\nfmt.Println("Mari kita mulai perjalanan dari nol hingga mahir.")
 }`,
         exercise: {
           instruction: "Ubah teks di dalam `fmt.Println` agar mencetak namamu dan target belajar Go!",
@@ -103,9 +102,7 @@ func main() {
     // Konstanta (nilai tidak dapat diubah)
     const Creator = "Google"
 
-    fmt.Printf("Belajar: %s v%.2f\n", bahasa, versi)
-    fmt.Printf("Apakah cepat? %t\n", isFast)
-    fmt.Printf("Dibuat oleh: %s\n", Creator)
+    fmt.Printf("Belajar: %s v%.2f\n", bahasa, versi)\nfmt.Printf("Apakah cepat? %t\n", isFast)\n    fmt.Printf("Dibuat oleh: %s\n", Creator)
 }`,
         exercise: {
           instruction: "Deklarasikan variabel `namaLengkap` (string), `pengalamanTahun` (int), dan `siapBelajar` (bool), lalu cetak dengan `fmt.Printf`.",
@@ -172,10 +169,7 @@ func main() {
     // Switch Case
     hari := "Senin"
     switch hari {
-    case "Sabtu", "Minggu":
-        fmt.Println("Waktunya liburan & ngoding santai! 🏖️")
-    case "Senin":
-        fmt.Println("Semangat memulai pekan produktif! 💻")
+    case "Sabtu", "Minggu":\nfmt.Println("Waktunya liburan & ngoding santai! 🏖️")\ncase "Senin":\nfmt.Println("Semangat memulai pekan produktif! 💻")
     default:
         fmt.Println("Hari kerja biasa.")
     }
@@ -320,13 +314,10 @@ import "fmt"
 
 func main() {
     // Inisialisasi Slice
-    bahasa := []string{"Go", "Rust", "TypeScript"}
-    fmt.Println("Awal:", bahasa)
+    bahasa := []string{"Go", "Rust", "TypeScript"}\nfmt.Println("Awal:", bahasa)
 
     // Menambah elemen dengan append
-    bahasa = append(bahasa, "Python", "Kotlin")
-    fmt.Println("Setelah append:", bahasa)
-    fmt.Printf("Panjang (len): %d, Kapasitas (cap): %d\n", len(bahasa), cap(bahasa))
+    bahasa = append(bahasa, "Python", "Kotlin")\nfmt.Println("Setelah append:", bahasa)\nfmt.Printf("Panjang (len): %d, Kapasitas (cap): %d\n", len(bahasa), cap(bahasa))
 
     // Slicing operator [1:3] (mengambil indeks 1 sampai 2)
     subBahasa := bahasa[1:4]
@@ -341,8 +332,7 @@ import "fmt"
 func main() {
     angka := []int{10, 20, 30}
     angka = append(angka, 40, 50)
-    fmt.Println("Daftar angka:", angka)
-    fmt.Println("Jumlah elemen:", len(angka))
+    fmt.Println("Daftar angka:", angka)\nfmt.Println("Jumlah elemen:", len(angka))
 }`,
           expectedHint: "Gunakan len(angka) untuk menghitung panjang slice."
         },
@@ -451,9 +441,7 @@ import "fmt"
 
 func main() {
     hargaBarang := map[string]int{
-        "Laptop":   12000000,
-        "Keyboard": 750000,
-        "Mouse":    300000,
+        "Laptop":   12000000,\n"Keyboard": 750000,\n"Mouse":    300000,
     }
 
     hargaBarang["Monitor"] = 2500000
@@ -478,9 +466,7 @@ import "fmt"
 
 func main() {
     nilaiSiswa := map[string]int{
-        "Andi": 85,
-        "Budi": 70,
-        "Citra": 92,
+        "Andi": 85,\n"Budi": 70,\n"Citra": 92,
     }
 
     fmt.Println("Siswa Berprestasi (Nilai >= 80):")
@@ -629,8 +615,7 @@ func totalSkor(skor ...int) int {
 func main() {
     total := 150000.0
     bayar, dapetDiskon := hitungDiskon(total)
-    fmt.Printf("Belanja: Rp %.0f | Bayar: Rp %.0f | Dapat Diskon: %t\n", total, bayar, dapetDiskon)
-    fmt.Printf("Total skor game: %d\n", totalSkor(10, 25, 40, 15))
+    fmt.Printf("Belanja: Rp %.0f | Bayar: Rp %.0f | Dapat Diskon: %t\n", total, bayar, dapetDiskon)\n    fmt.Printf("Total skor game: %d\n", totalSkor(10, 25, 40, 15))
 }`,
         exercise: {
           instruction: "Buat fungsi variadic `rataRata(nilai ...float64) float64` yang menghitung nilai rata-rata dari argumen yang diberikan.",
@@ -758,10 +743,7 @@ func ubahNama(p *string, namaBaru string) {
 }
 
 func main() {
-    nama := "Joko"
-    fmt.Println("Sebelum:", nama)
-    ubahNama(&nama, "Joko Master Go")
-    fmt.Println("Sesudah:", nama)
+    nama := "Joko"\nfmt.Println("Sebelum:", nama)\nubahNama(&nama, "Joko Master Go")\nfmt.Println("Sesudah:", nama)
 }`,
           expectedHint: "Kirim &nama ke fungsi lalu gunakan *p untuk assign nilai baru."
         },
@@ -874,8 +856,7 @@ Di Go, sebuah struct **TIDAK PERLU** menulis \`implements InterfaceName\`. Cukup
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "math"
+    "fmt"\n"math"
 )
 
 type BangunDatar interface {
@@ -965,8 +946,7 @@ if err != nil {
         codeSnippet: `package main
 
 import (
-    "errors"
-    "fmt"
+    "errors"\n"fmt"
 )
 
 func validasiUmur(umur int) (string, error) {
@@ -998,8 +978,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "errors"
-    "fmt"
+    "errors"\n"fmt"
 )
 
 func hitungDiskon(harga float64) (float64, error) {
@@ -1056,8 +1035,7 @@ Goroutine adalah fungsi yang dieksekusi secara asinkron/konkuren bersamaan denga
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 func cetakPesan(pesan string, delay time.Duration) {
@@ -1070,8 +1048,7 @@ func cetakPesan(pesan string, delay time.Duration) {
 func main() {
     fmt.Println("🚦 Memulai Goroutines...")
 
-    go cetakPesan("Worker-A", 100*time.Millisecond)
-    go cetakPesan("Worker-B", 150*time.Millisecond)
+    go cetakPesan("Worker-A", 100*time.Millisecond)\ngo cetakPesan("Worker-B", 150*time.Millisecond)
 
     time.Sleep(500 * time.Millisecond)
     fmt.Println("🏁 Semua pekerjaan selesai!")
@@ -1081,8 +1058,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 func unduhFile(nama string) {
@@ -1092,8 +1068,7 @@ func unduhFile(nama string) {
 }
 
 func main() {
-    go unduhFile("gambar.png")
-    go unduhFile("dokumen.pdf")
+    go unduhFile("gambar.png")\ngo unduhFile("dokumen.pdf")
 
     time.Sleep(200 * time.Millisecond)
 }`,
@@ -1176,8 +1151,7 @@ func main() {
     hasil1 := <-ch
     hasil2 := <-ch
 
-    fmt.Printf("Hasil 1: %d\n", hasil1)
-    fmt.Printf("Hasil 2: %d\n", hasil2)
+    fmt.Printf("Hasil 1: %d\n", hasil1)\nfmt.Printf("Hasil 2: %d\n", hasil2)
 }`,
         exercise: {
           instruction: "Buat buffered channel `msgChan := make(chan string, 2)`, kirim 2 pesan ke dalam channel, lalu cetak keduanya.",
@@ -1188,8 +1162,7 @@ import "fmt"
 func main() {
     msgChan := make(chan string, 2)
 
-    msgChan <- "Pesan 1: Golang itu Keren!"
-    msgChan <- "Pesan 2: Channel aman & cepat!"
+    msgChan <- "Pesan 1: Golang itu Keren!"\nmsgChan <- "Pesan 2: Channel aman & cepat!"
 
     fmt.Println(<-msgChan)
     fmt.Println(<-msgChan)
@@ -1219,8 +1192,7 @@ func main() {
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 func serverA(out chan string) {
@@ -1254,8 +1226,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 func main() {
@@ -1299,8 +1270,7 @@ func main() {
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "sync"
+    "fmt"\n"sync"
 )
 
 type CounterAman struct {
@@ -1336,8 +1306,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"
-    "sync"
+    "fmt"\n"sync"
 )
 
 func main() {
@@ -1392,8 +1361,7 @@ Tanpa perlu framework eksternal, Go sudah memiliki library web server bawaan tin
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "net/http"
+    "fmt"\n"net/http"
 )
 
 func haloHandler(w http.ResponseWriter, r *http.Request) {
@@ -1403,16 +1371,14 @@ func haloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/api/halo", haloHandler)
-    fmt.Println("🚀 Server berjalan di http://localhost:8080")
+    http.HandleFunc("/api/halo", haloHandler)\nfmt.Println("🚀 Server berjalan di http://localhost:8080")
 }`,
         exercise: {
           instruction: "Buat handler `/api/status` yang mengembalikan status code 200 dan pesan text 'Server Sehat!'.",
           starterCode: `package main
 
 import (
-    "fmt"
-    "net/http"
+    "fmt"\n"net/http"
 )
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
@@ -1421,8 +1387,7 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/api/status", statusHandler)
-    fmt.Println("Route terdaftar dengan sukses.")
+    http.HandleFunc("/api/status", statusHandler)\nfmt.Println("Route terdaftar dengan sukses.")
 }`,
           expectedHint: "Gunakan fmt.Fprintln(w, ...) untuk menulis data ke ResponseWriter."
         },
@@ -1449,19 +1414,16 @@ Mulai Go versi 1.22, \`http.ServeMux\` bawaan mendukung method routing (\`GET /u
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "net/http"
+    "fmt"\n"net/http"
 )
 
 func main() {
     mux := http.NewServeMux()
 
-    mux.HandleFunc("GET /api/gophers", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintln(w, "[GET] Menampilkan semua Gopher")
+    mux.HandleFunc("GET /api/gophers", func(w http.ResponseWriter, r *http.Request) {\nfmt.Fprintln(w, "[GET] Menampilkan semua Gopher")
     })
 
-    mux.HandleFunc("POST /api/gophers", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintln(w, "[POST] Membuat data Gopher baru")
+    mux.HandleFunc("POST /api/gophers", func(w http.ResponseWriter, r *http.Request) {\nfmt.Fprintln(w, "[POST] Membuat data Gopher baru")
     })
 
     fmt.Println("Router ServeMux Go 1.22+ siap digunakan!")
@@ -1471,14 +1433,12 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"
-    "net/http"
+    "fmt"\n"net/http"
 )
 
 func main() {
     mux := http.NewServeMux()
-    mux.HandleFunc("DELETE /api/items", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintln(w, "Item berhasil dihapus")
+    mux.HandleFunc("DELETE /api/items", func(w http.ResponseWriter, r *http.Request) {\nfmt.Fprintln(w, "Item berhasil dihapus")
     })
     fmt.Println("Route DELETE berhasil didaftarkan.")
 }`,
@@ -1507,9 +1467,7 @@ Middleware adalah fungsi yang mencegat (*intercept*) request sebelum mencapai ha
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "net/http"
-    "time"
+    "fmt"\n"net/http"\n"time"
 )
 
 func TimerMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -1526,16 +1484,14 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/api/dashboard", TimerMiddleware(mainHandler))
-    fmt.Println("Middleware terpasang dengan sukses.")
+    http.HandleFunc("/api/dashboard", TimerMiddleware(mainHandler))\nfmt.Println("Middleware terpasang dengan sukses.")
 }`,
         exercise: {
           instruction: "Buat middleware yang menambahkan Header `X-Powered-By: GoLearn` ke response.",
           starterCode: `package main
 
 import (
-    "fmt"
-    "net/http"
+    "fmt"\n"net/http"
 )
 
 func CustomHeaderMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -1550,8 +1506,7 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/hello", CustomHeaderMiddleware(hello))
-    fmt.Println("Middleware Header aktif.")
+    http.HandleFunc("/hello", CustomHeaderMiddleware(hello))\nfmt.Println("Middleware Header aktif.")
 }`,
           expectedHint: "Gunakan w.Header().Set(\"Key\", \"Value\")."
         },
@@ -1578,9 +1533,7 @@ Go memiliki package bawaan \`encoding/json\` yang sangat kuat.`,
         codeSnippet: `package main
 
 import (
-    "encoding/json"
-    "fmt"
-    "net/http"
+    "encoding/json"\n"fmt"\n"net/http"
 )
 
 type Response struct {
@@ -1610,8 +1563,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "encoding/json"
-    "fmt"
+    "encoding/json"\n"fmt"
 )
 
 type UserResponse struct {
@@ -1678,15 +1630,12 @@ type DBConfig struct {
 
 func main() {
     cfg := DBConfig{
-        Driver:       "sqlite3 / postgres",
-        Host:         "localhost:5432",
+        Driver:       "sqlite3 / postgres",\nHost:         "localhost:5432",
         MaxOpenConns: 50,
         MaxIdleConns: 10,
     }
 
-    fmt.Printf("⚡ Inisialisasi Database Pool: %s\n", cfg.Driver)
-    fmt.Printf("📊 Pool: %d Max Open | %d Max Idle\n", cfg.MaxOpenConns, cfg.MaxIdleConns)
-    fmt.Println("✅ Koneksi database siap digunakan secara aman dan konkuren!")
+    fmt.Printf("⚡ Inisialisasi Database Pool: %s\n", cfg.Driver)\nfmt.Printf("📊 Pool: %d Max Open | %d Max Idle\n", cfg.MaxOpenConns, cfg.MaxIdleConns)\n    fmt.Println("✅ Koneksi database siap digunakan secara aman dan konkuren!")
 }`,
         exercise: {
           instruction: "Lengkapi konfigurasi database struct dengan parameter timeout koneksi.",
@@ -1733,8 +1682,7 @@ func main() {
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 type GormModel struct {
@@ -1754,8 +1702,7 @@ type Article struct {
 func main() {
     art := Article{
         GormModel: GormModel{ID: 1, CreatedAt: time.Now()},
-        Judul:     "Panduan Lengkap Belajar Golang 2026",
-        Slug:      "panduan-lengkap-belajar-golang-2026",
+        Judul:     "Panduan Lengkap Belajar Golang 2026",\nSlug:      "panduan-lengkap-belajar-golang-2026",
         Views:     1500,
     }
 
@@ -1775,8 +1722,7 @@ type Customer struct {
 }
 
 func main() {
-    c := Customer{ID: 1, Nama: "Dewi", Email: "dewi@example.com", Saldo: 500000}
-    fmt.Printf("Customer #%d: %s (%s) - Saldo: Rp %.0f\n", c.ID, c.Nama, c.Email, c.Saldo)
+    c := Customer{ID: 1, Nama: "Dewi", Email: "dewi@example.com", Saldo: 500000}\nfmt.Printf("Customer #%d: %s (%s) - Saldo: Rp %.0f\n", c.ID, c.Nama, c.Email, c.Saldo)
 }`,
           expectedHint: "Definisikan field struct Customer."
         },
@@ -1805,12 +1751,8 @@ GORM menyediakan sintaks method-chaining yang elegan.`,
 import "fmt"
 
 func main() {
-    fmt.Println("--- Simulasi GORM CRUD Operations ---")
-    fmt.Println("1. [CREATE] db.Create(&User{Nama: 'Farhan'}) -> INSERT INTO users ...")
-    fmt.Println("2. [READ]   db.Where('active = ?', true).Find(&users) -> SELECT * FROM users WHERE active = true")
-    fmt.Println("3. [UPDATE] db.Model(&user).Update('Role', 'Admin') -> UPDATE users SET role = 'Admin' ...")
-    fmt.Println("4. [DELETE] db.Delete(&user, 10) -> UPDATE users SET deleted_at = NOW() WHERE id = 10")
-    fmt.Println("\n✅ Semua operasi CRUD GORM tervalidasi!")
+    fmt.Println("--- Simulasi GORM CRUD Operations ---")\nfmt.Println("1. [CREATE] db.Create(&User{Nama: 'Farhan'}) -> INSERT INTO users ...")\nfmt.Println("2. [READ]   db.Where('active = ?', true).Find(&users) -> SELECT * FROM users WHERE active = true")\nfmt.Println("3. [UPDATE] db.Model(&user).Update('Role', 'Admin') -> UPDATE users SET role = 'Admin' ...")\nfmt.Println("4. [DELETE] db.Delete(&user, 10) -> UPDATE users SET deleted_at = NOW() WHERE id = 10")\nfmt.Println("
+✅ Semua operasi CRUD GORM tervalidasi!")
 }`,
         exercise: {
           instruction: "Tuliskan simulasi query GORM untuk mencari produk dengan harga di bawah 50.000.",
@@ -1819,8 +1761,7 @@ func main() {
 import "fmt"
 
 func main() {
-    queryPattern := "db.Where(\"harga < ?\", 50000).Find(&produkMurah)"
-    fmt.Println("Query GORM:", queryPattern)
+    queryPattern := "db.Where(\"harga < ?\", 50000).Find(&produkMurah)"\nfmt.Println("Query GORM:", queryPattern)
 }`,
           expectedHint: "db.Where(\"harga < ?\", 50000).Find(&produkMurah)"
         },
@@ -1872,8 +1813,7 @@ func main() {
         ID:   1,
         Nama: "Rina Kusuma",
         Pesanan: []Order{
-            {ID: 101, Barang: "Mechanical Keyboard", Harga: 850000},
-            {ID: 102, Barang: "Desk Mat", Harga: 150000},
+            {ID: 101, Barang: "Mechanical Keyboard", Harga: 850000},\n{ID: 102, Barang: "Desk Mat", Harga: 150000},
         },
     }
 
@@ -1901,8 +1841,7 @@ func main() {
     kat := Kategori{
         Nama: "Pemrograman Golang",
         Daftar: []Artikel{
-            {Judul: "Dasar Concurrency"},
-            {Judul: "Mastering GORM"},
+            {Judul: "Dasar Concurrency"},\n{Judul: "Mastering GORM"},
         },
     }
     fmt.Printf("Kategori: %s memuat %d artikel.\n", kat.Nama, len(kat.Daftar))
@@ -1954,9 +1893,7 @@ Package \`context\` adalah komponen paling fundamental di backend Go berstandar 
         codeSnippet: `package main
 
 import (
-    "context"
-    "fmt"
-    "time"
+    "context"\n"fmt"\n"time"
 )
 
 func prosesDataLambat(ctx context.Context) {
@@ -1982,9 +1919,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "context"
-    "fmt"
-    "time"
+    "context"\n"fmt"\n"time"
 )
 
 func main() {
@@ -2054,9 +1989,7 @@ func main() {
         total    float64
         expected float64
     }{
-        {"Member Belanja Besar", true, 100000, 85000},
-        {"Non Member Belanja Besar", false, 100000, 100000},
-        {"Member Belanja Kecil", true, 50000, 50000},
+        {"Member Belanja Besar", true, 100000, 85000},\n{"Non Member Belanja Besar", false, 100000, 100000},\n{"Member Belanja Kecil", true, 50000, 50000},
     }
 
     fmt.Println("=== RUN Unit Test: TestHitungDiskon ===")
@@ -2094,9 +2027,7 @@ func main() {
         skor     int
         expected string
     }{
-        {80, "LULUS"},
-        {60, "GAGAL"},
-        {75, "LULUS"},
+        {80, "LULUS"},\n{60, "GAGAL"},\n{75, "LULUS"},
     }
 
     for _, tc := range testCases {
@@ -2245,8 +2176,7 @@ Di industri backend, semua response API mengikuti format standar (*Envelope Patt
         codeSnippet: `package main
 
 import (
-    "encoding/json"
-    "fmt"
+    "encoding/json"\n"fmt"
 )
 
 type APIResponse struct {
@@ -2276,7 +2206,8 @@ func main() {
 
     fmt.Println("--- Standar Response Sukses ---")
     fmt.Println(string(jsonSukses))
-    fmt.Println("\n--- Standar Response Gagal ---")
+    fmt.Println("
+--- Standar Response Gagal ---")
     fmt.Println(string(jsonError))
 }`,
         exercise: {
@@ -2284,8 +2215,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "encoding/json"
-    "fmt"
+    "encoding/json"\n"fmt"
 )
 
 type PaymentResponse struct {
@@ -2385,8 +2315,7 @@ type ProductProto struct {
 }
 
 func main() {
-    p := ProductProto{ID: 10, Title: "Server Bare Metal", Price: 15000000}
-    fmt.Printf("gRPC Payload: #%d %s ($%.0f)\n", p.ID, p.Title, p.Price)
+    p := ProductProto{ID: 10, Title: "Server Bare Metal", Price: 15000000}\nfmt.Printf("gRPC Payload: #%d %s ($%.0f)\n", p.ID, p.Title, p.Price)
 }`,
           expectedHint: "Definisikan field struct ProductProto."
         },
@@ -2419,8 +2348,7 @@ Menyimpan hasil query yang sering dibaca di RAM (Redis) untuk mengurangi beban d
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 // Simulasi Redis In-Memory Store
@@ -2459,9 +2387,7 @@ func main() {
 import "fmt"
 
 func main() {
-    cache := map[string]int{"user_count": 4500}
-    val, exists := cache["user_count"]
-    fmt.Printf("Cache Status: %t | Nilai: %d\n", exists, val)
+    cache := map[string]int{"user_count": 4500}\nval, exists := cache["user_count"]\nfmt.Printf("Cache Status: %t | Nilai: %d\n", exists, val)
 }`,
           expectedHint: "Gunakan map lookup untuk simulasi cache."
         },
@@ -2495,8 +2421,7 @@ graph LR
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 type EmailEvent struct {
@@ -2519,9 +2444,7 @@ func main() {
     go BackgroundEmailWorker(eventQueue)
 
     // API Handler mem-publish event tanpa memblokir response ke user
-    fmt.Println("🌐 [HTTP Handler] Menerima pendaftaran user...")
-    eventQueue <- EmailEvent{ToEmail: "alex@mail.com", Subject: "Aktivasi Akun"}
-    fmt.Println("🚀 [HTTP Handler] Response 201 Created langsung dikirim ke browser (Cepat!)")
+    fmt.Println("🌐 [HTTP Handler] Menerima pendaftaran user...")\neventQueue <- EmailEvent{ToEmail: "alex@mail.com", Subject: "Aktivasi Akun"}\nfmt.Println("🚀 [HTTP Handler] Response 201 Created langsung dikirim ke browser (Cepat!)")
 
     time.Sleep(100 * time.Millisecond)
 }`,
@@ -2530,8 +2453,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"
-    "time"
+    "fmt"\n"time"
 )
 
 func main() {
@@ -2543,8 +2465,7 @@ func main() {
         }
     }()
 
-    taskChan <- "Generate Invoice #001"
-    taskChan <- "Send WhatsApp Notification"
+    taskChan <- "Generate Invoice #001"\ntaskChan <- "Send WhatsApp Notification"
 
     time.Sleep(50 * time.Millisecond)
 }`,
@@ -2591,32 +2512,22 @@ CMD ["./server"]
         codeSnippet: `package main
 
 import (
-    "fmt"
-    "runtime"
+    "fmt"\n"runtime"
 )
 
 func main() {
-    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")
-    fmt.Printf("Sistem Operasi Target : %s\n", runtime.GOOS)
-    fmt.Printf("Arsitektur CPU         : %s\n", runtime.GOARCH)
-    fmt.Printf("Versi Compiler Go     : %s\n", runtime.Version())
-    fmt.Println("\nFlag Optimasi Biner:")
-    fmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")
-    fmt.Println("2. -ldflags=\"-s -w\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")
-    fmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
+    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")\nfmt.Printf("Sistem Operasi Target : %s\n", runtime.GOOS)\n    fmt.Printf("Arsitektur CPU         : %s\n", runtime.GOARCH)\n    fmt.Printf("Versi Compiler Go     : %s\n", runtime.Version())\n    fmt.Println("\nFlag Optimasi Biner:")\nfmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")\nfmt.Println("2. -ldflags=\"-s -w\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")\nfmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
 }`,
         exercise: {
           instruction: "Pelajari bagaimana runtime.GOOS dan runtime.GOARCH mendeteksi target kompilasi lintas platform (*Cross Compilation*).",
           starterCode: `package main
 
 import (
-    "fmt"
-    "runtime"
+    "fmt"\n"runtime"
 )
 
 func main() {
-    fmt.Println("Target OS:", runtime.GOOS)
-    fmt.Println("Target Arch:", runtime.GOARCH)
+    fmt.Println("Target OS:", runtime.GOOS)\nfmt.Println("Target Arch:", runtime.GOARCH)
 }`,
           expectedHint: "Cetak runtime.GOOS dan runtime.GOARCH."
         },
@@ -2642,51 +2553,107 @@ export const CHEATSHEET_CATEGORIES = [
   {
     title: "1. Variabel & Tipe Data",
     snippets: [
-      { label: "Short Variable", code: "nama := \"Gopher\"\numur := 25\nisDev := true" },
-      { label: "Explicit Variable", code: "var skor float64 = 99.5\nvar status bool" },
-      { label: "Constants", code: "const MaxConnections = 100\nconst Pi = 3.14159" },
-      { label: "Type Conversion", code: "var a int = 42\nvar b float64 = float64(a)\nvar c string = fmt.Sprint(a)" }
+      { label: "Short Variable", code: `nama := "Gopher"
+umur := 25
+isDev := true` },
+      { label: "Explicit Variable", code: `var skor float64 = 99.5
+var status bool` },
+      { label: "Constants", code: `const MaxConnections = 100
+const Pi = 3.14159` },
+      { label: "Type Conversion", code: `var a int = 42
+var b float64 = float64(a)
+var c string = fmt.Sprint(a)` }
     ]
   },
   {
     title: "2. Struktur Data",
     snippets: [
-      { label: "Slice & Append", code: "items := []string{\"A\", \"B\"}\nitems = append(items, \"C\")\nsub := items[1:3]" },
-      { label: "Map (Hash Table)", code: "m := make(map[string]int)\nm[\"kunci\"] = 100\nval, exists := m[\"kunci\"]\ndelete(m, \"kunci\")" },
-      { label: "Struct", code: "type User struct {\n    ID   int\n    Nama string\n}\nu := User{ID: 1, Nama: \"Alex\"}" }
+      { label: "Slice & Append", code: `items := []string{"A", "B"}
+items = append(items, "C")
+sub := items[1:3]` },
+      { label: "Map (Hash Table)", code: `m := make(map[string]int)
+m["kunci"] = 100
+val, exists := m["kunci"]
+delete(m, "kunci")` },
+      { label: "Struct", code: `type User struct {
+    ID   int
+    Nama string
+}
+u := User{ID: 1, Nama: "Alex"}` }
     ]
   },
   {
     title: "3. Pointer & Method",
     snippets: [
-      { label: "Pointer Syntax", code: "var x int = 10\nvar p *int = &x // Ambil alamat\n*p = 20         // Dereference" },
-      { label: "Method Receiver", code: "func (u *User) UbahNama(baru string) {\n    u.Nama = baru\n}" },
-      { label: "Interface", code: "type Greeter interface {\n    Greet() string\n}" }
+      { label: "Pointer Syntax", code: `var x int = 10
+var p *int = &x // Ambil alamat
+*p = 20         // Dereference` },
+      { label: "Method Receiver", code: `func (u *User) UbahNama(baru string) {
+    u.Nama = baru
+}` },
+      { label: "Interface", code: `type Greeter interface {
+    Greet() string
+}` }
     ]
   },
   {
     title: "4. Concurrency (Goroutines & Channels)",
     snippets: [
-      { label: "Spawn Goroutine", code: "go func() {\n    fmt.Println(\"Background task\")\n}()" },
-      { label: "Channel Communication", code: "ch := make(chan int, 2)\nch <- 42\nhasil := <-ch\nclose(ch)" },
-      { label: "Select Statement", code: "select {\ncase msg := <-ch:\n    fmt.Println(msg)\ncase <-time.After(1 * time.Second):\n    fmt.Println(\"Timeout\")\n}" },
-      { label: "Sync WaitGroup", code: "var wg sync.WaitGroup\nwg.Add(1)\ngo func() {\n    defer wg.Done()\n    // proses...\n}()\nwg.Wait()" }
+      { label: "Spawn Goroutine", code: `go func() {
+    fmt.Println("Background task")
+}()` },
+      { label: "Channel Communication", code: `ch := make(chan int, 2)
+ch <- 42
+hasil := <-ch
+close(ch)` },
+      { label: "Select Statement", code: `select {
+case msg := <-ch:
+    fmt.Println(msg)
+case <-time.After(1 * time.Second):
+    fmt.Println("Timeout")
+}` },
+      { label: "Sync WaitGroup", code: `var wg sync.WaitGroup
+wg.Add(1)
+go func() {
+    defer wg.Done()
+    // proses...
+}()
+wg.Wait()` }
     ]
   },
   {
     title: "5. Web & GORM",
     snippets: [
-      { label: "HTTP Server", code: "http.HandleFunc(\"GET /ping\", func(w http.ResponseWriter, r *http.Request) {\n    fmt.Fprintln(w, \"pong\")\n})\nhttp.ListenAndServe(\":8080\", nil)" },
-      { label: "JSON Encode", code: "w.Header().Set(\"Content-Type\", \"application/json\")\njson.NewEncoder(w).Encode(data)" },
-      { label: "GORM CRUD", code: "db.Create(&user)\ndb.First(&user, id)\ndb.Model(&user).Update(\"Nama\", \"Baru\")\ndb.Delete(&user, id)" }
+      { label: "HTTP Server", code: `http.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "pong")
+})
+http.ListenAndServe(":8080", nil)` },
+      { label: "JSON Encode", code: `w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(data)` },
+      { label: "GORM CRUD", code: `db.Create(&user)
+db.First(&user, id)
+db.Model(&user).Update("Nama", "Baru")
+db.Delete(&user, id)` }
     ]
   },
   {
     title: "6. Production Context, Testing & Docker",
     snippets: [
-      { label: "Context with Timeout", code: "ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)\ndefer cancel()\n<-ctx.Done()" },
-      { label: "Table-Driven Test", code: "func TestAdd(t *testing.T) {\n    tests := []struct{ a, b, want int }{\n        {1, 2, 3},\n        {2, 3, 5},\n    }\n    for _, tt := range tests {\n        if got := Add(tt.a, tt.b); got != tt.want {\n            t.Errorf(\"Add() = %v, want %v\", got, tt.want)\n        }\n    }\n}" },
-      { label: "Docker Build Command", code: "CGO_ENABLED=0 GOOS=linux go build -ldflags=\"-s -w\" -o server ./cmd/server" }
+      { label: "Context with Timeout", code: `ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+defer cancel()
+<-ctx.Done()` },
+      { label: "Table-Driven Test", code: `func TestAdd(t *testing.T) {
+    tests := []struct{ a, b, want int }{
+        {1, 2, 3},
+        {2, 3, 5},
+    }
+    for _, tt := range tests {
+        if got := Add(tt.a, tt.b); got != tt.want {
+            t.Errorf("Add() = %v, want %v", got, tt.want)
+        }
+    }
+}` },
+      { label: "Docker Build Command", code: `CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/server` }
     ]
   }
 ];
