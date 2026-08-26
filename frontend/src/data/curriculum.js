@@ -102,7 +102,7 @@ func main() {
     // Konstanta (nilai tidak dapat diubah)
     const Creator = "Google"
 
-    fmt.Printf("Belajar: %s v%.2f\n", bahasa, versi)\nfmt.Printf("Apakah cepat? %t\n", isFast)\n    fmt.Printf("Dibuat oleh: %s\n", Creator)
+    fmt.Printf("Belajar: %s v%.2f\\n", bahasa, versi)\nfmt.Printf("Apakah cepat? %t\\n", isFast)\n    fmt.Printf("Dibuat oleh: %s\\n", Creator)
 }`,
         exercise: {
           instruction: "Deklarasikan variabel `namaLengkap` (string), `pengalamanTahun` (int), dan `siapBelajar` (bool), lalu cetak dengan `fmt.Printf`.",
@@ -115,7 +115,7 @@ func main() {
     pengalamanTahun := 2
     siapBelajar := true
 
-    fmt.Printf("Dev: %s | Pengalaman: %d tahun | Siap: %t\n", namaLengkap, pengalamanTahun, siapBelajar)
+    fmt.Printf("Dev: %s | Pengalaman: %d tahun | Siap: %t\\n", namaLengkap, pengalamanTahun, siapBelajar)
 }`,
           expectedHint: "Gunakan %s untuk string, %d untuk integer, dan %t untuk boolean pada fmt.Printf."
         },
@@ -238,13 +238,13 @@ import "fmt"
 func main() {
     fmt.Println("--- Loop Standar ---")
     for i := 1; i <= 5; i++ {
-        fmt.Printf("Iterasi ke-%d\n", i)
+        fmt.Printf("Iterasi ke-%d\\n", i)
     }
 
     fmt.Println("\n--- Loop ala While ---")
     energi := 3
     for energi > 0 {
-        fmt.Printf("Energi tersisa: %d⚡\n", energi)
+        fmt.Printf("Energi tersisa: %d⚡\\n", energi)
         energi--
     }
     fmt.Println("Energi habis, istirahat dulu!")
@@ -260,7 +260,7 @@ func main() {
     for i := 1; i <= 10; i++ {
         total += i
     }
-    fmt.Printf("Total penjumlahan 1 s/d 10 = %d\n", total)
+    fmt.Printf("Total penjumlahan 1 s/d 10 = %d\\n", total)
 }`,
           expectedHint: "Total akhir seharusnya adalah 55."
         },
@@ -317,7 +317,7 @@ func main() {
     bahasa := []string{"Go", "Rust", "TypeScript"}\nfmt.Println("Awal:", bahasa)
 
     // Menambah elemen dengan append
-    bahasa = append(bahasa, "Python", "Kotlin")\nfmt.Println("Setelah append:", bahasa)\nfmt.Printf("Panjang (len): %d, Kapasitas (cap): %d\n", len(bahasa), cap(bahasa))
+    bahasa = append(bahasa, "Python", "Kotlin")\nfmt.Println("Setelah append:", bahasa)\nfmt.Printf("Panjang (len): %d, Kapasitas (cap): %d\\n", len(bahasa), cap(bahasa))
 
     // Slicing operator [1:3] (mengambil indeks 1 sampai 2)
     subBahasa := bahasa[1:4]
@@ -441,21 +441,21 @@ import "fmt"
 
 func main() {
     hargaBarang := map[string]int{
-        "Laptop":   12000000,\n"Keyboard": 750000,\n"Mouse":    300000,
+        "Laptop":   12000000,\\n"Keyboard": 750000,\\n"Mouse":    300000,
     }
 
     hargaBarang["Monitor"] = 2500000
 
     itemCari := "Headset"
     if harga, exists := hargaBarang[itemCari]; exists {
-        fmt.Printf("%s ditemukan seharga Rp %d\n", itemCari, harga)
+        fmt.Printf("%s ditemukan seharga Rp %d\\n", itemCari, harga)
     } else {
-        fmt.Printf("%s TIDAK ditemukan di katalog!\n", itemCari)
+        fmt.Printf("%s TIDAK ditemukan di katalog!\\n", itemCari)
     }
 
     fmt.Println("\n--- Daftar Lengkap ---")
     for barang, harga := range hargaBarang {
-        fmt.Printf("- %-10s : Rp %d\n", barang, harga)
+        fmt.Printf("- %-10s : Rp %d\\n", barang, harga)
     }
 }`,
         exercise: {
@@ -466,13 +466,13 @@ import "fmt"
 
 func main() {
     nilaiSiswa := map[string]int{
-        "Andi": 85,\n"Budi": 70,\n"Citra": 92,
+        "Andi": 85,\\n"Budi": 70,\\n"Citra": 92,
     }
 
     fmt.Println("Siswa Berprestasi (Nilai >= 80):")
     for nama, nilai := range nilaiSiswa {
         if nilai >= 80 {
-            fmt.Printf("🌟 %s : %d\n", nama, nilai)
+            fmt.Printf("🌟 %s : %d\\n", nama, nilai)
         }
     }
 }`,
@@ -537,8 +537,8 @@ func main() {
         },
     }
 
-    fmt.Printf("User: %s (%s)\n", user1.Nama, user1.Role)
-    fmt.Printf("Lokasi: %s, %s\n", user1.Alamat.Kota, user1.Alamat.Negara)
+    fmt.Printf("User: %s (%s)\\n", user1.Nama, user1.Role)
+    fmt.Printf("Lokasi: %s, %s\\n", user1.Alamat.Kota, user1.Alamat.Negara)
 }`,
         exercise: {
           instruction: "Definisikan struct `Produk` dengan field `Nama` (string), `Harga` (float64), dan `Stok` (int). Buat 1 instance dan cetak datanya.",
@@ -558,7 +558,7 @@ func main() {
         Harga: 45000.0,
         Stok:  20,
     }
-    fmt.Printf("Produk: %s | Harga: Rp %.0f | Sisa Stok: %d\n", p.Nama, p.Harga, p.Stok)
+    fmt.Printf("Produk: %s | Harga: Rp %.0f | Sisa Stok: %d\\n", p.Nama, p.Harga, p.Stok)
 }`,
           expectedHint: "Buat struct sebelum func main() lalu inisialisasi di dalam main."
         },
@@ -615,7 +615,7 @@ func totalSkor(skor ...int) int {
 func main() {
     total := 150000.0
     bayar, dapetDiskon := hitungDiskon(total)
-    fmt.Printf("Belanja: Rp %.0f | Bayar: Rp %.0f | Dapat Diskon: %t\n", total, bayar, dapetDiskon)\n    fmt.Printf("Total skor game: %d\n", totalSkor(10, 25, 40, 15))
+    fmt.Printf("Belanja: Rp %.0f | Bayar: Rp %.0f | Dapat Diskon: %t\\n", total, bayar, dapetDiskon)\n    fmt.Printf("Total skor game: %d\\n", totalSkor(10, 25, 40, 15))
 }`,
         exercise: {
           instruction: "Buat fungsi variadic `rataRata(nilai ...float64) float64` yang menghitung nilai rata-rata dari argumen yang diberikan.",
@@ -636,7 +636,7 @@ func rataRata(nilai ...float64) float64 {
 
 func main() {
     hasil := rataRata(80, 90, 85, 95)
-    fmt.Printf("Nilai Rata-rata: %.2f\n", hasil)
+    fmt.Printf("Nilai Rata-rata: %.2f\\n", hasil)
 }`,
           expectedHint: "Bagi total dengan float64(len(nilai))."
         },
@@ -789,12 +789,12 @@ type RekeningBank struct {
 }
 
 func (r RekeningBank) Info() {
-    fmt.Printf("Pemilik: %s | Saldo: Rp %.2f\n", r.Pemilik, r.Saldo)
+    fmt.Printf("Pemilik: %s | Saldo: Rp %.2f\\n", r.Pemilik, r.Saldo)
 }
 
 func (r *RekeningBank) Setor(jumlah float64) {
     r.Saldo += jumlah
-    fmt.Printf("Berhasil setor Rp %.2f ke rekening %s\n", jumlah, r.Pemilik)
+    fmt.Printf("Berhasil setor Rp %.2f ke rekening %s\\n", jumlah, r.Pemilik)
 }
 
 func main() {
@@ -825,7 +825,7 @@ func (d *Dompet) Tarik(jumlah float64) bool {
 func main() {
     d := Dompet{Saldo: 200000}
     berhasil := d.Tarik(75000)
-    fmt.Printf("Penarikan berhasil: %t | Sisa Saldo: Rp %.0f\n", berhasil, d.Saldo)
+    fmt.Printf("Penarikan berhasil: %t | Sisa Saldo: Rp %.0f\\n", berhasil, d.Saldo)
 }`,
           expectedHint: "Gunakan d.Saldo -= jumlah di dalam method Tarik."
         },
@@ -856,7 +856,7 @@ Di Go, sebuah struct **TIDAK PERLU** menulis \`implements InterfaceName\`. Cukup
         codeSnippet: `package main
 
 import (
-    "fmt"\n"math"
+    "fmt"\\n"math"
 )
 
 type BangunDatar interface {
@@ -880,7 +880,7 @@ func (l Lingkaran) HitungLuas() float64 {
 }
 
 func CetakLuas(b BangunDatar) {
-    fmt.Printf("Luas bangun datar: %.2f\n", b.HitungLuas())
+    fmt.Printf("Luas bangun datar: %.2f\\n", b.HitungLuas())
 }
 
 func main() {
@@ -912,7 +912,7 @@ func (s Segitiga) HitungLuas() float64 {
 func main() {
     s := Segitiga{Alas: 10, Tinggi: 6}
     var b BangunDatar = s
-    fmt.Printf("Luas Segitiga: %.1f\n", b.HitungLuas())
+    fmt.Printf("Luas Segitiga: %.1f\\n", b.HitungLuas())
 }`,
           expectedHint: "Rumus luas segitiga: 0.5 * Alas * Tinggi."
         },
@@ -946,7 +946,7 @@ if err != nil {
         codeSnippet: `package main
 
 import (
-    "errors"\n"fmt"
+    "errors"\\n"fmt"
 )
 
 func validasiUmur(umur int) (string, error) {
@@ -967,10 +967,10 @@ func main() {
     for _, u := range daftarUmur {
         status, err := validasiUmur(u)
         if err != nil {
-            fmt.Printf("❌ Error pada umur %d: %v\n", u, err)
+            fmt.Printf("❌ Error pada umur %d: %v\\n", u, err)
             continue
         }
-        fmt.Printf("✅ Umur %d: %s\n", u, status)
+        fmt.Printf("✅ Umur %d: %s\\n", u, status)
     }
 }`,
         exercise: {
@@ -978,7 +978,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "errors"\n"fmt"
+    "errors"\\n"fmt"
 )
 
 func hitungDiskon(harga float64) (float64, error) {
@@ -990,7 +990,7 @@ func hitungDiskon(harga float64) (float64, error) {
 
 func main() {
     if hasil, err := hitungDiskon(100000); err == nil {
-        fmt.Printf("Harga diskon: Rp %.0f\n", hasil)
+        fmt.Printf("Harga diskon: Rp %.0f\\n", hasil)
     }
 }`,
           expectedHint: "Gunakan errors.New() untuk membuat instance error."
@@ -1035,13 +1035,13 @@ Goroutine adalah fungsi yang dieksekusi secara asinkron/konkuren bersamaan denga
         codeSnippet: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 func cetakPesan(pesan string, delay time.Duration) {
     for i := 1; i <= 3; i++ {
         time.Sleep(delay)
-        fmt.Printf("[%s] Detik ke-%d\n", pesan, i)
+        fmt.Printf("[%s] Detik ke-%d\\n", pesan, i)
     }
 }
 
@@ -1058,13 +1058,13 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 func unduhFile(nama string) {
-    fmt.Printf("⬇️ Mengunduh %s...\n", nama)
+    fmt.Printf("⬇️ Mengunduh %s...\\n", nama)
     time.Sleep(100 * time.Millisecond)
-    fmt.Printf("✅ Selesai unduh %s\n", nama)
+    fmt.Printf("✅ Selesai unduh %s\\n", nama)
 }
 
 func main() {
@@ -1151,7 +1151,7 @@ func main() {
     hasil1 := <-ch
     hasil2 := <-ch
 
-    fmt.Printf("Hasil 1: %d\n", hasil1)\nfmt.Printf("Hasil 2: %d\n", hasil2)
+    fmt.Printf("Hasil 1: %d\\n", hasil1)\nfmt.Printf("Hasil 2: %d\\n", hasil2)
 }`,
         exercise: {
           instruction: "Buat buffered channel `msgChan := make(chan string, 2)`, kirim 2 pesan ke dalam channel, lalu cetak keduanya.",
@@ -1192,7 +1192,7 @@ func main() {
         codeSnippet: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 func serverA(out chan string) {
@@ -1226,7 +1226,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 func main() {
@@ -1270,7 +1270,7 @@ func main() {
         codeSnippet: `package main
 
 import (
-    "fmt"\n"sync"
+    "fmt"\\n"sync"
 )
 
 type CounterAman struct {
@@ -1299,14 +1299,14 @@ func main() {
     }
 
     wg.Wait()
-    fmt.Printf("Total akhir counter aman: %d (Sempurna!)\n", counter.nilai)
+    fmt.Printf("Total akhir counter aman: %d (Sempurna!)\\n", counter.nilai)
 }`,
         exercise: {
           instruction: "Gunakan `sync.WaitGroup` untuk menunggu 3 goroutine selesai.",
           starterCode: `package main
 
 import (
-    "fmt"\n"sync"
+    "fmt"\\n"sync"
 )
 
 func main() {
@@ -1316,7 +1316,7 @@ func main() {
         wg.Add(1)
         go func(id int) {
             defer wg.Done()
-            fmt.Printf("Tugas #%d selesai dijalankan\n", id)
+            fmt.Printf("Tugas #%d selesai dijalankan\\n", id)
         }(i)
     }
 
@@ -1361,7 +1361,7 @@ Tanpa perlu framework eksternal, Go sudah memiliki library web server bawaan tin
         codeSnippet: `package main
 
 import (
-    "fmt"\n"net/http"
+    "fmt"\\n"net/http"
 )
 
 func haloHandler(w http.ResponseWriter, r *http.Request) {
@@ -1378,7 +1378,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"\n"net/http"
+    "fmt"\\n"net/http"
 )
 
 func statusHandler(w http.ResponseWriter, r *http.Request) {
@@ -1414,7 +1414,7 @@ Mulai Go versi 1.22, \`http.ServeMux\` bawaan mendukung method routing (\`GET /u
         codeSnippet: `package main
 
 import (
-    "fmt"\n"net/http"
+    "fmt"\\n"net/http"
 )
 
 func main() {
@@ -1433,7 +1433,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"\n"net/http"
+    "fmt"\\n"net/http"
 )
 
 func main() {
@@ -1467,7 +1467,7 @@ Middleware adalah fungsi yang mencegat (*intercept*) request sebelum mencapai ha
         codeSnippet: `package main
 
 import (
-    "fmt"\n"net/http"\n"time"
+    "fmt"\\n"net/http"\\n"time"
 )
 
 func TimerMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -1475,7 +1475,7 @@ func TimerMiddleware(next http.HandlerFunc) http.HandlerFunc {
         mulai := time.Now()
         next(w, r)
         durasi := time.Since(mulai)
-        fmt.Printf("⏱️ [%s] %s selesai dalam %v\n", r.Method, r.URL.Path, durasi)
+        fmt.Printf("⏱️ [%s] %s selesai dalam %v\\n", r.Method, r.URL.Path, durasi)
     }
 }
 
@@ -1491,7 +1491,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"\n"net/http"
+    "fmt"\\n"net/http"
 )
 
 func CustomHeaderMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -1533,7 +1533,7 @@ Go memiliki package bawaan \`encoding/json\` yang sangat kuat.`,
         codeSnippet: `package main
 
 import (
-    "encoding/json"\n"fmt"\n"net/http"
+    "encoding/json"\\n"fmt"\\n"net/http"
 )
 
 type Response struct {
@@ -1563,7 +1563,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "encoding/json"\n"fmt"
+    "encoding/json"\\n"fmt"
 )
 
 type UserResponse struct {
@@ -1635,7 +1635,7 @@ func main() {
         MaxIdleConns: 10,
     }
 
-    fmt.Printf("⚡ Inisialisasi Database Pool: %s\n", cfg.Driver)\nfmt.Printf("📊 Pool: %d Max Open | %d Max Idle\n", cfg.MaxOpenConns, cfg.MaxIdleConns)\n    fmt.Println("✅ Koneksi database siap digunakan secara aman dan konkuren!")
+    fmt.Printf("⚡ Inisialisasi Database Pool: %s\\n", cfg.Driver)\nfmt.Printf("📊 Pool: %d Max Open | %d Max Idle\\n", cfg.MaxOpenConns, cfg.MaxIdleConns)\n    fmt.Println("✅ Koneksi database siap digunakan secara aman dan konkuren!")
 }`,
         exercise: {
           instruction: "Lengkapi konfigurasi database struct dengan parameter timeout koneksi.",
@@ -1655,7 +1655,7 @@ func main() {
         Port:         5432,
         AutoMigrate:  true,
     }
-    fmt.Printf("Koneksi DB: %s pada port %d (Migrate: %t)\n", setting.DatabaseName, setting.Port, setting.AutoMigrate)
+    fmt.Printf("Koneksi DB: %s pada port %d (Migrate: %t)\\n", setting.DatabaseName, setting.Port, setting.AutoMigrate)
 }`,
           expectedHint: "Inisialisasi struct DBSetting."
         },
@@ -1682,7 +1682,7 @@ func main() {
         codeSnippet: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 type GormModel struct {
@@ -1706,7 +1706,7 @@ func main() {
         Views:     1500,
     }
 
-    fmt.Printf("Model ID: %d | Judul: %s | Dibuat: %s\n", art.ID, art.Judul, art.CreatedAt.Format("02 Jan 2006"))
+    fmt.Printf("Model ID: %d | Judul: %s | Dibuat: %s\\n", art.ID, art.Judul, art.CreatedAt.Format("02 Jan 2006"))
 }`,
         exercise: {
           instruction: "Buat struct model `Customer` dengan field `Nama`, `Email`, dan `Saldo`.",
@@ -1722,7 +1722,7 @@ type Customer struct {
 }
 
 func main() {
-    c := Customer{ID: 1, Nama: "Dewi", Email: "dewi@example.com", Saldo: 500000}\nfmt.Printf("Customer #%d: %s (%s) - Saldo: Rp %.0f\n", c.ID, c.Nama, c.Email, c.Saldo)
+    c := Customer{ID: 1, Nama: "Dewi", Email: "dewi@example.com", Saldo: 500000}\nfmt.Printf("Customer #%d: %s (%s) - Saldo: Rp %.0f\\n", c.ID, c.Nama, c.Email, c.Saldo)
 }`,
           expectedHint: "Definisikan field struct Customer."
         },
@@ -1817,9 +1817,9 @@ func main() {
         },
     }
 
-    fmt.Printf("Customer: %s (Total Pesanan: %d)\n", c.Nama, len(c.Pesanan))
+    fmt.Printf("Customer: %s (Total Pesanan: %d)\\n", c.Nama, len(c.Pesanan))
     for i, o := range c.Pesanan {
-        fmt.Printf("  %d. %s - Rp %d\n", i+1, o.Barang, o.Harga)
+        fmt.Printf("  %d. %s - Rp %d\\n", i+1, o.Barang, o.Harga)
     }
 }`,
         exercise: {
@@ -1844,7 +1844,7 @@ func main() {
             {Judul: "Dasar Concurrency"},\n{Judul: "Mastering GORM"},
         },
     }
-    fmt.Printf("Kategori: %s memuat %d artikel.\n", kat.Nama, len(kat.Daftar))
+    fmt.Printf("Kategori: %s memuat %d artikel.\\n", kat.Nama, len(kat.Daftar))
 }`,
           expectedHint: "Gunakan slice []Artikel pada struct Kategori."
         },
@@ -1893,7 +1893,7 @@ Package \`context\` adalah komponen paling fundamental di backend Go berstandar 
         codeSnippet: `package main
 
 import (
-    "context"\n"fmt"\n"time"
+    "context"\\n"fmt"\\n"time"
 )
 
 func prosesDataLambat(ctx context.Context) {
@@ -1902,7 +1902,7 @@ func prosesDataLambat(ctx context.Context) {
         fmt.Println("✅ Data berhasil diproses!")
     case <-ctx.Done():
         // Terpanggil jika timeout atau dibatalkan
-        fmt.Printf("❌ Proses dibatalkan oleh context: %v\n", ctx.Err())
+        fmt.Printf("❌ Proses dibatalkan oleh context: %v\\n", ctx.Err())
     }
 }
 
@@ -1919,7 +1919,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "context"\n"fmt"\n"time"
+    "context"\\n"fmt"\\n"time"
 )
 
 func main() {
@@ -1998,9 +1998,9 @@ func main() {
     for _, tc := range tests {
         hasil := HitungDiskon(tc.isMember, tc.total)
         if hasil == tc.expected {
-            fmt.Printf("  --- PASS: %s (Hasil: %.0f)\n", tc.nama, hasil)
+            fmt.Printf("  --- PASS: %s (Hasil: %.0f)\\n", tc.nama, hasil)
         } else {
-            fmt.Printf("  --- FAIL: %s (Ekspektasi: %.0f, Dapat: %.0f)\n", tc.nama, tc.expected, hasil)
+            fmt.Printf("  --- FAIL: %s (Ekspektasi: %.0f, Dapat: %.0f)\\n", tc.nama, tc.expected, hasil)
             semuaLulus = false
         }
     }
@@ -2032,7 +2032,7 @@ func main() {
 
     for _, tc := range testCases {
         res := CekKelulusan(tc.skor)
-        fmt.Printf("Skor %d -> Hasil: %s (Match: %t)\n", tc.skor, res, res == tc.expected)
+        fmt.Printf("Skor %d -> Hasil: %s (Match: %t)\\n", tc.skor, res, res == tc.expected)
     }
 }`,
           expectedHint: "Tambahkan elemen struct baru ke slice testCases."
@@ -2176,7 +2176,7 @@ Di industri backend, semua response API mengikuti format standar (*Envelope Patt
         codeSnippet: `package main
 
 import (
-    "encoding/json"\n"fmt"
+    "encoding/json"\\n"fmt"
 )
 
 type APIResponse struct {
@@ -2215,7 +2215,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "encoding/json"\n"fmt"
+    "encoding/json"\\n"fmt"
 )
 
 type PaymentResponse struct {
@@ -2315,7 +2315,7 @@ type ProductProto struct {
 }
 
 func main() {
-    p := ProductProto{ID: 10, Title: "Server Bare Metal", Price: 15000000}\nfmt.Printf("gRPC Payload: #%d %s ($%.0f)\n", p.ID, p.Title, p.Price)
+    p := ProductProto{ID: 10, Title: "Server Bare Metal", Price: 15000000}\nfmt.Printf("gRPC Payload: #%d %s ($%.0f)\\n", p.ID, p.Title, p.Price)
 }`,
           expectedHint: "Definisikan field struct ProductProto."
         },
@@ -2348,7 +2348,7 @@ Menyimpan hasil query yang sering dibaca di RAM (Redis) untuk mengurangi beban d
         codeSnippet: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 // Simulasi Redis In-Memory Store
@@ -2357,18 +2357,18 @@ var redisCache = make(map[string]string)
 func AmbilDataProduk(id string) string {
     // 1. Cek Cache Redis
     if val, hit := redisCache[id]; hit {
-        fmt.Printf("⚡ [CACHE HIT] Data '%s' diambil dari Redis RAM (0.3ms)\n", id)
+        fmt.Printf("⚡ [CACHE HIT] Data '%s' diambil dari Redis RAM (0.3ms)\\n", id)
         return val
     }
 
     // 2. Cache Miss: Ambil dari DB Lambat
-    fmt.Printf("🐢 [CACHE MISS] Mengambil '%s' dari SQL Database (45ms)...\n", id)
+    fmt.Printf("🐢 [CACHE MISS] Mengambil '%s' dari SQL Database (45ms)...\\n", id)
     time.Sleep(50 * time.Millisecond) // Simulasi latency DB
     data := fmt.Sprintf("Detail Laptop Gaming ID:%s", id)
 
     // 3. Simpan ke Redis Cache
     redisCache[id] = data
-    fmt.Printf("💾 Data '%s' berhasil disimpan ke Redis (TTL: 10 menit)\n", id)
+    fmt.Printf("💾 Data '%s' berhasil disimpan ke Redis (TTL: 10 menit)\\n", id)
     return data
 }
 
@@ -2387,7 +2387,7 @@ func main() {
 import "fmt"
 
 func main() {
-    cache := map[string]int{"user_count": 4500}\nval, exists := cache["user_count"]\nfmt.Printf("Cache Status: %t | Nilai: %d\n", exists, val)
+    cache := map[string]int{"user_count": 4500}\nval, exists := cache["user_count"]\nfmt.Printf("Cache Status: %t | Nilai: %d\\n", exists, val)
 }`,
           expectedHint: "Gunakan map lookup untuk simulasi cache."
         },
@@ -2421,7 +2421,7 @@ graph LR
         codeSnippet: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 type EmailEvent struct {
@@ -2431,9 +2431,9 @@ type EmailEvent struct {
 
 func BackgroundEmailWorker(queue chan EmailEvent) {
     for event := range queue {
-        fmt.Printf("📧 [Worker Asinkron] Mengirim email '%s' ke %s...\n", event.Subject, event.ToEmail)
+        fmt.Printf("📧 [Worker Asinkron] Mengirim email '%s' ke %s...\\n", event.Subject, event.ToEmail)
         time.Sleep(50 * time.Millisecond)
-        fmt.Printf("✅ [Worker] Email ke %s sukses terkirim!\n", event.ToEmail)
+        fmt.Printf("✅ [Worker] Email ke %s sukses terkirim!\\n", event.ToEmail)
     }
 }
 
@@ -2453,7 +2453,7 @@ func main() {
           starterCode: `package main
 
 import (
-    "fmt"\n"time"
+    "fmt"\\n"time"
 )
 
 func main() {
@@ -2512,18 +2512,18 @@ CMD ["./server"]
         codeSnippet: `package main
 
 import (
-    "fmt"\n"runtime"
+    "fmt"\\n"runtime"
 )
 
 func main() {
-    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")\nfmt.Printf("Sistem Operasi Target : %s\n", runtime.GOOS)\n    fmt.Printf("Arsitektur CPU         : %s\n", runtime.GOARCH)\n    fmt.Printf("Versi Compiler Go     : %s\n", runtime.Version())\n    fmt.Println("\nFlag Optimasi Biner:")\nfmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")\nfmt.Println("2. -ldflags=\"-s -w\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")\nfmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
+    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")\nfmt.Printf("Sistem Operasi Target : %s\\n", runtime.GOOS)\n    fmt.Printf("Arsitektur CPU         : %s\\n", runtime.GOARCH)\n    fmt.Printf("Versi Compiler Go     : %s\\n", runtime.Version())\n    fmt.Println("\nFlag Optimasi Biner:")\nfmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")\nfmt.Println("2. -ldflags=\"-s -w\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")\nfmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
 }`,
         exercise: {
           instruction: "Pelajari bagaimana runtime.GOOS dan runtime.GOARCH mendeteksi target kompilasi lintas platform (*Cross Compilation*).",
           starterCode: `package main
 
 import (
-    "fmt"\n"runtime"
+    "fmt"\\n"runtime"
 )
 
 func main() {
