@@ -74,7 +74,8 @@ export default function LessonStudio({
   };
 
   useEffect(() => {
-    setCode(progress.userCodes[currentLesson.id] || currentLesson.codeSnippet);
+    const saved = progress.userCodes[currentLesson.id] || currentLesson.codeSnippet;
+    setCode(saved);
     setOutput({
       text: "Program siap dikompilasi.",
       isError: false,
@@ -118,18 +119,30 @@ export default function LessonStudio({
     }
   };
 
+  // Instant Reset Code tanpa browser prompt blocking
   const handleResetCode = () => {
-    if (window.confirm("Kembalikan kode ke template awal materi ini?")) {
-      setCode(currentLesson.codeSnippet);
-      saveUserCode(currentLesson.id, currentLesson.codeSnippet);
-      showToast("Kode di-reset ke contoh materi awal.");
-    }
+    const defaultTemplate = currentLesson.codeSnippet;
+    setCode(defaultTemplate);
+    saveUserCode(currentLesson.id, defaultTemplate);
+    setOutput({
+      text: "Kode berhasil di-reset. Klik 'Jalankan Kode' untuk menguji kembali.",
+      isError: false,
+      executionTime: null,
+      source: null,
+    });
+    showToast("✓ Kode berhasil di-reset ke template awal!");
   };
 
   const handleLoadExercise = () => {
     if (currentLesson.exercise?.starterCode) {
       setCode(currentLesson.exercise.starterCode);
       saveUserCode(currentLesson.id, currentLesson.exercise.starterCode);
+      setOutput({
+        text: "Kode tantangan latihan dimuat. Silakan modifikasi dan klik 'Jalankan Kode'.",
+        isError: false,
+        executionTime: null,
+        source: null,
+      });
       showToast("✓ Kode latihan berhasil dimuat ke editor!");
     }
   };
@@ -138,6 +151,12 @@ export default function LessonStudio({
     if (currentLesson.exercise?.starterCode) {
       setCode(currentLesson.exercise.starterCode);
       saveUserCode(currentLesson.id, currentLesson.exercise.starterCode);
+      setOutput({
+        text: "Solusi latihan diterapkan. Klik 'Jalankan Kode' untuk verifikasi.",
+        isError: false,
+        executionTime: null,
+        source: null,
+      });
       showToast("✓ Solusi berhasil diterapkan ke editor!");
     }
   };
@@ -194,7 +213,7 @@ export default function LessonStudio({
           <select
             value={currentLesson.id}
             onChange={(e) => setCurrentLessonId(e.target.value)}
-            className="theme-inset theme-heading text-xs md:text-sm font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#00ADD8] shadow-sm"
+            className="theme-inset theme-heading text-xs md:text-sm font-semibold rounded-xl px-3 py-1.5 focus:outline-none focus:border-[#00ADD8] shadow-sm cursor-pointer"
           >
             {ROADMAP_MODULES.map((mod) => (
               <optgroup key={mod.id} label={mod.title} className="bg-white dark:bg-[#0e1626] text-slate-900 dark:text-white">
@@ -219,7 +238,7 @@ export default function LessonStudio({
           {prevLesson && (
             <button
               onClick={() => setCurrentLessonId(prevLesson.id)}
-              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl theme-card-subtle theme-muted hover:theme-heading transition-all font-semibold"
+              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl theme-card-subtle theme-muted hover:theme-heading transition-all font-semibold cursor-pointer"
             >
               <ChevronLeft size={14} /> Sebelumnya
             </button>
@@ -227,7 +246,7 @@ export default function LessonStudio({
 
           <button
             onClick={() => markLessonComplete(currentLesson.id, 100)}
-            className={`flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-xl font-bold transition-all shadow-md ${
+            className={`flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-xl font-bold transition-all shadow-md cursor-pointer ${
               isCompleted
                 ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/40"
                 : "bg-gradient-to-r from-[#00ADD8] to-[#0284C7] text-white shadow-[#00ADD8]/20 hover:opacity-95"
@@ -240,7 +259,7 @@ export default function LessonStudio({
           {nextLesson && (
             <button
               onClick={() => setCurrentLessonId(nextLesson.id)}
-              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl theme-card-subtle theme-muted hover:theme-heading transition-all font-semibold"
+              className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl theme-card-subtle theme-muted hover:theme-heading transition-all font-semibold cursor-pointer"
             >
               Berikutnya <ChevronRight size={14} />
             </button>
@@ -256,7 +275,7 @@ export default function LessonStudio({
           <div className="flex items-center border-b border-slate-200 dark:border-white/[0.08] theme-card-subtle px-3 pt-2.5 shrink-0">
             <button
               onClick={() => setActiveLeftTab("theory")}
-              className={`flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold border-b-2 transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold border-b-2 transition-all cursor-pointer ${
                 activeLeftTab === "theory"
                   ? "border-[#00ADD8] text-[#00ADD8]"
                   : "border-transparent theme-muted hover:theme-heading"
@@ -266,7 +285,7 @@ export default function LessonStudio({
             </button>
             <button
               onClick={() => setActiveLeftTab("exercise")}
-              className={`flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold border-b-2 transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold border-b-2 transition-all cursor-pointer ${
                 activeLeftTab === "exercise"
                   ? "border-[#10B981] text-[#10B981]"
                   : "border-transparent theme-muted hover:theme-heading"
@@ -276,7 +295,7 @@ export default function LessonStudio({
             </button>
             <button
               onClick={() => setActiveLeftTab("quiz")}
-              className={`flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold border-b-2 transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-bold border-b-2 transition-all cursor-pointer ${
                 activeLeftTab === "quiz"
                   ? "border-[#8B5CF6] text-[#8B5CF6]"
                   : "border-transparent theme-muted hover:theme-heading"
@@ -343,7 +362,7 @@ export default function LessonStudio({
                 <div className="flex items-center gap-2.5 flex-wrap pt-1">
                   <button
                     onClick={handleLoadExercise}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/25 transition-all flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/25 transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <Code size={14} />
                     <span>Muat Kode Latihan</span>
@@ -351,7 +370,7 @@ export default function LessonStudio({
 
                   <button
                     onClick={() => setShowSolution(!showSolution)}
-                    className="px-4 py-2 rounded-xl theme-card-subtle theme-heading text-xs font-bold transition-all flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-xl theme-card-subtle theme-heading text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <Eye size={14} />
                     <span>{showSolution ? "Tutup Solusi" : "Lihat Solusi Lengkap"}</span>
@@ -367,7 +386,7 @@ export default function LessonStudio({
                       </span>
                       <button
                         onClick={handleApplySolution}
-                        className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                        className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <span>Terapkan ke Editor</span>
                         <ArrowRight size={12} />
@@ -426,7 +445,7 @@ export default function LessonStudio({
                               key={optIndex}
                               onClick={() => handleQuizAnswer(qIndex, optIndex)}
                               disabled={quizSubmitted}
-                              className={`w-full text-left p-3 rounded-xl border text-xs transition-all flex items-center justify-between ${btnStyle}`}
+                              className={`w-full text-left p-3 rounded-xl border text-xs transition-all flex items-center justify-between cursor-pointer ${btnStyle}`}
                             >
                               <span>{opt}</span>
                               {quizSubmitted && isCorrectOption && <Check size={15} className="text-emerald-500 shrink-0" />}
@@ -451,7 +470,7 @@ export default function LessonStudio({
                     <button
                       onClick={handleQuizSubmit}
                       disabled={Object.keys(selectedAnswers).length === 0}
-                      className="w-full py-2.5 rounded-2xl bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-xs font-extrabold transition-all disabled:opacity-50 shadow-md shadow-[#8B5CF6]/25"
+                      className="w-full py-2.5 rounded-2xl bg-[#8B5CF6] hover:bg-[#7C3AED] text-white text-xs font-extrabold transition-all disabled:opacity-50 shadow-md shadow-[#8B5CF6]/25 cursor-pointer"
                     >
                       Periksa Jawaban
                     </button>
@@ -461,7 +480,7 @@ export default function LessonStudio({
                         setSelectedAnswers({});
                         setQuizSubmitted(false);
                       }}
-                      className="w-full py-2.5 rounded-2xl theme-card-subtle text-xs font-bold transition-all"
+                      className="w-full py-2.5 rounded-2xl theme-card-subtle text-xs font-bold transition-all cursor-pointer"
                     >
                       Ulangi Kuis
                     </button>
@@ -490,8 +509,8 @@ export default function LessonStudio({
               <div className="flex items-center gap-2">
                 <button
                   onClick={handleResetCode}
-                  title="Reset Kode"
-                  className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl theme-card theme-muted hover:theme-heading transition-colors font-semibold"
+                  title="Reset Kode ke Template Awal"
+                  className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-xl theme-card theme-muted hover:theme-heading transition-colors font-semibold cursor-pointer"
                 >
                   <RotateCcw size={13} /> Reset
                 </button>
@@ -499,7 +518,7 @@ export default function LessonStudio({
                 <button
                   onClick={handleRunCode}
                   disabled={isRunning}
-                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#00ADD8] to-[#0284C7] text-white font-black hover:shadow-lg hover:shadow-[#00ADD8]/30 transition-all disabled:opacity-50"
+                  className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#00ADD8] to-[#0284C7] text-white font-black hover:shadow-lg hover:shadow-[#00ADD8]/30 transition-all disabled:opacity-50 cursor-pointer"
                 >
                   <Play size={13} className={isRunning ? "animate-spin" : "fill-white"} />
                   <span>{isRunning ? "Running..." : "Jalankan Kode"}</span>
