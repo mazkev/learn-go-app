@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Layers,
+  FolderCode,
   Activity,
   Globe,
   Zap,
@@ -9,6 +10,7 @@ import {
   Sparkles
 } from "lucide-react";
 import CleanArchLab from "../cleanarch/CleanArchLab";
+import ProjectStartersLab from "../starters/ProjectStartersLab";
 import ConcurrencyVisualizer from "../visualizer/ConcurrencyVisualizer";
 import APITester from "../apitester/APITester";
 import GrpcCompareLab from "../grpccompare/GrpcCompareLab";
@@ -20,6 +22,12 @@ export const LAB_TABS = [
     label: "Clean Architecture",
     icon: Layers,
     description: "Simulasi visual alur data: Handler -> UseCase -> Repository -> Database",
+  },
+  {
+    id: "starters",
+    label: "Production Starters",
+    icon: FolderCode,
+    description: "Blueprint template proyek nyata: JWT Auth, WebSockets Chat, dan Clean Microservice",
   },
   {
     id: "concurrency",
@@ -65,7 +73,7 @@ export default function LabsHub({ defaultSubTab = "cleanarch" }) {
               <h2 className="text-sm font-extrabold theme-heading flex items-center gap-2">
                 <span>Interactive Labs Workbench</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-mono font-bold">
-                  5 Simulator
+                  6 Simulator
                 </span>
               </h2>
               <p className="text-[11px] theme-muted">{currentLab.description}</p>
@@ -100,6 +108,7 @@ export default function LabsHub({ defaultSubTab = "cleanarch" }) {
       {/* Active Lab Body Area */}
       <div className="flex-1 overflow-y-auto">
         {activeSubTab === "cleanarch" && <CleanArchLab />}
+        {activeSubTab === "starters" && <ProjectStartersLab />}
         {activeSubTab === "concurrency" && <ConcurrencyVisualizer />}
         {activeSubTab === "apitester" && <APITester />}
         {activeSubTab === "grpc" && <GrpcCompareLab />}
