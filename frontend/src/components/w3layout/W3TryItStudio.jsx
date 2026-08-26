@@ -10,10 +10,7 @@ export default function W3TryItStudio({
   theme = "dark",
   onToggleTheme
 }) {
-  const [code, setCode] = useState(initialCode || "");
-  const codeRef = useRef(initialCode || "");
   const editorRef = useRef(null);
-
   const [isRunning, setIsRunning] = useState(false);
   const [output, setOutput] = useState({
     text: "Klik tombol hijau 'Run ❯' untuk melihat output kompilasi.",
@@ -29,28 +26,12 @@ export default function W3TryItStudio({
     setTimeout(() => setToastMessage(null), 2500);
   };
 
-  useEffect(() => {
-    if (initialCode !== undefined && initialCode !== null) {
-      setCode(initialCode);
-      codeRef.current = initialCode;
-      if (editorRef.current && editorRef.current.getValue() !== initialCode) {
-        editorRef.current.setValue(initialCode);
-      }
-    }
-  }, [initialCode]);
-
   const handleEditorDidMount = (editor) => {
     editorRef.current = editor;
   };
 
-  const handleEditorChange = (value) => {
-    const val = value || "";
-    codeRef.current = val;
-    setCode(val);
-  };
-
   const handleRun = async () => {
-    const codeToRun = editorRef.current ? editorRef.current.getValue() : codeRef.current;
+    const codeToRun = editorRef.current ? editorRef.current.getValue() : (initialCode || "");
     setIsRunning(true);
     setOutput({
       text: "⚡ Mengompilasi kode Go...",
@@ -80,11 +61,8 @@ export default function W3TryItStudio({
   };
 
   const handleReset = () => {
-    const resetTarget = initialCode || "";
-    setCode(resetTarget);
-    codeRef.current = resetTarget;
     if (editorRef.current) {
-      editorRef.current.setValue(resetTarget);
+      editorRef.current.setValue(initialCode || "");
     }
     setOutput({
       text: "Kode di-reset. Klik 'Run ❯' untuk menguji.",
@@ -174,7 +152,6 @@ export default function W3TryItStudio({
               theme={monacoTheme}
               defaultValue={initialCode || ""}
               onMount={handleEditorDidMount}
-              onChange={handleEditorChange}
               options={{
                 fontSize: 13,
                 fontFamily: "'Fira Code', monospace",
@@ -182,7 +159,13 @@ export default function W3TryItStudio({
                 scrollBeyondLastLine: false,
                 smoothScrolling: true,
                 cursorBlinking: "smooth",
-                formatOnPaste: true,
+                formatOnPaste: false,
+                formatOnType: false,
+                autoClosingBrackets: "languageDefined",
+                autoClosingQuotes: "languageDefined",
+                suggestOnTriggerCharacters: true,
+                acceptSuggestionOnCommitCharacter: false,
+                tabCompletion: "on",
                 padding: { top: 12, bottom: 12 },
               }}
             />

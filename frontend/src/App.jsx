@@ -113,6 +113,7 @@ export default function App() {
               /* W3 Split-Screen Tryit Editor */
               <div className="flex-1">
                 <W3TryItStudio
+                  key={`${currentLessonId}_${tryItCode ? tryItCode.slice(0, 15) : ""}`}
                   initialCode={tryItCode}
                   lessonTitle={`Lesson ${currentLessonId}`}
                   onBackToTutorial={() => setIsTryItMode(false)}
