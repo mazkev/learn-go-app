@@ -181,7 +181,7 @@ func main() {
     }
 }`,
         exercise: {
-          instruction: "Buat logika if-else untuk mengecek status HTTP: jika 200 cetak 'OK', jika 404 cetak 'Not Found', selain itu cetak 'Unknown'.",
+          instruction: "Buat logika pengkondisian if - else if - else untuk mengecek status HTTP: jika statusCode == 200 cetak 'Status 200: OK', jika statusCode == 404 cetak 'Status 404: Not Found', selain itu cetak 'Status: Unknown'.",
           starterCode: `package main
 
 import "fmt"
@@ -189,16 +189,16 @@ import "fmt"
 func main() {
     statusCode := 404
 
-    switch statusCode {
-    case 200:
+    // Logika pengkondisian if - else if - else
+    if statusCode == 200 {
         fmt.Println("Status 200: OK")
-    case 404:
+    } else if statusCode == 404 {
         fmt.Println("Status 404: Not Found")
-    default:
+    } else {
         fmt.Println("Status: Unknown")
     }
 }`,
-          expectedHint: "Gunakan switch atau if-else bertingkat."
+          expectedHint: "Gunakan if statusCode == 200, else if statusCode == 404, dan blok else."
         },
         quiz: [
           {
