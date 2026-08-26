@@ -12,10 +12,194 @@ import {
   Zap,
   Terminal,
   RotateCcw,
-  Copy
+  BookOpen,
+  Info,
+  ArrowRight,
+  CheckCircle2
 } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
 import { executeGoCode } from "../../services/goRunner";
+
+/**
+ * Format string inline (bold, code, arrow)
+ */
+function renderInlineFormatted(text) {
+  if (!text) return text;
+
+  // Split by inline code first `...`
+  const codeParts = text.split(/(`[^`]+`)/g);
+
+  return codeParts.map((part, i) => {
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code key={i} className="inline-code mx-0.5">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+
+    // Split by bold **...**
+    const boldParts = part.split(/(\*\*[^*]+\*\*)/g);
+    return boldParts.map((bPart, j) => {
+      if (bPart.startsWith("**") && bPart.endsWith("**")) {
+        return (
+          <strong key={j} className="font-extrabold theme-heading tracking-tight">
+            {bPart.slice(2, -2)}
+          </strong>
+        );
+      }
+      return bPart.replace(/\\rightarrow|->/g, "→");
+    });
+  });
+}
+
+/**
+ * Rich Tutorial Markdown Content Renderer
+ */
+function RichContentRenderer({ content }) {
+  if (!content) return null;
+
+  const blocks = content.split("\n\n");
+
+  return (
+    <div className="space-y-5 text-sm md:text-base theme-body leading-relaxed">
+      {blocks.map((block, idx) => {
+        const trimmed = block.trim();
+
+        // 1. Heading 3: ### Title
+        if (trimmed.startsWith("### ")) {
+          return (
+            <div key={idx} className="pt-5 border-b border-slate-200 dark:border-white/[0.08] pb-2.5">
+              <h2 className="text-xl md:text-2xl font-black theme-heading tracking-tight flex items-center gap-2">
+                <span className="w-2 h-6 rounded-full bg-[#04AA6D]" />
+                <span>{trimmed.replace("### ", "")}</span>
+              </h2>
+            </div>
+          );
+        }
+
+        // 2. Heading 4: #### Subtitle
+        if (trimmed.startsWith("#### ")) {
+          return (
+            <h3 key={idx} className="text-base md:text-lg font-bold text-[#04AA6D] pt-3 tracking-tight flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#04AA6D]" />
+              <span>{trimmed.replace("#### ", "")}</span>
+            </h3>
+          );
+        }
+
+        // 3. Blockquote: > Note / Warning
+        if (trimmed.startsWith("> ")) {
+          const cleanText = trimmed.replace(/^>\s*/gm, "");
+          return (
+            <div
+              key={idx}
+              className="bg-emerald-500/[0.07] dark:bg-emerald-500/[0.1] border-l-4 border-[#04AA6D] p-4 rounded-r-xl text-xs md:text-sm theme-heading space-y-1 my-3 shadow-sm flex items-start gap-3"
+            >
+              <Info size={18} className="text-[#04AA6D] shrink-0 mt-0.5" />
+              <div className="flex-1 leading-relaxed">
+                {cleanText.split("\n").map((line, lIdx) => (
+                  <p key={lIdx}>{renderInlineFormatted(line)}</p>
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        // 4. Code Block: ```go ... ```
+        if (trimmed.startsWith("```")) {
+          const codeLines = trimmed.replace(/```go|```/g, "").trim();
+          return (
+            <div key={idx} className="my-3">
+              <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto shadow-inner leading-relaxed">
+                {codeLines}
+              </pre>
+            </div>
+          );
+        }
+
+        // 5. Markdown Table: | Col1 | Col2 |
+        if (trimmed.startsWith("|") && trimmed.includes("\n|")) {
+          const tableLines = trimmed.split("\n").filter((l) => l.trim().startsWith("|"));
+          if (tableLines.length >= 2) {
+            const headerCols = tableLines[0].split("|").filter((c) => c.trim()).map((c) => c.trim());
+            const bodyRows = tableLines.slice(2).map((row) =>
+              row.split("|").filter((c) => c.trim()).map((c) => c.trim())
+            );
+
+            return (
+              <div key={idx} className="overflow-x-auto my-4 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm">
+                <table className="w-full text-left text-xs md:text-sm">
+                  <thead className="theme-card-subtle theme-heading border-b border-slate-200 dark:border-white/10 font-bold">
+                    <tr>
+                      {headerCols.map((h, hIdx) => (
+                        <th key={hIdx} className="p-3">{renderInlineFormatted(h)}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 dark:divide-white/5 font-mono text-xs">
+                    {bodyRows.map((r, rIdx) => (
+                      <tr key={rIdx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
+                        {r.map((cell, cIdx) => (
+                          <td key={cIdx} className="p-3 theme-body">{renderInlineFormatted(cell)}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          }
+        }
+
+        // 6. Unordered List: - item / * item
+        if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+          const items = trimmed.split("\n").filter((l) => l.trim().startsWith("- ") || l.trim().startsWith("* "));
+          return (
+            <ul key={idx} className="space-y-2 my-2 pl-1">
+              {items.map((item, itemIdx) => {
+                const textOnly = item.replace(/^[-*]\s+/, "");
+                return (
+                  <li key={itemIdx} className="flex items-start gap-2.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#04AA6D] shrink-0 mt-2" />
+                    <span className="flex-1">{renderInlineFormatted(textOnly)}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          );
+        }
+
+        // 7. Ordered List: 1. item
+        if (/^\d+\.\s+/.test(trimmed)) {
+          const items = trimmed.split("\n").filter((l) => /^\d+\.\s+/.test(l.trim()));
+          return (
+            <ol key={idx} className="space-y-2.5 my-2 pl-1">
+              {items.map((item, itemIdx) => {
+                const textOnly = item.replace(/^\d+\.\s+/, "");
+                return (
+                  <li key={itemIdx} className="flex items-start gap-3">
+                    <span className="w-5 h-5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 font-mono">
+                      {itemIdx + 1}
+                    </span>
+                    <span className="flex-1">{renderInlineFormatted(textOnly)}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          );
+        }
+
+        // 8. Regular Paragraph
+        return (
+          <p key={idx} className="leading-relaxed">
+            {renderInlineFormatted(trimmed)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function W3TutorialReader({
   currentLessonId,
@@ -155,8 +339,9 @@ export default function W3TutorialReader({
     <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 space-y-8">
       {/* Top Breadcrumb & Navigation */}
       <div className="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/[0.08] pb-4">
-        <div className="text-xs font-bold theme-muted">
-          <span>{currentModule.title}</span> &gt;{" "}
+        <div className="text-xs font-bold theme-muted flex items-center gap-1.5 flex-wrap">
+          <span>{currentModule.title}</span>
+          <span>&gt;</span>
           <span className="text-[#04AA6D]">{currentLesson.title}</span>
         </div>
 
@@ -183,67 +368,36 @@ export default function W3TutorialReader({
         </div>
       </div>
 
-      {/* Main Title Header */}
-      <div className="space-y-2">
-        <h1 className="text-2xl md:text-4xl font-extrabold theme-heading tracking-tight">
+      {/* Main Title Header with Modern Typography */}
+      <div className="space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-mono text-xs font-bold">
+          <BookOpen size={13} />
+          <span>Pelajaran {currentLesson.id}</span>
+        </div>
+
+        <h1 className="text-3xl md:text-5xl font-black theme-heading tracking-tight">
           {currentLesson.title}
         </h1>
-        <p className="text-sm md:text-base theme-muted leading-relaxed">
+
+        <p className="text-sm md:text-base theme-muted leading-relaxed font-normal">
           {currentLesson.summary}
         </p>
       </div>
 
-      {/* Tutorial Content Body (W3 Typography) */}
-      <div className="space-y-6 text-sm md:text-base theme-body leading-relaxed">
-        {currentLesson.content.split("\n\n").map((para, idx) => {
-          if (para.startsWith("### ")) {
-            return (
-              <h2 key={idx} className="text-xl md:text-2xl font-black theme-heading pt-4 border-b border-slate-200 dark:border-white/[0.08] pb-2">
-                {para.replace("### ", "")}
-              </h2>
-            );
-          }
-          if (para.startsWith("#### ")) {
-            return (
-              <h3 key={idx} className="text-lg font-bold text-[#04AA6D] pt-2">
-                {para.replace("#### ", "")}
-              </h3>
-            );
-          }
-          if (para.startsWith("> ")) {
-            return (
-              <div
-                key={idx}
-                className="bg-amber-500/[0.08] border-l-4 border-amber-500 p-4 rounded-r-xl text-xs md:text-sm text-amber-900 dark:text-amber-200 space-y-1"
-              >
-                {para.replace("> ", "")}
-              </div>
-            );
-          }
-          if (para.startsWith("```")) {
-            return (
-              <pre
-                key={idx}
-                className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto shadow-inner leading-relaxed"
-              >
-                {para.replace(/```go|```/g, "").trim()}
-              </pre>
-            );
-          }
-          return <p key={idx}>{para}</p>;
-        })}
-      </div>
+      {/* Tutorial Content Body with Rich Typography & Markdown Formatting */}
+      <RichContentRenderer content={currentLesson.content} />
 
       {/* W3 Example Box with BOTH "Run Direct" & "Try it Yourself »" */}
       <div className="w3-example-box space-y-4 shadow-sm">
         <div className="flex items-center justify-between">
-          <h3 className="text-base md:text-lg font-black theme-heading">
-            Go Example:
+          <h3 className="text-base md:text-lg font-black theme-heading flex items-center gap-2">
+            <Code size={18} className="text-[#04AA6D]" />
+            <span>Go Example:</span>
           </h3>
           <span className="text-xs font-mono theme-muted">main.go</span>
         </div>
 
-        <pre className="bg-white dark:bg-[#070d19] text-slate-900 dark:text-emerald-400 p-4 rounded-lg border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto leading-relaxed shadow-inner">
+        <pre className="bg-white dark:bg-[#070d19] text-slate-900 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto leading-relaxed shadow-inner">
           {currentLesson.codeSnippet}
         </pre>
 

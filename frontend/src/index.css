@@ -38,7 +38,7 @@
   html, body, #root {
     background-color: var(--bg-app) !important;
     color: var(--text-body);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     min-height: 100vh;
     transition: background-color 0.2s ease, color 0.2s ease;
   }
@@ -89,8 +89,8 @@
   border-top: 1px solid var(--border-subtle);
   border-right: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  padding: 18px 20px;
+  border-radius: 12px;
+  padding: 20px 24px;
 }
 
 .w3-btn-green {
@@ -110,7 +110,7 @@
   color: #ffffff;
   font-weight: 700;
   padding: 8px 18px;
-  border-radius: 6px;
+  border-radius: 8px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -126,4 +126,20 @@
   background: linear-gradient(135deg, #00ADD8 0%, #04AA6D 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Inline Code Badge */
+.inline-code {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85em;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background-color: var(--bg-surface-subtle);
+  color: #e11d48;
+  border: 1px solid var(--border-subtle);
+}
+
+[data-theme="dark"] .inline-code {
+  color: #fb7185;
 }
