@@ -95,7 +95,7 @@ db.Delete(&user, ${id})`);
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/[0.08] pb-6">
         <div>
-          <div className="flex items-center gap-2 text-pink-500 font-bold text-xs uppercase tracking-wider mb-1.5">
+          <div className="flex items-center gap-2 text-[#04AA6D] font-bold text-xs uppercase tracking-wider mb-1.5">
             <Database size={14} />
             <span>Interactive ORM Lab</span>
           </div>
@@ -109,36 +109,36 @@ db.Delete(&user, ${id})`);
 
         <button
           onClick={handleResetDb}
-          className="px-4 py-2 rounded-xl theme-card theme-heading text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+          className="px-4 py-2 rounded-lg theme-card theme-heading text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
         >
           <RotateCcw size={14} /> Reset Database
         </button>
       </div>
 
       {/* Query Presets Toolbar */}
-      <div className="flex items-center gap-2 flex-wrap theme-card p-2.5 rounded-2xl shadow-md">
+      <div className="flex items-center gap-2 flex-wrap theme-card p-2.5 rounded-xl shadow-md">
         <span className="text-xs theme-muted font-bold px-2">GORM Presets:</span>
         <button
           onClick={handleRunCreate}
-          className="px-3.5 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+          className="px-3.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
         >
           <Plus size={14} /> db.Create(&User)
         </button>
         <button
           onClick={handleRunFind}
-          className="px-3.5 py-2 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-600 dark:text-sky-300 hover:bg-sky-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+          className="px-3.5 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-600 dark:text-sky-300 hover:bg-sky-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
         >
           <Search size={14} /> db.Where().Find()
         </button>
         <button
           onClick={() => handleRunUpdate(1)}
-          className="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-300 hover:bg-amber-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+          className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-300 hover:bg-amber-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
         >
           <Edit3 size={14} /> db.Model().Update()
         </button>
         <button
           onClick={() => handleRunSoftDelete(2)}
-          className="px-3.5 py-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 hover:bg-rose-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+          className="px-3.5 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-300 hover:bg-rose-500/20 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
         >
           <Trash2 size={14} /> db.Delete(&User)
         </button>
@@ -146,26 +146,26 @@ db.Delete(&user, ${id})`);
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Live Visual Table (7 cols) */}
-        <div className="lg:col-span-7 theme-card rounded-3xl p-7 space-y-4 shadow-md">
+        <div className="lg:col-span-7 theme-card rounded-2xl p-6 space-y-4 shadow-md">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-extrabold theme-heading flex items-center gap-2">
-              <TableIcon size={16} className="text-[#00ADD8]" /> Tabel `users` (SQLite Engine)
+              <TableIcon size={16} className="text-[#04AA6D]" /> Tabel `users` (SQLite Engine)
             </h3>
             <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
               {users.filter((u) => !u.deleted_at).length} Active Records
             </span>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl theme-inset shadow-inner">
+          <div className="overflow-x-auto rounded-xl theme-inset shadow-inner">
             <table className="w-full text-left text-xs font-mono">
               <thead className="theme-card-subtle theme-muted border-b border-slate-200 dark:border-white/10 uppercase text-[10px] tracking-wider">
                 <tr>
-                  <th className="p-3.5">ID</th>
-                  <th className="p-3.5">Name</th>
-                  <th className="p-3.5">Email</th>
-                  <th className="p-3.5">Role</th>
-                  <th className="p-3.5">DeletedAt (Soft)</th>
-                  <th className="p-3.5 text-right">Actions</th>
+                  <th className="p-3">ID</th>
+                  <th className="p-3">Name</th>
+                  <th className="p-3">Email</th>
+                  <th className="p-3">Role</th>
+                  <th className="p-3">DeletedAt (Soft)</th>
+                  <th className="p-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-white/5">
@@ -178,35 +178,35 @@ db.Delete(&user, ${id})`);
                         isDeleted ? "opacity-40 line-through bg-rose-500/5" : ""
                       }`}
                     >
-                      <td className="p-3.5 font-bold text-[#00ADD8]">#{u.id}</td>
-                      <td className="p-3.5 font-bold theme-heading">{u.name}</td>
-                      <td className="p-3.5 theme-body">{u.email}</td>
-                      <td className="p-3.5">
-                        <span className="px-2.5 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 font-medium">
+                      <td className="p-3 font-bold text-[#04AA6D]">#{u.id}</td>
+                      <td className="p-3 font-bold theme-heading">{u.name}</td>
+                      <td className="p-3 theme-body">{u.email}</td>
+                      <td className="p-3">
+                        <span className="px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 font-medium">
                           {u.role}
                         </span>
                       </td>
-                      <td className="p-3.5 theme-muted text-[11px]">
+                      <td className="p-3 theme-muted text-[11px]">
                         {u.deleted_at ? (
                           <span className="text-rose-500 font-bold">{u.deleted_at}</span>
                         ) : (
                           "NULL (Aktif)"
                         )}
                       </td>
-                      <td className="p-3.5 text-right space-x-1.5">
+                      <td className="p-3 text-right space-x-1.5">
                         {!isDeleted ? (
                           <>
                             <button
                               onClick={() => handleRunUpdate(u.id)}
                               title="Update Role"
-                              className="p-1.5 rounded-lg hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 transition-colors"
+                              className="p-1.5 rounded-lg hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 transition-colors cursor-pointer"
                             >
                               <Edit3 size={13} />
                             </button>
                             <button
                               onClick={() => handleRunSoftDelete(u.id)}
                               title="Soft Delete"
-                              className="p-1.5 rounded-lg hover:bg-rose-500/20 text-rose-600 dark:text-rose-300 transition-colors"
+                              className="p-1.5 rounded-lg hover:bg-rose-500/20 text-rose-600 dark:text-rose-300 transition-colors cursor-pointer"
                             >
                               <Trash2 size={13} />
                             </button>
@@ -222,16 +222,16 @@ db.Delete(&user, ${id})`);
             </table>
           </div>
 
-          <div className="p-3.5 rounded-2xl theme-card-subtle text-xs theme-body flex items-center gap-2">
-            <CheckCircle2 size={15} className="text-emerald-500 shrink-0" />
+          <div className="p-3.5 rounded-xl theme-card-subtle text-xs theme-body flex items-center gap-2">
+            <CheckCircle2 size={15} className="text-[#04AA6D] shrink-0" />
             <span>{lastActionMessage}</span>
           </div>
         </div>
 
         {/* Right: Code & Generated SQL Inspector (5 cols) */}
-        <div className="lg:col-span-5 theme-card rounded-3xl p-7 space-y-5 flex flex-col shadow-md">
+        <div className="lg:col-span-5 theme-card rounded-2xl p-6 space-y-5 flex flex-col shadow-md">
           <h3 className="text-base font-extrabold theme-heading flex items-center gap-2">
-            <Sparkles size={16} className="text-pink-500" /> GORM Code & SQL Inspector
+            <Sparkles size={16} className="text-[#04AA6D]" /> GORM Code & SQL Inspector
           </h3>
 
           {/* GORM Code */}
@@ -239,7 +239,7 @@ db.Delete(&user, ${id})`);
             <span className="text-xs theme-muted font-bold uppercase tracking-wider">
               1. Golang GORM Method Call:
             </span>
-            <pre className="bg-slate-900 text-emerald-400 p-4 rounded-2xl border border-slate-800 font-mono text-xs overflow-x-auto whitespace-pre-wrap shadow-inner leading-relaxed">
+            <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs overflow-x-auto whitespace-pre-wrap shadow-inner leading-relaxed">
               {gormCode}
             </pre>
           </div>
@@ -249,13 +249,13 @@ db.Delete(&user, ${id})`);
             <span className="text-xs theme-muted font-bold uppercase tracking-wider">
               2. Generated Raw SQL Query:
             </span>
-            <pre className="bg-slate-900 text-pink-300 p-4 rounded-2xl border border-pink-500/30 font-mono text-xs overflow-x-auto whitespace-pre-wrap shadow-inner leading-relaxed">
+            <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-pink-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs overflow-x-auto whitespace-pre-wrap shadow-inner leading-relaxed">
               {generatedSql}
             </pre>
           </div>
 
-          <div className="p-4 rounded-2xl theme-card-subtle text-xs theme-body space-y-1 leading-relaxed">
-            <span className="font-bold text-pink-500">💡 Fitur Soft Delete GORM:</span>
+          <div className="p-4 rounded-xl theme-card-subtle text-xs theme-body space-y-1 leading-relaxed">
+            <span className="font-bold text-[#04AA6D]">💡 Fitur Soft Delete GORM:</span>
             <p>
               Dengan menyematkan <code>gorm.Model</code>, GORM otomatis mengisi timestamp pada kolom <code>deleted_at</code> saat <code>db.Delete()</code> dipanggil.
             </p>

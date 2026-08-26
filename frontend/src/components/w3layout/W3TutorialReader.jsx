@@ -137,7 +137,7 @@ export default function W3TutorialReader({
             return (
               <pre
                 key={idx}
-                className="bg-slate-900 text-emerald-400 p-4 rounded-xl font-mono text-xs md:text-sm overflow-x-auto shadow-inner leading-relaxed"
+                className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto shadow-inner leading-relaxed"
               >
                 {para.replace(/```go|```/g, "").trim()}
               </pre>
@@ -183,8 +183,8 @@ export default function W3TutorialReader({
             {currentLesson.exercise.instruction}
           </p>
 
-          <div className="bg-slate-900 text-slate-100 p-4 rounded-xl font-mono text-xs md:text-sm overflow-x-auto">
-            <pre className="text-emerald-400">{currentLesson.exercise.starterCode}</pre>
+          <div className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto shadow-inner">
+            <pre>{currentLesson.exercise.starterCode}</pre>
           </div>
 
           <div className="pt-2 flex items-center justify-between flex-wrap gap-2">

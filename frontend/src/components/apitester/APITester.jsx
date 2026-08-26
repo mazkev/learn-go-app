@@ -117,7 +117,7 @@ export default function APITester() {
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/[0.08] pb-6">
         <div>
-          <div className="flex items-center gap-2 text-sky-500 font-bold text-xs uppercase tracking-wider mb-1.5">
+          <div className="flex items-center gap-2 text-[#04AA6D] font-bold text-xs uppercase tracking-wider mb-1.5">
             <Globe size={14} />
             <span>Interactive REST API Client</span>
           </div>
@@ -136,7 +136,7 @@ export default function APITester() {
               setMethod("GET");
               setEndpoint("/api/gophers");
             }}
-            className="px-3 py-1.5 rounded-xl bg-sky-500/10 border border-sky-500/30 text-sky-600 dark:text-sky-300 text-xs font-mono font-bold hover:bg-sky-500/20 transition-all"
+            className="px-3 py-1.5 rounded-lg bg-[#04AA6D]/10 border border-[#04AA6D]/30 text-[#04AA6D] text-xs font-mono font-bold hover:bg-[#04AA6D]/20 transition-all cursor-pointer"
           >
             GET /api/gophers
           </button>
@@ -145,7 +145,7 @@ export default function APITester() {
               setMethod("POST");
               setEndpoint("/api/gophers");
             }}
-            className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 text-xs font-mono font-bold hover:bg-emerald-500/20 transition-all"
+            className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 text-xs font-mono font-bold hover:bg-emerald-500/20 transition-all cursor-pointer"
           >
             POST /api/gophers
           </button>
@@ -154,7 +154,7 @@ export default function APITester() {
               setMethod("GET");
               setEndpoint("/api/gophers/1");
             }}
-            className="px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-600 dark:text-purple-300 text-xs font-mono font-bold hover:bg-purple-500/20 transition-all"
+            className="px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-600 dark:text-purple-300 text-xs font-mono font-bold hover:bg-purple-500/20 transition-all cursor-pointer"
           >
             GET /api/gophers/1
           </button>
@@ -163,17 +163,17 @@ export default function APITester() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Request Builder (6 cols) */}
-        <div className="lg:col-span-6 theme-card rounded-3xl p-7 space-y-5 shadow-md">
+        <div className="lg:col-span-6 theme-card rounded-2xl p-6 space-y-5 shadow-md">
           <h3 className="text-base font-extrabold theme-heading flex items-center gap-2">
-            <Send size={16} className="text-[#00ADD8]" /> HTTP Request Builder
+            <Send size={16} className="text-[#04AA6D]" /> HTTP Request Builder
           </h3>
 
           {/* Method & URL Input */}
-          <div className="flex items-center gap-2 theme-inset p-2 rounded-2xl shadow-inner">
+          <div className="flex items-center gap-2 theme-inset p-2 rounded-xl shadow-inner">
             <select
               value={method}
               onChange={(e) => setMethod(e.target.value)}
-              className={`font-black font-mono text-xs px-3 py-2 rounded-xl bg-transparent focus:outline-none ${
+              className={`font-black font-mono text-xs px-3 py-2 rounded-lg bg-transparent focus:outline-none ${
                 method === "GET"
                   ? "text-sky-600 dark:text-sky-400 bg-sky-500/15"
                   : method === "POST"
@@ -199,7 +199,7 @@ export default function APITester() {
             <button
               onClick={handleSendRequest}
               disabled={isLoading}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#00ADD8] to-[#0284C7] text-white font-extrabold text-xs flex items-center gap-1.5 shadow-md shadow-[#00ADD8]/25 hover:opacity-95 transition-all disabled:opacity-50"
+              className="w3-btn-green px-5 py-2 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
             >
               <Send size={13} />
               <span>{isLoading ? "Sending..." : "Send"}</span>
@@ -214,17 +214,17 @@ export default function APITester() {
                 value={requestBody}
                 onChange={(e) => setRequestBody(e.target.value)}
                 rows={6}
-                className="w-full bg-slate-900 text-emerald-400 border border-slate-800 rounded-2xl p-4 font-mono text-xs focus:outline-none focus:border-[#00ADD8] shadow-inner leading-relaxed"
+                className="w-full bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 border border-slate-200 dark:border-white/10 rounded-xl p-4 font-mono text-xs focus:outline-none focus:border-[#04AA6D] shadow-inner leading-relaxed"
               />
             </div>
           )}
 
           {/* Go Route Handler Preview */}
-          <div className="p-4 rounded-2xl theme-card-subtle space-y-2 text-xs theme-body">
-            <span className="font-bold text-[#00ADD8] flex items-center gap-1.5">
+          <div className="p-4 rounded-xl theme-card-subtle space-y-2 text-xs theme-body">
+            <span className="font-bold text-[#04AA6D] flex items-center gap-1.5">
               <Server size={14} /> Go Route Handler Preview:
             </span>
-            <pre className="font-mono text-[11px] bg-slate-900 text-slate-200 p-3 rounded-xl border border-slate-800 overflow-x-auto">
+            <pre className="font-mono text-[11px] bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-slate-200 p-3 rounded-lg border border-slate-200 dark:border-white/10 overflow-x-auto">
 {`mux := http.NewServeMux()
 mux.HandleFunc("${method} ${endpoint}", func(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
@@ -235,17 +235,17 @@ mux.HandleFunc("${method} ${endpoint}", func(w http.ResponseWriter, r *http.Requ
         </div>
 
         {/* Right: Response Viewer (6 cols) */}
-        <div className="lg:col-span-6 theme-card rounded-3xl p-7 space-y-5 flex flex-col shadow-md">
+        <div className="lg:col-span-6 theme-card rounded-2xl p-6 space-y-5 flex flex-col shadow-md">
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/[0.08] pb-3">
             <h3 className="text-base font-extrabold theme-heading flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-emerald-500" /> HTTP Response
+              <CheckCircle2 size={16} className="text-[#04AA6D]" /> HTTP Response
             </h3>
             <div className="flex items-center gap-2">
               <span
                 className={`text-xs font-mono font-bold px-3 py-1 rounded-full ${
                   response.status >= 200 && response.status < 300
-                    ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/40"
-                    : "bg-rose-500/20 text-rose-600 dark:text-rose-300 border border-rose-500/40"
+                    ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40"
+                    : "bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/40"
                 }`}
               >
                 {response.status} {response.statusText}
@@ -257,10 +257,10 @@ mux.HandleFunc("${method} ${endpoint}", func(w http.ResponseWriter, r *http.Requ
           {/* Response Headers */}
           <div className="space-y-1.5">
             <span className="text-[11px] theme-muted font-bold uppercase tracking-wider">Headers:</span>
-            <div className="theme-inset p-3 rounded-2xl font-mono text-[11px] theme-body space-y-0.5 shadow-inner">
+            <div className="theme-inset p-3 rounded-xl font-mono text-[11px] theme-body space-y-0.5 shadow-inner">
               {Object.entries(response.headers).map(([k, v]) => (
                 <div key={k}>
-                  <span className="text-sky-600 dark:text-sky-400 font-bold">{k}</span>: {v}
+                  <span className="text-[#04AA6D] font-bold">{k}</span>: {v}
                 </div>
               ))}
             </div>
@@ -269,7 +269,7 @@ mux.HandleFunc("${method} ${endpoint}", func(w http.ResponseWriter, r *http.Requ
           {/* Response JSON Body */}
           <div className="space-y-1.5 flex-1 flex flex-col min-h-0">
             <span className="text-[11px] theme-muted font-bold uppercase tracking-wider">Response JSON Body:</span>
-            <div className="bg-slate-900 text-emerald-400 p-4 rounded-2xl border border-slate-800 font-mono text-xs overflow-y-auto flex-1 max-h-[300px] shadow-inner leading-relaxed">
+            <div className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs overflow-y-auto flex-1 max-h-[300px] shadow-inner leading-relaxed">
               <pre>{JSON.stringify(response.body, null, 2)}</pre>
             </div>
           </div>

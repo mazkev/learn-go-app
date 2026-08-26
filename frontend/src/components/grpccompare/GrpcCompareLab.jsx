@@ -42,7 +42,6 @@ export default function GrpcCompareLab() {
     setIsBenchmarking(true);
 
     setTimeout(() => {
-      // Perhitungan realistis berdasarkan recordCount dan latency
       const factor = recordCount / 1000;
       const baseJsonKb = (184.5 * factor).toFixed(1);
       const baseGrpcKb = (26.8 * factor).toFixed(1);
@@ -89,7 +88,7 @@ export default function GrpcCompareLab() {
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/[0.08] pb-6">
         <div>
-          <div className="flex items-center gap-2 text-indigo-500 font-bold text-xs uppercase tracking-wider mb-1.5">
+          <div className="flex items-center gap-2 text-[#04AA6D] font-bold text-xs uppercase tracking-wider mb-1.5">
             <Zap size={14} />
             <span>Interactive Microservices Lab</span>
           </div>
@@ -102,12 +101,12 @@ export default function GrpcCompareLab() {
         </div>
 
         {/* View Tabs */}
-        <div className="flex items-center gap-1.5 theme-card-subtle p-1.5 rounded-2xl shadow-sm">
+        <div className="flex items-center gap-1.5 theme-card-subtle p-1.5 rounded-xl shadow-sm">
           <button
             onClick={() => setActiveTab("benchmark")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === "benchmark"
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/25"
+                ? "bg-[#04AA6D] text-white shadow-sm"
                 : "theme-muted hover:theme-heading"
             }`}
           >
@@ -115,9 +114,9 @@ export default function GrpcCompareLab() {
           </button>
           <button
             onClick={() => setActiveTab("inspector")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === "inspector"
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/25"
+                ? "bg-[#04AA6D] text-white shadow-sm"
                 : "theme-muted hover:theme-heading"
             }`}
           >
@@ -125,9 +124,9 @@ export default function GrpcCompareLab() {
           </button>
           <button
             onClick={() => setActiveTab("proto")}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === "proto"
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/25"
+                ? "bg-[#04AA6D] text-white shadow-sm"
                 : "theme-muted hover:theme-heading"
             }`}
           >
@@ -140,12 +139,12 @@ export default function GrpcCompareLab() {
       {activeTab === "benchmark" && (
         <div className="space-y-6">
           {/* Controls Bar */}
-          <div className="theme-card rounded-3xl p-6 shadow-md grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <div className="theme-card rounded-2xl p-6 shadow-md grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
             {/* Record Count Slider */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold theme-heading">Jumlah Records:</span>
-                <span className="font-mono font-bold text-indigo-500">
+                <span className="font-mono font-bold text-[#04AA6D]">
                   {recordCount.toLocaleString()} entitas
                 </span>
               </div>
@@ -156,7 +155,7 @@ export default function GrpcCompareLab() {
                 step="500"
                 value={recordCount}
                 onChange={(e) => setRecordCount(parseInt(e.target.value))}
-                className="w-full accent-indigo-600 cursor-pointer"
+                className="w-full accent-[#04AA6D] cursor-pointer"
               />
             </div>
 
@@ -164,12 +163,12 @@ export default function GrpcCompareLab() {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold theme-heading">Simulasi Jaringan:</span>
-                <span className="font-mono font-bold text-[#00ADD8]">{networkLatency} ms</span>
+                <span className="font-mono font-bold text-[#04AA6D]">{networkLatency} ms</span>
               </div>
               <select
                 value={networkLatency}
                 onChange={(e) => setNetworkLatency(parseInt(e.target.value))}
-                className="w-full theme-inset theme-heading text-xs font-semibold rounded-xl p-2.5 shadow-inner focus:outline-none"
+                className="w-full theme-inset theme-heading text-xs font-semibold rounded-lg p-2.5 shadow-inner focus:outline-none cursor-pointer"
               >
                 <option value="1">Localhost / Cloud VPC (1 ms)</option>
                 <option value="15">4G LTE Mobile (15 ms)</option>
@@ -182,7 +181,7 @@ export default function GrpcCompareLab() {
               <button
                 onClick={handleRunBenchmark}
                 disabled={isBenchmarking}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-[#00ADD8] text-white font-black text-xs flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/25 hover:opacity-95 transition-all disabled:opacity-50 cursor-pointer"
+                className="w-full py-2.5 rounded-lg w3-btn-green font-bold text-xs flex items-center justify-center gap-2 shadow-md cursor-pointer disabled:opacity-50"
               >
                 <Play size={14} className={isBenchmarking ? "animate-spin" : "fill-white"} />
                 <span>{isBenchmarking ? "Menguji Throughput..." : "Jalankan Benchmark Real-time"}</span>
@@ -193,7 +192,7 @@ export default function GrpcCompareLab() {
           {/* Key Metric Highlights */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Bandwidth Savings Card */}
-            <div className="theme-card rounded-3xl p-6 border-l-4 border-l-emerald-500 shadow-md space-y-2">
+            <div className="theme-card rounded-2xl p-6 border-l-4 border-l-emerald-500 shadow-md space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs theme-muted font-bold uppercase tracking-wider">
                   Penghematan Bandwidth
@@ -214,12 +213,12 @@ export default function GrpcCompareLab() {
             </div>
 
             {/* Speed Factor Card */}
-            <div className="theme-card rounded-3xl p-6 border-l-4 border-l-[#00ADD8] shadow-md space-y-2">
+            <div className="theme-card rounded-2xl p-6 border-l-4 border-l-[#04AA6D] shadow-md space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs theme-muted font-bold uppercase tracking-wider">
                   Kecepatan Eksekusi & Transfer
                 </span>
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#00ADD8]/15 text-[#00ADD8] font-black font-mono">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-black font-mono">
                   {speedImprovement}x Lebih Cepat
                 </span>
               </div>
@@ -238,7 +237,7 @@ export default function GrpcCompareLab() {
           {/* Deep Breakdown Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* REST JSON Breakdown */}
-            <div className="theme-card rounded-3xl p-6 space-y-4 shadow-md">
+            <div className="theme-card rounded-2xl p-6 space-y-4 shadow-md">
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/[0.08] pb-3">
                 <div className="flex items-center gap-2">
                   <Globe size={18} className="text-amber-500" />
@@ -272,10 +271,10 @@ export default function GrpcCompareLab() {
             </div>
 
             {/* gRPC Protobuf Breakdown */}
-            <div className="theme-card rounded-3xl p-6 space-y-4 shadow-md border border-indigo-500/30">
+            <div className="theme-card rounded-2xl p-6 space-y-4 shadow-md border border-[#04AA6D]/30">
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/[0.08] pb-3">
                 <div className="flex items-center gap-2">
-                  <Zap size={18} className="text-indigo-500" />
+                  <Zap size={18} className="text-[#04AA6D]" />
                   <h3 className="font-extrabold theme-heading text-sm">gRPC (Protobuf / HTTP 2.0)</h3>
                 </div>
                 <span className="text-xs font-mono font-bold text-emerald-500">Enterprise High-Perf</span>
@@ -292,7 +291,7 @@ export default function GrpcCompareLab() {
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
                   <span className="theme-muted">Network Latency & Multiplex</span>
-                  <span className="font-bold text-indigo-500">{results.grpc.transferTimeMs} ms</span>
+                  <span className="font-bold text-[#04AA6D]">{results.grpc.transferTimeMs} ms</span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-100 dark:border-white/5">
                   <span className="theme-muted">Estimasi CPU Overhead</span>
@@ -312,7 +311,7 @@ export default function GrpcCompareLab() {
       {activeTab === "inspector" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* JSON Inspector */}
-          <div className="theme-card rounded-3xl p-6 space-y-3 shadow-md">
+          <div className="theme-card rounded-2xl p-6 space-y-3 shadow-md">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold theme-heading uppercase tracking-wider">
                 1. REST API Teks JSON (Banyak Overhead Key)
@@ -320,7 +319,7 @@ export default function GrpcCompareLab() {
               <span className="text-[11px] font-mono text-amber-500 font-bold">185 Bytes/Record</span>
             </div>
 
-            <pre className="bg-slate-900 text-amber-300 p-4 rounded-2xl border border-slate-800 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
+            <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-amber-300 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
 {`{
   "user_id": 88401,
   "full_name": "Ahmad Gopher",
@@ -335,7 +334,7 @@ export default function GrpcCompareLab() {
           </div>
 
           {/* Protobuf Inspector */}
-          <div className="theme-card rounded-3xl p-6 space-y-3 shadow-md border border-indigo-500/30">
+          <div className="theme-card rounded-2xl p-6 space-y-3 shadow-md border border-[#04AA6D]/30">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold theme-heading uppercase tracking-wider">
                 2. gRPC Protocol Buffer Stream (Raw Binary Hex)
@@ -343,7 +342,7 @@ export default function GrpcCompareLab() {
               <span className="text-[11px] font-mono text-emerald-500 font-bold">28 Bytes/Record</span>
             </div>
 
-            <pre className="bg-slate-900 text-emerald-400 p-4 rounded-2xl border border-indigo-900 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
+            <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
 {`08 F1 B2 05 12 0C 41 68 6D 61 64 20 47 6F 70 68
 65 72 1A 0E 61 68 6D 61 64 40 6D 61 69 6C 2E 63
 6F 6D 20 01 28 92 13`}
@@ -359,11 +358,11 @@ export default function GrpcCompareLab() {
       {activeTab === "proto" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Proto Definition */}
-          <div className="lg:col-span-5 theme-card rounded-3xl p-6 space-y-3 shadow-md">
+          <div className="lg:col-span-5 theme-card rounded-2xl p-6 space-y-3 shadow-md">
             <span className="text-xs font-bold theme-heading uppercase tracking-wider">
               1. File Definisi Kontrak: <code>user.proto</code>
             </span>
-            <pre className="bg-slate-900 text-sky-300 p-4 rounded-2xl border border-slate-800 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
+            <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-sky-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
 {`syntax = "proto3";
 
 package user;
@@ -387,11 +386,11 @@ message UserResponse {
           </div>
 
           {/* Generated Go Server Implementation */}
-          <div className="lg:col-span-7 theme-card rounded-3xl p-6 space-y-3 shadow-md">
+          <div className="lg:col-span-7 theme-card rounded-2xl p-6 space-y-3 shadow-md">
             <span className="text-xs font-bold theme-heading uppercase tracking-wider">
               2. Implementasi gRPC Server di Golang: <code>server.go</code>
             </span>
-            <pre className="bg-slate-900 text-emerald-400 p-4 rounded-2xl border border-slate-800 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
+            <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs overflow-x-auto leading-relaxed shadow-inner">
 {`package main
 
 import (

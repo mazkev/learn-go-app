@@ -163,22 +163,24 @@ export default function W3TryItStudio({
           </div>
         </div>
 
-        {/* Right: Terminal Output Result */}
-        <div className="flex flex-col min-h-0 bg-slate-950 text-slate-100">
-          <div className="px-4 py-1.5 bg-slate-900 border-b border-slate-800 text-xs font-mono font-bold text-slate-300 flex items-center justify-between shrink-0">
+        {/* Right: Result Pane (Adaptive Light/Dark W3 Style) */}
+        <div className="flex flex-col min-h-0 bg-white dark:bg-[#0b1120] text-slate-900 dark:text-slate-100">
+          <div className="px-4 py-1.5 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-white/10 text-xs font-mono font-bold theme-muted flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <Terminal size={14} className="text-[#04AA6D]" />
-              <span>Result Output:</span>
+              <span className="theme-heading">Result Output:</span>
             </div>
             {output.executionTime && (
-              <span className="text-[11px] text-emerald-400">⏱ {output.executionTime}</span>
+              <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">⏱ {output.executionTime}</span>
             )}
           </div>
 
           <div className="p-4 flex-1 overflow-y-auto font-mono text-xs shadow-inner">
             <pre
               className={`whitespace-pre-wrap leading-relaxed ${
-                output.isError ? "text-rose-400" : "text-emerald-400"
+                output.isError
+                  ? "text-rose-600 dark:text-rose-400 font-semibold"
+                  : "text-slate-800 dark:text-emerald-400"
               }`}
             >
               {output.text}
