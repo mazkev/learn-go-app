@@ -363,19 +363,86 @@ func main() {
       {
         id: "2-2",
         title: "2.2 Map (Key - Value Hash Table)",
-        summary: "Membuat map, CRUD key-value, pengecekan eksistensi key (comma ok idiom).",
-        content: `### 🗺️ Map di Go
-Map adalah struktur data kumpulan pasangan *Key-Value* yang cepat dan tidak berurutan (*hash map*).
+        summary: "Struktur data pasangan Kunci-Nilai untuk pencarian data instan, operasi CRUD, dan teknik Comma-Ok Idiom.",
+        content: `### 🗺️ Memahami Konsep Map (Kunci - Nilai)
+Bayangkan sebuah **Buku Kontak Telepon**: Kuncinya (*Key*) adalah nama teman Anda (misal \`"Budi"\`), dan nilainya (*Value*) adalah nomor teleponnya (misal \`"0812345678"\`).
 
-#### 🛠️ Operasi Map:
-- **Inisialisasi**: \`make(map[KeyType]ValueType)\` atau map literal.
-- **Set/Update**: \`kamus["go"] = "Bahasa cepat"\`
-- **Delete**: \`delete(kamus, "go")\`
-- **Check Key Existence (Comma-ok idiom)**:
+Jika pada Array atau Slice kita mencari data berdasarkan nomor urut indeks angka (\`data[0]\`, \`data[1]\`), pada **Map** kita bisa mencari data secara instan menggunakan **kata kunci teks, ID, atau tipe data apa pun** tanpa perlu melakukan looping satu per satu.
+
+---
+
+### 🛠️ Cara Membuat Map di Go
+
+Ada 2 cara utama untuk membuat map:
+
+#### 1. Map Literal (Langsung Isi Nilai Awal):
 \`\`\`go
-nilai, ada := kamus["go"]
+hargaBarang := map[string]int{
+    "Laptop":   12000000,
+    "Keyboard": 750000,
+    "Mouse":    300000,
+}
+\`\`\`
+
+#### 2. Menggunakan Fungsi \`make()\` (Membuat Map Kosong):
+\`\`\`go
+// Format: make(map[TipeKey]TipeValue)
+skorGame := make(map[string]int)
+skorGame["Alex"] = 1500 // Menambah data baru
+\`\`\`
+
+> ⚠️ **Penting:** Jangan membuat map hanya dengan \`var data map[string]int\` tanpa \`make()\`. Deklarasi tersebut menghasilkan *nil map*, dan jika Anda mencoba mengisi data ke *nil map*, program akan **panic (crash)**!
+
+---
+
+### 📋 4 Operasi Dasar Map (CRUD)
+
+1. **Tambah / Ubah Data**: Cukup tentukan kuncinya. Jika kunci belum ada data akan dibuat, jika kunci sudah ada nilainya akan diperbarui:
+   \`\`\`go
+   skor["Budi"] = 90  // Tambah baru
+   skor["Budi"] = 95  // Update nilai lama
+   \`\`\`
+2. **Membaca Data**: Ambil nilai dengan menyebut kuncinya:
+   \`\`\`go
+   fmt.Println(skor["Budi"]) // Output: 95
+   \`\`\`
+3. **Menghapus Data**: Gunakan fungsi bawaan \`delete(map, key)\`:
+   \`\`\`go
+   delete(skor, "Budi") // Menghapus Budi dari map
+   \`\`\`
+4. **Mengetahui Jumlah Data**: Gunakan fungsi \`len(map)\`.
+
+---
+
+### 🔍 Membongkar Misteri: "Comma-Ok Idiom"
+
+Di Go, jika Anda mencoba mengambil data dengan kunci yang **tidak pernah didaftarkan**, Go **tidak akan error**, melainkan mengembalikan nilai default (*zero-value*, yaitu angka \`0\` untuk int, \`""\` untuk string, atau \`false\` untuk bool).
+
+**Pertanyaan Kritis:** Bagaimana cara kita membedakan antara:
+- *Kasus 1:* Siswa bernama "Zul" memang memiliki nilai **0**.
+- *Kasus 2:* Nama "Zul" sebenarnya **sama sekali tidak terdaftar** di kelas?
+
+**Solusi Idiomatik Go (Comma-Ok Idiom):**
+Ketika kita membaca map, kita bisa menangkap **2 variabel sekaligus**: nilai datanya dan status keberadaannya (\`true\`/\`false\`):
+
+\`\`\`go
+nilai, ada := skor["Zul"]
+
 if ada {
-    fmt.Println("Ditemukan:", nilai)
+    fmt.Printf("Siswa ditemukan dengan nilai: %d\n", nilai)
+} else {
+    fmt.Println("Siswa tidak ditemukan di data absensi!")
+}
+\`\`\`
+
+---
+
+### 🔄 Perulangan (Loop) Map dengan \`for range\`
+Anda dapat menjelajahi seluruh isi map menggunakan \`for ... range\`. Perlu diingat bahwa urutan data di dalam map bersifat acak (*unordered*):
+
+\`\`\`go
+for nama, nilai := range skor {
+    fmt.Printf("Nama: %s -> Skor: %d\n", nama, nilai)
 }
 \`\`\``,
         codeSnippet: `package main
