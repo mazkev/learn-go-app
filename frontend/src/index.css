@@ -15,7 +15,7 @@
     --text-muted: #64748b;
     --w3-green: #04AA6D;
     --w3-green-hover: #059862;
-    --w3-code-bg: #1e293b;
+    --w3-code-bg: #f1f5f9;
   }
 
   [data-theme="dark"] {
@@ -35,11 +35,12 @@
     --w3-code-bg: #070d19;
   }
 
-  body {
-    background-color: var(--bg-app);
+  html, body, #root {
+    background-color: var(--bg-app) !important;
     color: var(--text-body);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     min-height: 100vh;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 }
 
