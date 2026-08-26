@@ -3,11 +3,7 @@ import Navbar from "./components/common/Navbar";
 import W3Sidebar from "./components/w3layout/W3Sidebar";
 import W3TutorialReader from "./components/w3layout/W3TutorialReader";
 import W3TryItStudio from "./components/w3layout/W3TryItStudio";
-import CleanArchLab from "./components/cleanarch/CleanArchLab";
-import ConcurrencyVisualizer from "./components/visualizer/ConcurrencyVisualizer";
-import APITester from "./components/apitester/APITester";
-import GrpcCompareLab from "./components/grpccompare/GrpcCompareLab";
-import GormLab from "./components/gormlab/GormLab";
+import LabsHub from "./components/labs/LabsHub";
 import InterviewPrepLab from "./components/interview/InterviewPrepLab";
 import CheatSheet from "./components/cheatsheet/CheatSheet";
 import { useLearningProgress } from "./store/learningStore";
@@ -67,7 +63,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col selection:bg-[#04AA6D]/20 selection:text-[#04AA6D]">
-      {/* Top Header Navbar */}
+      {/* Top Header Navbar (4 Primary Hubs) */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={(tab) => {
@@ -83,7 +79,7 @@ export default function App() {
 
       {/* Main App Body */}
       <div className="flex-1 flex min-h-0">
-        {/* W3 Tutorial Mode */}
+        {/* Hub 1: W3 Tutorial Mode */}
         {activeTab === "tutorial" && (
           <>
             {!isTryItMode ? (
@@ -124,43 +120,21 @@ export default function App() {
           </>
         )}
 
-        {/* Labs & Extras */}
-        {activeTab === "cleanarch" && (
+        {/* Hub 2: Interactive Labs Workbench */}
+        {activeTab === "labs" && (
           <main className="flex-1 overflow-y-auto">
-            <CleanArchLab />
+            <LabsHub />
           </main>
         )}
 
-        {activeTab === "concurrency" && (
-          <main className="flex-1 overflow-y-auto">
-            <ConcurrencyVisualizer />
-          </main>
-        )}
-
-        {activeTab === "apitester" && (
-          <main className="flex-1 overflow-y-auto">
-            <APITester />
-          </main>
-        )}
-
-        {activeTab === "grpc" && (
-          <main className="flex-1 overflow-y-auto">
-            <GrpcCompareLab />
-          </main>
-        )}
-
-        {activeTab === "gorm" && (
-          <main className="flex-1 overflow-y-auto">
-            <GormLab />
-          </main>
-        )}
-
+        {/* Hub 3: Interview Preparation Center */}
         {activeTab === "interview" && (
           <main className="flex-1 overflow-y-auto">
             <InterviewPrepLab />
           </main>
         )}
 
+        {/* Hub 4: Cheatsheet & Snippets Reference */}
         {activeTab === "cheatsheet" && (
           <main className="flex-1 overflow-y-auto">
             <CheatSheet onLoadSnippetToStudio={handleLoadSnippetToTryIt} />

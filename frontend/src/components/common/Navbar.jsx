@@ -3,11 +3,7 @@ import {
   Menu,
   X,
   BookOpen,
-  Layers,
-  Activity,
-  Globe,
-  Zap,
-  Database,
+  FlaskConical,
   Briefcase,
   FileCode,
   Sun,
@@ -32,12 +28,8 @@ export default function Navbar({
 
   const navLinks = [
     { id: "tutorial", label: "Tutorial", icon: BookOpen },
-    { id: "cleanarch", label: "Clean Arch", icon: Layers },
-    { id: "concurrency", label: "Concurrency", icon: Activity },
-    { id: "apitester", label: "REST API", icon: Globe },
-    { id: "grpc", label: "gRPC Lab", icon: Zap },
-    { id: "gorm", label: "GORM Lab", icon: Database },
-    { id: "interview", label: "Interview", icon: Briefcase },
+    { id: "labs", label: "Interactive Labs", icon: FlaskConical },
+    { id: "interview", label: "Interview Prep", icon: Briefcase },
     { id: "cheatsheet", label: "Cheatsheet", icon: FileCode },
   ];
 
@@ -73,8 +65,8 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Middle: W3 Header Links */}
-        <nav className="hidden lg:flex items-center gap-1">
+        {/* Middle: 4 Clean Primary Nav Links */}
+        <nav className="hidden md:flex items-center gap-1.5">
           {navLinks.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -83,13 +75,13 @@ export default function Navbar({
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   isActive
                     ? "bg-[#04AA6D] text-white shadow-sm"
                     : "theme-body hover:bg-black/5 dark:hover:bg-white/5"
                 }`}
               >
-                <Icon size={14} />
+                <Icon size={15} />
                 <span>{item.label}</span>
               </button>
             );
