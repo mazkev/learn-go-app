@@ -1,21 +1,30 @@
 /**
  * GoRunner Service
- * Engine eksekusi kode Go dengan parser & runtime simulator tingkat lanjut
- * yang mengevaluasi struktur Go, variabel, fungsi, loop, method, pointer,
- * goroutine, format string, dan mencetak output terminal secara akurat.
+ * Engine eksekusi kode Go dengan sanitasi string literal,
+ * CORS-safe cloud runner, dan local Go simulation engine.
  */
 
-export async function executeGoCode(code) {
+export async function executeGoCode(rawCode) {
   const startTime = performance.now();
 
-  // Coba eksekusi melalui public playground proxy jika memungkinkan
+  // 1. Sanitasi & Normalisasi kode Go:
+  // - Konversi Windows CRLF ke LF
+  // - Normalisasi raw newline di dalam string literal double quotes ("...") ke escape sequence \n
+  let code = (rawCode || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  
+  // Perbaiki raw newline di dalam string ganda yang sering memicu error Go "newline in string"
+  code = code.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/gs, (match) => {
+    return match.replace(/\n/g, "\\n");
+  });
+
+  // 2. Coba eksekusi melalui public playground proxy jika memungkinkan
   try {
     const formData = new URLSearchParams();
     formData.append("version", "2");
     formData.append("body", code);
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
+    const timeoutId = setTimeout(() => controller.abort(), 2800);
 
     const response = await fetch("https://play.golang.org/compile", {
       method: "POST",
@@ -32,6 +41,7 @@ export async function executeGoCode(code) {
       const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
 
       if (data.Errors) {
+        // Jika ada error kompilasi dari Go compiler, kembalikan dengan pesan yang jelas
         return {
           success: false,
           output: data.Errors,
@@ -57,10 +67,10 @@ export async function executeGoCode(code) {
       }
     }
   } catch (err) {
-    // CORS atau offline, gunakan Go Runtime Engine lokal kami
+    // CORS atau offline, fallback ke Local Go Engine
   }
 
-  // Gunakan Advanced Go Runtime Engine lokal
+  // 3. Gunakan Advanced Go Runtime Engine lokal
   return runAdvancedGoInterpreter(code, startTime);
 }
 
@@ -71,7 +81,7 @@ function runAdvancedGoInterpreter(code, startTime) {
   const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
   const trimmed = code.trim();
 
-  // 1. Validasi Sintaks Dasar Go
+  // Validasi Sintaks Dasar Go
   if (!trimmed.includes("package main")) {
     return {
       success: false,
@@ -92,11 +102,10 @@ function runAdvancedGoInterpreter(code, startTime) {
     };
   }
 
-  // 2. Evaluasi Kode & Eksekusi Simulative Environment
   const outputLines = [];
   const deferLogs = [];
 
-  // Konversi pola-pola Go umum ke executable JS sandboxed runtime
+  // Evaluasi dinamis JS Context
   try {
     const jsExecutable = translateGoToExecutableJS(code);
     const sandboxConsole = {
@@ -111,7 +120,6 @@ function runAdvancedGoInterpreter(code, startTime) {
       },
     };
 
-    // Jalankan dalam isolasi
     const executeFunction = new Function("console", "fmt", jsExecutable);
     executeFunction(sandboxConsole, {
       Println: (...args) => sandboxConsole.log(...args),
@@ -121,7 +129,6 @@ function runAdvancedGoInterpreter(code, startTime) {
       Fprintf: (w, fmtStr, ...args) => sandboxConsole.printf(fmtStr, ...args),
     });
 
-    // Jalankan Defer di akhir
     if (deferLogs.length > 0) {
       outputLines.push(...deferLogs.reverse());
     }
@@ -136,10 +143,9 @@ function runAdvancedGoInterpreter(code, startTime) {
       };
     }
   } catch (err) {
-    // Jika ada error evaluasi JS dinamis, gunakan fallback line-by-line analyzer
+    // Fallback line analyzer
   }
 
-  // 3. Fallback Pattern & Line Parser
   const fallbackLogs = analyzeGoLines(code);
   let finalResult = fallbackLogs.join("\n");
 
@@ -174,7 +180,7 @@ function translateGoToExecutableJS(code) {
   body = body.replace(/var\s+(\w+)\s+\w+\s*=\s*/g, "let $1 = ");
   body = body.replace(/var\s+(\w+)\s+\w+/g, "let $1 = null;");
 
-  // Terjemahkan Go type casts seperti float64(x), int(x), string(x)
+  // Terjemahkan Go type casts
   body = body.replace(/float64\((.*?)\)/g, "Number($1)");
   body = body.replace(/int\((.*?)\)/g, "Math.floor(Number($1))");
   body = body.replace(/len\((.*?)\)/g, "($1.length || Object.keys($1).length || 0)");
@@ -222,12 +228,11 @@ function formatPrintf(format, ...args) {
     formatted = formatted.replace(/%s|%d|%v|%t|%f|%\.?[0-9]*f/, String(valStr));
   });
 
-  // Bersihkan newline \n di akhir jika ada
   return formatted.replace(/\\n$/, "");
 }
 
 /**
- * Line by line analyzer jika dynamic JS translation menemukan edge cases
+ * Line by line analyzer
  */
 function analyzeGoLines(code) {
   const lines = code.split("\n");
