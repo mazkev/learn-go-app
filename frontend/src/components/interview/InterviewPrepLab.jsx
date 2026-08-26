@@ -12,8 +12,10 @@ import {
   Layers,
   Activity,
   Code2,
-  Filter
+  Filter,
+  Swords
 } from "lucide-react";
+import QuizArenaLab from "../quiz/QuizArenaLab";
 
 export const INTERVIEW_QUESTIONS = [
   // 1. Memory & Internals
@@ -287,6 +289,7 @@ export const TOPIC_FILTERS = [
 export const DIFFICULTY_FILTERS = ["Semua Level", "Junior", "Mid-Level", "Senior"];
 
 export default function InterviewPrepLab() {
+  const [activeView, setActiveView] = useState("bank"); // "bank" | "arena"
   const [selectedTopic, setSelectedTopic] = useState("Semua Kategori");
   const [selectedDifficulty, setSelectedDifficulty] = useState("Semua Level");
   const [searchQuery, setSearchQuery] = useState("");
@@ -329,40 +332,93 @@ export default function InterviewPrepLab() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-8">
-      {/* Header Banner */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/[0.08] pb-6">
-        <div>
-          <div className="flex items-center gap-2 text-[#04AA6D] font-bold text-xs uppercase tracking-wider mb-1.5">
-            <Briefcase size={15} />
-            <span>Top Tech Career Center</span>
+    <div className="min-h-full flex flex-col">
+      {/* Sub-Header Hub Switcher */}
+      <div className="theme-navbar border-b border-slate-200 dark:border-white/[0.08] px-4 md:px-8 py-3 shrink-0">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-[#04AA6D]/15 flex items-center justify-center text-[#04AA6D]">
+              <Briefcase size={18} />
+            </div>
+            <div>
+              <h2 className="text-sm font-extrabold theme-heading flex items-center gap-2">
+                <span>Career & Assessment Center</span>
+              </h2>
+              <p className="text-[11px] theme-muted">
+                {activeView === "bank" ? "25 Soal Teknis Wawancara Top Tech" : "Simulasi Ujian & Evaluasi Kuis Interaktif"}
+              </p>
+            </div>
           </div>
-          <h1 className="text-2xl md:text-4xl font-black theme-heading tracking-tight">
-            Golang <span className="gopher-gradient-text">Technical Interview Bank</span>
-          </h1>
-          <p className="text-xs md:text-sm theme-muted mt-1 max-w-2xl leading-relaxed">
-            Koleksi pertanyaan wawancara teknis mendalam yang sering diujikan di perusahaan teknologi terkemuka (Google, Gojek, Tokopedia, Shopee).
-          </p>
-        </div>
 
-        {/* Readiness Meter Card */}
-        <div className="theme-card rounded-2xl p-4 flex items-center gap-4 shadow-sm shrink-0 border-l-4 border-l-[#04AA6D]">
-          <div>
-            <div className="text-[11px] theme-muted font-bold uppercase tracking-wider">
-              Interview Readiness
-            </div>
-            <div className="text-xl md:text-2xl font-black theme-heading font-mono">
-              {masteryPercent}% <span className="text-xs font-normal theme-muted">Dikuasai</span>
-            </div>
-            <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-              {masteredIds.length} dari {INTERVIEW_QUESTIONS.length} Pertanyaan
-            </div>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-[#04AA6D]/15 flex items-center justify-center text-[#04AA6D] font-black shrink-0">
-            <Award size={22} />
+          {/* Sub-tab Switcher Pill */}
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => setActiveView("bank")}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeView === "bank"
+                  ? "bg-[#04AA6D] text-white shadow-sm"
+                  : "theme-card-subtle theme-muted hover:theme-heading hover:bg-black/5 dark:hover:bg-white/5"
+              }`}
+            >
+              <Briefcase size={14} />
+              <span>Bank Soal Interview</span>
+            </button>
+
+            <button
+              onClick={() => setActiveView("arena")}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeView === "arena"
+                  ? "bg-[#04AA6D] text-white shadow-sm"
+                  : "theme-card-subtle theme-muted hover:theme-heading hover:bg-black/5 dark:hover:bg-white/5"
+              }`}
+            >
+              <Swords size={14} />
+              <span>⚔️ Go Quiz Arena</span>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Body View */}
+      {activeView === "arena" ? (
+        <div className="flex-1 overflow-y-auto">
+          <QuizArenaLab />
+        </div>
+      ) : (
+        <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-8 flex-1 overflow-y-auto">
+          {/* Header Banner */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/[0.08] pb-6">
+            <div>
+              <div className="flex items-center gap-2 text-[#04AA6D] font-bold text-xs uppercase tracking-wider mb-1.5">
+                <Briefcase size={15} />
+                <span>Top Tech Career Center</span>
+              </div>
+              <h1 className="text-2xl md:text-4xl font-black theme-heading tracking-tight">
+                Golang <span className="gopher-gradient-text">Technical Interview Bank</span>
+              </h1>
+              <p className="text-xs md:text-sm theme-muted mt-1 max-w-2xl leading-relaxed">
+                Koleksi pertanyaan wawancara teknis mendalam yang sering diujikan di perusahaan teknologi terkemuka (Google, Gojek, Tokopedia, Shopee).
+              </p>
+            </div>
+
+            {/* Readiness Meter Card */}
+            <div className="theme-card rounded-2xl p-4 flex items-center gap-4 shadow-sm shrink-0 border-l-4 border-l-[#04AA6D]">
+              <div>
+                <div className="text-[11px] theme-muted font-bold uppercase tracking-wider">
+                  Interview Readiness
+                </div>
+                <div className="text-xl md:text-2xl font-black theme-heading font-mono">
+                  {masteryPercent}% <span className="text-xs font-normal theme-muted">Dikuasai</span>
+                </div>
+                <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                  {masteredIds.length} dari {INTERVIEW_QUESTIONS.length} Pertanyaan
+                </div>
+              </div>
+              <div className="w-12 h-12 rounded-full bg-[#04AA6D]/15 flex items-center justify-center text-[#04AA6D] font-black shrink-0">
+                <Award size={22} />
+              </div>
+            </div>
+          </div>
 
       {/* Filter & Search Bar */}
       <div className="theme-card rounded-2xl p-4 space-y-3 shadow-md">
@@ -565,6 +621,8 @@ export default function InterviewPrepLab() {
           </div>
         )}
       </div>
+        </div>
+      )}
     </div>
   );
 }
