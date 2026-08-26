@@ -3,6 +3,7 @@ import {
   Menu,
   X,
   BookOpen,
+  Layers,
   Activity,
   Globe,
   Zap,
@@ -31,11 +32,12 @@ export default function Navbar({
 
   const navLinks = [
     { id: "tutorial", label: "Tutorial", icon: BookOpen },
+    { id: "cleanarch", label: "Clean Arch", icon: Layers },
     { id: "concurrency", label: "Concurrency", icon: Activity },
     { id: "apitester", label: "REST API", icon: Globe },
     { id: "grpc", label: "gRPC Lab", icon: Zap },
     { id: "gorm", label: "GORM Lab", icon: Database },
-    { id: "interview", label: "Interview Prep", icon: Briefcase },
+    { id: "interview", label: "Interview", icon: Briefcase },
     { id: "cheatsheet", label: "Cheatsheet", icon: FileCode },
   ];
 

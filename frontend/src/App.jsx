@@ -3,6 +3,7 @@ import Navbar from "./components/common/Navbar";
 import W3Sidebar from "./components/w3layout/W3Sidebar";
 import W3TutorialReader from "./components/w3layout/W3TutorialReader";
 import W3TryItStudio from "./components/w3layout/W3TryItStudio";
+import CleanArchLab from "./components/cleanarch/CleanArchLab";
 import ConcurrencyVisualizer from "./components/visualizer/ConcurrencyVisualizer";
 import APITester from "./components/apitester/APITester";
 import GrpcCompareLab from "./components/grpccompare/GrpcCompareLab";
@@ -124,6 +125,12 @@ export default function App() {
         )}
 
         {/* Labs & Extras */}
+        {activeTab === "cleanarch" && (
+          <main className="flex-1 overflow-y-auto">
+            <CleanArchLab />
+          </main>
+        )}
+
         {activeTab === "concurrency" && (
           <main className="flex-1 overflow-y-auto">
             <ConcurrencyVisualizer />
