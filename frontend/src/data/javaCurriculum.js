@@ -1013,23 +1013,80 @@ public class Main {
             explanation: "Method filter() mengevaluasi setiap elemen dan hanya meloloskan elemen yang memenuhi kondisi true."
           }
         ]
+      },
+      {
+        id: "j-7-2",
+        title: "7.2 Java Records (Data Carrier Ringkas Java 14+)",
+        summary: "Membuat kelas pembawa data immutable tanpa perlu menulis boilerplate constructor, getter, equals, dan toString.",
+        content: `### 📦 Java Records (Java 14+)
+Di Java klasik, membuat kelas DTO/POJO membutuhkan banyak *boilerplate code* (field, constructor, getter, \`toString()\`, \`hashCode()\`, dan \`equals()\`). 
+
+Dengan **Java Records**, semua itu disingkat hanya dalam 1 baris!
+
+\`\`\`java
+public record User(String nama, String email, int umur) {}
+\`\`\`
+
+> 💡 **Karakteristik Record:**
+> - Bersifat *Immutable* (semua field otomatis \`final\`).
+> - Otomatis mendapatkan constructor, getter (misal \`user.nama()\`), dan \`toString()\`.`,
+        codeSnippet: `// Mendefinisikan Record Mahasiswa dalam 1 baris
+record Mahasiswa(String nim, String nama, double ipk) {}
+
+public class Main {
+    public static void main(String[] args) {
+        // Instansiasi record
+        Mahasiswa mhs1 = new Mahasiswa("2026001", "Kevin Pratama", 3.92);
+        Mahasiswa mhs2 = new Mahasiswa("2026002", "Siti Aminah", 3.85);
+
+        // Membaca data dengan getter otomatis
+        System.out.println("Nama Mahasiswa: " + mhs1.nama());
+        System.out.println("IPK Mahasiswa : " + mhs1.ipk());
+
+        // Otomatis mencetak format String yang rapi
+        System.out.println("\\nRepresentasi Objek Record:");
+        System.out.println(mhs1);
+        System.out.println(mhs2);
+    }
+}`,
+        exercise: {
+          instruction: "Definisikan record `Produk(String nama, int harga)` lalu cetak representasi objeknya!",
+          starterCode: `record Produk(String nama, int harga) {}
+
+public class Main {
+    public static void main(String[] args) {
+        Produk p = new Produk("Monitor 4K 144Hz", 4500000);
+        System.out.println("Detail Produk: " + p);
+        System.out.println("Harga: Rp " + p.harga());
+    }
+}`,
+          expectedHint: "Gunakan sintaks `record NamaRecord(tipe field1, tipe field2) {}`."
+        },
+        quiz: [
+          {
+            question: "Bagaimana cara memanggil getter properti 'nama' pada objek Java Record `user`?",
+            options: ["user.getNama()", "user.nama()", "user.fetchNama()", "user.nama"],
+            correctAnswer: 1,
+            explanation: "Java Record menggunakan nama accessor yang identik dengan nama field-nya tanpa awalan 'get', yaitu `user.nama()`."
+          }
+        ]
       }
     ]
   },
 
   // ==========================================
-  // MODUL 8: Multithreading & Ekosistem Enterprise
+  // MODUL 8: Multithreading & Ekosistem Enterprise (Spring Boot & JPA)
   // ==========================================
   {
     id: "java-module-8",
     order: 8,
-    title: "8. Multithreading & Ekosistem Enterprise",
-    subtitle: "Thread, Runnable, Concurrency & Pengenalan Spring Boot",
-    description: "Menjalankan proses paralel dengan Thread Java dan memahami arsitektur backend Spring Boot.",
+    title: "8. Konkurensi & Backend Enterprise (Spring Boot & JPA)",
+    subtitle: "Multithreading, Spring Boot REST API, Spring Data JPA & JUnit 5",
+    description: "Menjalankan proses paralel dan membangun backend API skala industri dengan framework Spring Boot & JPA ORM.",
     icon: "Cpu",
     badge: "Enterprise Architect",
     color: "#3a0ca3",
-    xp: 600,
+    xp: 650,
     lessons: [
       {
         id: "j-8-1",
@@ -1058,7 +1115,6 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Main Thread Dimulai...");
 
-        // Menjalankan thread terpisah secara paralel
         Thread t1 = new Thread(new TugasLatarBelakang("Download-File"));
         Thread t2 = new Thread(new TugasLatarBelakang("Sync-Database"));
 
@@ -1087,6 +1143,217 @@ public class Main {
             options: ["thread.run()", "thread.start()", "thread.execute()", "thread.launch()"],
             correctAnswer: 1,
             explanation: "Memanggil `.start()` akan membuat thread baru di OS dan otomatis memanggil method `.run()` di dalamnya."
+          }
+        ]
+      },
+      {
+        id: "j-8-2",
+        title: "8.2 Spring Boot REST API & Anotasi Controller",
+        summary: "Membangun REST API HTTP endpoint modern menggunakan ekosistem Spring Boot.",
+        content: `### 🍃 Pengenalan Spring Boot REST API
+**Spring Boot** adalah framework nomor 1 di dunia untuk membangun backend Java enterprise microservices.
+
+#### 📌 Anotasi Penting Spring Web:
+- **\`@RestController\`**: Menandai class sebagai controller penyedia endpoint JSON.
+- **\`@RequestMapping("/api")\`**: Menetapkan base route URL.
+- **\`@GetMapping("/users")\`**: Menangani request HTTP GET.
+- **\`@PostMapping("/users")\`**: Menangani request HTTP POST.
+- **\`@RequestBody\`**: Meng-unmarshal JSON request body ke Java Object secara otomatis.
+
+\`\`\`java
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+    @GetMapping
+    public List<Product> getAll() {
+        return productService.findAll();
+    }
+}
+\`\`\``,
+        codeSnippet: `// Simulasi Arsitektur Spring Boot REST Controller
+class UserController {
+    public String getProfile(String userId) {
+        return "{\\"status\\": 200, \\"userId\\": \\"" + userId + "\\", \\"role\\": \\"Developer\\"}";
+    }
+
+    public String createOrder(String item, int qty) {
+        return "{\\"success\\": true, \\"message\\": \\"Order created for " + qty + "x " + item + "\\"}";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== Spring Boot Web Engine Emulation ===");
+        UserController api = new UserController();
+
+        // 1. Simulasi GET /api/v1/profile?id=USR-99
+        System.out.println("HTTP GET /api/v1/profile -> " + api.getProfile("USR-99"));
+
+        // 2. Simulasi POST /api/v1/orders
+        System.out.println("HTTP POST /api/v1/orders -> " + api.createOrder("MacBook Pro M3", 1));
+    }
+}`,
+        exercise: {
+          instruction: "Lengkapi method `getHealth()` yang mengembalikan status JSON `{\"status\": \"UP\"}`!",
+          starterCode: `class HealthController {
+    public String getHealth() {
+        return "{\\"status\\": \\"UP\\", \\"version\\": \\"1.0.0\\"}";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        HealthController health = new HealthController();
+        System.out.println("Health Check: " + health.getHealth());
+    }
+}`,
+          expectedHint: "Kembalikan string berformat JSON dari method getHealth()."
+        },
+        quiz: [
+          {
+            question: "Anotasi Spring Boot manakah yang digunakan untuk menandai kelas sebagai Web REST Controller yang mengembalikan response JSON?",
+            options: ["@Service", "@Component", "@RestController", "@Entity"],
+            correctAnswer: 2,
+            explanation: "@RestController menggabungkan @Controller dan @ResponseBody untuk otomatis mengubah return value Java menjadi JSON."
+          }
+        ]
+      },
+      {
+        id: "j-8-3",
+        title: "8.3 Spring Data JPA & Hibernate ORM",
+        summary: "Memetakan tabel database ke Java Class menggunakan @Entity dan JpaRepository tanpa query SQL manual.",
+        content: `### 🗄️ Spring Data JPA & Hibernate
+JPA (*Java Persistence API*) dan Hibernate memungkinkan developer berinteraksi dengan database relasional (PostgreSQL, MySQL, SQLite) menggunakan objek Java murni (*Object-Relational Mapping*).
+
+#### 📌 Anotasi Entity Utama:
+- **\`@Entity\`**: Menandai bahwa class ini adalah representasi tabel database.
+- **\`@Table(name = "users")\`**: Menentukan nama tabel di database.
+- **\`@Id\` & \`@GeneratedValue\`**: Menandai primary key auto-increment.
+- **\`JpaRepository<Entity, IdType>\`**: Interface sakti bawaan Spring yang otomatis menyediakan method \`.save()\`, \`.findById()\`, \`.findAll()\`, dan \`.deleteById()\` tanpa perlu mengetik 1 baris pun query SQL!`,
+        codeSnippet: `// Simulasi Pola Spring Data JPA Repository
+class ProdukEntity {
+    Long id;
+    String nama;
+    double harga;
+
+    ProdukEntity(Long id, String nama, double harga) {
+        this.id = id;
+        this.nama = nama;
+        this.harga = harga;
+    }
+
+    public String toString() {
+        return "ProdukEntity(id=" + id + ", nama=" + nama + ", harga=" + harga + ")";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== Simulasi JPA Hibernate ORM ===");
+
+        // 1. Instansiasi Entity
+        ProdukEntity p1 = new ProdukEntity(1L, "Keyboard Mechanical Wireless", 850000);
+        ProdukEntity p2 = new ProdukEntity(2L, "Mouse Gaming Ergonomis", 450000);
+
+        // 2. Persistensi ke Database
+        System.out.println("JPA EntityManager -> INSERT INTO produk: " + p1);
+        System.out.println("JPA EntityManager -> INSERT INTO produk: " + p2);
+    }
+}`,
+        exercise: {
+          instruction: "Buat objek `ProdukEntity` baru dengan ID 3L, nama 'Headset Surround', dan harga 600000!",
+          starterCode: `class ProdukEntity {
+    Long id;
+    String nama;
+    double harga;
+
+    ProdukEntity(Long id, String nama, double harga) {
+        this.id = id;
+        this.nama = nama;
+        this.harga = harga;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ProdukEntity p3 = new ProdukEntity(3L, "Headset Surround", 600000);
+        System.out.println("Berhasil membuat entity produk ID: " + p3.id + " | Nama: " + p3.nama);
+    }
+}`,
+          expectedHint: "Gunakan keyword `new ProdukEntity(3L, \"...\", 600000)`."
+        },
+        quiz: [
+          {
+            question: "Anotasi JPA manakah yang wajib dipasang di atas field Primary Key sebuah Entity?",
+            options: ["@Key", "@PrimaryKey", "@Id", "@Index"],
+            correctAnswer: 2,
+            explanation: "Anotasi `@Id` dari package `jakarta.persistence` digunakan untuk menandai kolom Primary Key unik sebuah Entity."
+          }
+        ]
+      },
+      {
+        id: "j-8-4",
+        title: "8.4 Unit Testing dengan JUnit 5",
+        summary: "Menulis pengujian otomatis menggunakan framework standar industri JUnit 5 dan Assertion.",
+        content: `### 🧪 Unit Testing dengan JUnit 5
+Unit Testing memastikan setiap method atau fungsi logika bisnis bekerja dengan benar dan tidak rusak saat terjadi perubahan kode (*Regression Prevention*).
+
+#### 📌 Anotasi Penting JUnit 5:
+- **\`@Test\`**: Menandai method sebagai unit test yang akan dieksekusi test runner.
+- **\`assertEquals(expected, actual)\`**: Memastikan hasil kalkulasi sama persis dengan ekspektasi.
+- **\`assertTrue(condition)\`**: Memastikan kondisi bernilai \`true\`.
+- **\`@BeforeEach\`**: Dijalankan sebelum setiap test untuk persiapan data (*setup*).`,
+        codeSnippet: `// Simulasi Test Runner JUnit 5 di Java
+class Kalkulator {
+    public int tambah(int a, int b) {
+        return a + b;
+    }
+
+    public int kali(int a, int b) {
+        return a * b;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== JUnit 5 Test Engine Simulation ===");
+        Kalkulator calc = new Kalkulator();
+
+        // Test Case 1: Penjumlahan 10 + 5 = 15
+        int hasilTambah = calc.tambah(10, 5);
+        boolean test1Lolos = (hasilTambah == 15);
+        System.out.println("✓ Test @Test testPenjumlahan(): " + (test1Lolos ? "PASSED (10 + 5 == 15)" : "FAILED"));
+
+        // Test Case 2: Perkalian 4 * 3 = 12
+        int hasilKali = calc.kali(4, 3);
+        boolean test2Lolos = (hasilKali == 12);
+        System.out.println("✓ Test @Test testPerkalian()  : " + (test2Lolos ? "PASSED (4 * 3 == 12)" : "FAILED"));
+    }
+}`,
+        exercise: {
+          instruction: "Buat fungsi `kurang(int a, int b)` pada class `Kalkulator` dan uji apakah `calc.kurang(20, 8) == 12`!",
+          starterCode: `class Kalkulator {
+    public int kurang(int a, int b) {
+        return a - b;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Kalkulator calc = new Kalkulator();
+        int hasil = calc.kurang(20, 8);
+        System.out.println("Hasil pengurangan 20 - 8 = " + hasil);
+        System.out.println("Test Status: " + (hasil == 12 ? "PASSED" : "FAILED"));
+    }
+}`,
+          expectedHint: "Implementasikan `return a - b;` pada method kurang."
+        },
+        quiz: [
+          {
+            question: "Anotasi apakah yang digunakan di JUnit 5 untuk menandai sebuah method sebagai Unit Test?",
+            options: ["@UnitTest", "@Test", "@TestCase", "@RunTest"],
+            correctAnswer: 1,
+            explanation: "Anotasi `@Test` dari package `org.junit.jupiter.api.Test` menandai method pengujian pada JUnit 5."
           }
         ]
       }
