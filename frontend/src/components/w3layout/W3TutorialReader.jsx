@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
 import { executeGoCode } from "../../services/goRunner";
+import FriendlyErrorBox from "../common/FriendlyErrorBox";
 
 /**
  * Format string inline (bold, code, arrow)
@@ -451,9 +452,13 @@ export default function W3TutorialReader({
               </div>
             </div>
             <div className="p-4 font-mono text-xs overflow-x-auto bg-slate-950 shadow-inner">
-              <pre className={exampleRun.isError ? "text-rose-400" : "text-emerald-400 leading-relaxed"}>
-                {exampleRun.text}
-              </pre>
+              {exampleRun.isError ? (
+                <FriendlyErrorBox rawError={exampleRun.text} />
+              ) : (
+                <pre className="text-emerald-400 leading-relaxed">
+                  {exampleRun.text}
+                </pre>
+              )}
             </div>
           </div>
         )}
@@ -522,9 +527,13 @@ export default function W3TutorialReader({
                 </div>
               </div>
               <div className="p-4 font-mono text-xs overflow-x-auto bg-slate-950 shadow-inner">
-                <pre className={exerciseRun.isError ? "text-rose-400" : "text-emerald-400 leading-relaxed"}>
-                  {exerciseRun.text}
-                </pre>
+                {exerciseRun.isError ? (
+                  <FriendlyErrorBox rawError={exerciseRun.text} />
+                ) : (
+                  <pre className="text-emerald-400 leading-relaxed">
+                    {exerciseRun.text}
+                  </pre>
+                )}
               </div>
             </div>
           )}

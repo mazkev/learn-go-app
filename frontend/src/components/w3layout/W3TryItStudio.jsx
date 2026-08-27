@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun } from "lucide-react";
 import { executeGoCode } from "../../services/goRunner";
+import FriendlyErrorBox from "../common/FriendlyErrorBox";
 
 export default function W3TryItStudio({
   initialCode,
@@ -188,15 +189,13 @@ export default function W3TryItStudio({
           </div>
 
           <div className="p-4 flex-1 overflow-y-auto font-mono text-xs shadow-inner">
-            <pre
-              className={`whitespace-pre-wrap leading-relaxed ${
-                output.isError
-                  ? "text-rose-600 dark:text-rose-400 font-semibold"
-                  : "text-slate-800 dark:text-emerald-400"
-              }`}
-            >
-              {output.text}
-            </pre>
+            {output.isError ? (
+              <FriendlyErrorBox rawError={output.text} />
+            ) : (
+              <pre className="whitespace-pre-wrap leading-relaxed text-slate-800 dark:text-emerald-400">
+                {output.text}
+              </pre>
+            )}
           </div>
         </div>
       </div>
