@@ -34,7 +34,8 @@ import "fmt"
 
 func main() {
     // Mencetak teks ucapan selamat datang
-    fmt.Println("Halo, Calon Master Golang! 🚀")\nfmt.Println("Mari kita mulai perjalanan dari nol hingga mahir.")
+    fmt.Println("Halo, Calon Master Golang!")
+    fmt.Println("Mari kita mulai perjalanan dari nol hingga mahir.")
 }`,
         exercise: {
           instruction: "Ubah teks di dalam `fmt.Println` agar mencetak namamu dan target belajar Go!",
@@ -102,7 +103,8 @@ func main() {
     // Konstanta (nilai tidak dapat diubah)
     const Creator = "Google"
 
-    fmt.Printf("Belajar: %s v%.2f\\n", bahasa, versi)\nfmt.Printf("Apakah cepat? %t\\n", isFast)\n    fmt.Printf("Dibuat oleh: %s\\n", Creator)
+    fmt.Printf("Belajar: %s v%.2f\\n", bahasa, versi)
+    fmt.Printf("Apakah cepat? %t\\n", isFast)\n    fmt.Printf("Dibuat oleh: %s\\n", Creator)
 }`,
         exercise: {
           instruction: "Deklarasikan variabel `namaLengkap` (string), `pengalamanTahun` (int), dan `siapBelajar` (bool), lalu cetak dengan `fmt.Printf`.",
@@ -169,7 +171,10 @@ func main() {
     // Switch Case
     hari := "Senin"
     switch hari {
-    case "Sabtu", "Minggu":\nfmt.Println("Waktunya liburan & ngoding santai! 🏖️")\ncase "Senin":\nfmt.Println("Semangat memulai pekan produktif! 💻")
+    case "Sabtu", "Minggu":
+    fmt.Println("Waktunya liburan & ngoding santai! 🏖️")
+    case "Senin":
+    fmt.Println("Semangat memulai pekan produktif! 💻")
     default:
         fmt.Println("Hari kerja biasa.")
     }
@@ -314,10 +319,13 @@ import "fmt"
 
 func main() {
     // Inisialisasi Slice
-    bahasa := []string{"Go", "Rust", "TypeScript"}\nfmt.Println("Awal:", bahasa)
+    bahasa := []string{"Go", "Rust", "TypeScript"}
+    fmt.Println("Awal:", bahasa)
 
     // Menambah elemen dengan append
-    bahasa = append(bahasa, "Python", "Kotlin")\nfmt.Println("Setelah append:", bahasa)\nfmt.Printf("Panjang (len): %d, Kapasitas (cap): %d\\n", len(bahasa), cap(bahasa))
+    bahasa = append(bahasa, "Python", "Kotlin")
+    fmt.Println("Setelah append:", bahasa)
+    fmt.Printf("Panjang (len): %d, Kapasitas (cap): %d\\n", len(bahasa), cap(bahasa))
 
     // Slicing operator [1:3] (mengambil indeks 1 sampai 2)
     subBahasa := bahasa[1:4]
@@ -332,7 +340,8 @@ import "fmt"
 func main() {
     angka := []int{10, 20, 30}
     angka = append(angka, 40, 50)
-    fmt.Println("Daftar angka:", angka)\nfmt.Println("Jumlah elemen:", len(angka))
+    fmt.Println("Daftar angka:", angka)
+    fmt.Println("Jumlah elemen:", len(angka))
 }`,
           expectedHint: "Gunakan len(angka) untuk menghitung panjang slice."
         },
@@ -745,7 +754,10 @@ func ubahNama(p *string, namaBaru string) {
 }
 
 func main() {
-    nama := "Joko"\nfmt.Println("Sebelum:", nama)\nubahNama(&nama, "Joko Master Go")\nfmt.Println("Sesudah:", nama)
+    nama := "Joko"
+    fmt.Println("Sebelum:", nama)
+    ubahNama(&nama, "Joko Master Go")
+    fmt.Println("Sesudah:", nama)
 }`,
           expectedHint: "Kirim &nama ke fungsi lalu gunakan *p untuk assign nilai baru."
         },
@@ -1153,7 +1165,8 @@ func main() {
     hasil1 := <-ch
     hasil2 := <-ch
 
-    fmt.Printf("Hasil 1: %d\\n", hasil1)\nfmt.Printf("Hasil 2: %d\\n", hasil2)
+    fmt.Printf("Hasil 1: %d\\n", hasil1)
+    fmt.Printf("Hasil 2: %d\\n", hasil2)
 }`,
         exercise: {
           instruction: "Buat buffered channel `msgChan := make(chan string, 2)`, kirim 2 pesan ke dalam channel, lalu cetak keduanya.",
@@ -1164,7 +1177,8 @@ import "fmt"
 func main() {
     msgChan := make(chan string, 2)
 
-    msgChan <- "Pesan 1: Golang itu Keren!"\nmsgChan <- "Pesan 2: Channel aman & cepat!"
+    msgChan <- "Pesan 1: Golang itu Keren!"
+    msgChan <- "Pesan 2: Channel aman & cepat!"
 
     fmt.Println(<-msgChan)
     fmt.Println(<-msgChan)
@@ -1373,7 +1387,8 @@ func haloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/api/halo", haloHandler)\nfmt.Println("🚀 Server berjalan di http://localhost:8080")
+    http.HandleFunc("/api/halo", haloHandler)
+    fmt.Println("🚀 Server berjalan di http://localhost:8080")
 }`,
         exercise: {
           instruction: "Buat handler `/api/status` yang mengembalikan status code 200 dan pesan text 'Server Sehat!'.",
@@ -1389,7 +1404,8 @@ func statusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/api/status", statusHandler)\nfmt.Println("Route terdaftar dengan sukses.")
+    http.HandleFunc("/api/status", statusHandler)
+    fmt.Println("Route terdaftar dengan sukses.")
 }`,
           expectedHint: "Gunakan fmt.Fprintln(w, ...) untuk menulis data ke ResponseWriter."
         },
@@ -1422,10 +1438,12 @@ import (
 func main() {
     mux := http.NewServeMux()
 
-    mux.HandleFunc("GET /api/gophers", func(w http.ResponseWriter, r *http.Request) {\nfmt.Fprintln(w, "[GET] Menampilkan semua Gopher")
+    mux.HandleFunc("GET /api/gophers", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "[GET] Menampilkan semua Gopher")
     })
 
-    mux.HandleFunc("POST /api/gophers", func(w http.ResponseWriter, r *http.Request) {\nfmt.Fprintln(w, "[POST] Membuat data Gopher baru")
+    mux.HandleFunc("POST /api/gophers", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "[POST] Membuat data Gopher baru")
     })
 
     fmt.Println("Router ServeMux Go 1.22+ siap digunakan!")
@@ -1440,7 +1458,8 @@ import (
 
 func main() {
     mux := http.NewServeMux()
-    mux.HandleFunc("DELETE /api/items", func(w http.ResponseWriter, r *http.Request) {\nfmt.Fprintln(w, "Item berhasil dihapus")
+    mux.HandleFunc("DELETE /api/items", func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintln(w, "Item berhasil dihapus")
     })
     fmt.Println("Route DELETE berhasil didaftarkan.")
 }`,
@@ -1486,7 +1505,8 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/api/dashboard", TimerMiddleware(mainHandler))\nfmt.Println("Middleware terpasang dengan sukses.")
+    http.HandleFunc("/api/dashboard", TimerMiddleware(mainHandler))
+    fmt.Println("Middleware terpasang dengan sukses.")
 }`,
         exercise: {
           instruction: "Buat middleware yang menambahkan Header `X-Powered-By: GoLearn` ke response.",
@@ -1508,7 +1528,8 @@ func hello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/hello", CustomHeaderMiddleware(hello))\nfmt.Println("Middleware Header aktif.")
+    http.HandleFunc("/hello", CustomHeaderMiddleware(hello))
+    fmt.Println("Middleware Header aktif.")
 }`,
           expectedHint: "Gunakan w.Header().Set(\"Key\", \"Value\")."
         },
@@ -1637,7 +1658,8 @@ func main() {
         MaxIdleConns: 10,
     }
 
-    fmt.Printf("⚡ Inisialisasi Database Pool: %s\\n", cfg.Driver)\nfmt.Printf("📊 Pool: %d Max Open | %d Max Idle\\n", cfg.MaxOpenConns, cfg.MaxIdleConns)\n    fmt.Println("✅ Koneksi database siap digunakan secara aman dan konkuren!")
+    fmt.Printf("⚡ Inisialisasi Database Pool: %s\\n", cfg.Driver)
+    fmt.Printf("📊 Pool: %d Max Open | %d Max Idle\\n", cfg.MaxOpenConns, cfg.MaxIdleConns)\n    fmt.Println("✅ Koneksi database siap digunakan secara aman dan konkuren!")
 }`,
         exercise: {
           instruction: "Lengkapi konfigurasi database struct dengan parameter timeout koneksi.",
@@ -1724,7 +1746,8 @@ type Customer struct {
 }
 
 func main() {
-    c := Customer{ID: 1, Nama: "Dewi", Email: "dewi@example.com", Saldo: 500000}\nfmt.Printf("Customer #%d: %s (%s) - Saldo: Rp %.0f\\n", c.ID, c.Nama, c.Email, c.Saldo)
+    c := Customer{ID: 1, Nama: "Dewi", Email: "dewi@example.com", Saldo: 500000}
+    fmt.Printf("Customer #%d: %s (%s) - Saldo: Rp %.0f\\n", c.ID, c.Nama, c.Email, c.Saldo)
 }`,
           expectedHint: "Definisikan field struct Customer."
         },
@@ -2399,7 +2422,8 @@ func main() {
 import "fmt"
 
 func main() {
-    cache := map[string]int{"user_count": 4500}\nval, exists := cache["user_count"]\nfmt.Printf("Cache Status: %t | Nilai: %d\\n", exists, val)
+    cache := map[string]int{"user_count": 4500}\nval, exists := cache["user_count"]
+    fmt.Printf("Cache Status: %t | Nilai: %d\\n", exists, val)
 }`,
           expectedHint: "Gunakan map lookup untuk simulasi cache."
         },
@@ -2456,7 +2480,8 @@ func main() {
     go BackgroundEmailWorker(eventQueue)
 
     // API Handler mem-publish event tanpa memblokir response ke user
-    fmt.Println("🌐 [HTTP Handler] Menerima pendaftaran user...")\neventQueue <- EmailEvent{ToEmail: "alex@mail.com", Subject: "Aktivasi Akun"}\nfmt.Println("🚀 [HTTP Handler] Response 201 Created langsung dikirim ke browser (Cepat!)")
+    fmt.Println("🌐 [HTTP Handler] Menerima pendaftaran user...")\neventQueue <- EmailEvent{ToEmail: "alex@mail.com", Subject: "Aktivasi Akun"}
+    fmt.Println("🚀 [HTTP Handler] Response 201 Created langsung dikirim ke browser (Cepat!)")
 
     time.Sleep(100 * time.Millisecond)
 }`,
@@ -2477,7 +2502,8 @@ func main() {
         }
     }()
 
-    taskChan <- "Generate Invoice #001"\ntaskChan <- "Send WhatsApp Notification"
+    taskChan <- "Generate Invoice #001"
+    taskChan <- "Send WhatsApp Notification"
 
     time.Sleep(50 * time.Millisecond)
 }`,

@@ -154,7 +154,7 @@ export default function W3TryItStudio({
               onMount={handleEditorDidMount}
               options={{
                 fontSize: 13,
-                fontFamily: "'Fira Code', monospace",
+                fontFamily: "'Fira Code', Consolas, 'Courier New', monospace",
                 minimap: { enabled: false },
                 scrollBeyondLastLine: false,
                 smoothScrolling: true,
@@ -166,6 +166,9 @@ export default function W3TryItStudio({
                 suggestOnTriggerCharacters: true,
                 acceptSuggestionOnCommitCharacter: false,
                 tabCompletion: "on",
+                disableMonospaceOptimizations: true,
+                renderWhitespace: "none",
+                unicodeHighlight: { ambiguousCharacters: false, invisibleCharacters: false },
                 padding: { top: 12, bottom: 12 },
               }}
             />

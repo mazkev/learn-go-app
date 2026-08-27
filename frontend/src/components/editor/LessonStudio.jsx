@@ -550,13 +550,17 @@ export default function LessonStudio({
                 }}
                 options={{
                   fontSize: 13,
-                  fontFamily: "'Fira Code', monospace",
+                  fontFamily: "'Fira Code', Consolas, 'Courier New', monospace",
                   minimap: { enabled: false },
                   scrollBeyondLastLine: false,
                   smoothScrolling: true,
                   cursorBlinking: "smooth",
-                  formatOnPaste: true,
+                  formatOnPaste: false,
+                  formatOnType: false,
                   lineNumbersMinChars: 3,
+                  disableMonospaceOptimizations: true,
+                  renderWhitespace: "none",
+                  unicodeHighlight: { ambiguousCharacters: false, invisibleCharacters: false },
                   padding: { top: 12, bottom: 12 },
                 }}
               />
