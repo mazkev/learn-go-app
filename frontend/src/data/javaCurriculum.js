@@ -1,9 +1,12 @@
 /**
  * Java Curriculum & Interactive Roadmap Modules
- * Kurikulum Pemrograman Java Modern & Berorientasi Objek (OOP)
+ * Kurikulum Lengkap Pemrograman Java Modern & Object-Oriented Programming (OOP)
  */
 
 export const JAVA_MODULES = [
+  // ==========================================
+  // MODUL 1: Dasar Pemrograman Java & JVM
+  // ==========================================
   {
     id: "java-module-1",
     order: 1,
@@ -120,14 +123,72 @@ String nama = "Kevin Pratama";
             explanation: "Tipe data 'double' digunakan untuk menyimpan bilangan pecahan/desimal 64-bit."
           }
         ]
+      },
+      {
+        id: "j-1-3",
+        title: "1.3 Operator Aritmatika & Type Casting",
+        summary: "Melakukan operasi matematika (+, -, *, /, %) dan konversi tipe data eksplisit.",
+        content: `### ➗ Operator & Type Casting di Java
+Java menyediakan operator aritmatika standar untuk memproses kalkulasi angka.
+
+#### 📌 Operator Aritmatika:
+- **\`+\`** (Penjumlahan), **\`-\`** (Pengurangan), **\`*\`** (Perkalian)
+- **\`/\`** (Pembagian), **\`%\`** (Modulo / Sisa Bagi)
+
+#### 📌 Type Casting (Konversi Tipe Data):
+Jika Anda membagi dua bilangan integer, hasilnya akan dibulatkan ke bawah (*Integer Division*). Untuk mendapatkan desimal, lakukan casting ke \`double\`:
+\`\`\`java
+int a = 7;
+int b = 2;
+double hasil = (double) a / b; // Hasil: 3.5
+\`\`\``,
+        codeSnippet: `public class Main {
+    public static void main(String[] args) {
+        int a = 15;
+        int b = 4;
+
+        int tambah = a + b;
+        int sisaBagi = a % b;
+        double bagiDesimal = (double) a / b;
+
+        System.out.println("Penjumlahan   : " + a + " + " + b + " = " + tambah);
+        System.out.println("Sisa Bagi (%) : " + a + " % " + b + " = " + sisaBagi);
+        System.out.println("Bagi Desimal  : " + a + " / " + b + " = " + bagiDesimal);
+    }
+}`,
+        exercise: {
+          instruction: "Hitung luas segitiga dengan rumus `(alas * tinggi) / 2.0` menggunakan casting `double`!",
+          starterCode: `public class Main {
+    public static void main(String[] args) {
+        int alas = 10;
+        int tinggi = 7;
+        double luas = (double) (alas * tinggi) / 2.0;
+
+        System.out.println("Luas Segitiga: " + luas);
+    }
+}`,
+          expectedHint: "Gunakan `(double)` untuk memastikan hasil perkalian dihitung sebagai angka desimal."
+        },
+        quiz: [
+          {
+            question: "Berapakah hasil dari operasi integer Java `int hasil = 9 / 2;`?",
+            options: ["4.5", "4", "5", "Error kompilasi"],
+            correctAnswer: 1,
+            explanation: "Pembagian antara dua int di Java selalu membuang angka di belakang koma (menghasilkan 4)."
+          }
+        ]
       }
     ]
   },
+
+  // ==========================================
+  // MODUL 2: Kontrol Alur & Percabangan
+  // ==========================================
   {
     id: "java-module-2",
     order: 2,
-    title: "2. Kontrol Alur (If/Else & Loop)",
-    subtitle: "Logika Percabangan, Switch-Case & Perulangan di Java",
+    title: "2. Kontrol Alur & Logika Keputusan",
+    subtitle: "Percabangan If/Else, Switch Modern & Perulangan",
     description: "Menguasai pengambilan keputusan logis dengan if-else, switch modern, perulangan for, while, dan for-each.",
     icon: "GitBranch",
     badge: "Logic Crafter",
@@ -194,7 +255,85 @@ if (kondisi1) {
       },
       {
         id: "j-2-2",
-        title: "2.2 Perulangan (For & For-Each Loop)",
+        title: "2.2 Percabangan Modern Switch-Case",
+        summary: "Menyederhanakan banyak kondisi dengan switch-case ekspresi Java modern.",
+        content: `### 🚦 Switch-Case di Java
+Jika Anda memiliki banyak pilihan nilai diskrit (seperti nama hari, menu pilihan, atau kode status), \`switch\` jauh lebih rapi dibanding rentetan \`if-else\`.
+
+\`\`\`java
+switch (hari) {
+    case 1 -> System.out.println("Senin");
+    case 2 -> System.out.println("Selasa");
+    default -> System.out.println("Hari Lain");
+}
+\`\`\``,
+        codeSnippet: `public class Main {
+    public static void main(String[] args) {
+        int nomorHari = 3;
+        String namaHari;
+
+        switch (nomorHari) {
+            case 1:
+                namaHari = "Senin";
+                break;
+            case 2:
+                namaHari = "Selasa";
+                break;
+            case 3:
+                namaHari = "Rabu";
+                break;
+            case 4:
+                namaHari = "Kamis";
+                break;
+            case 5:
+                namaHari = "Jumat";
+                break;
+            default:
+                namaHari = "Akhir Pekan (Sabtu/Minggu)";
+                break;
+        }
+
+        System.out.println("Hari ke-" + nomorHari + " adalah: " + namaHari);
+    }
+}`,
+        exercise: {
+          instruction: "Gunakan switch-case untuk mencetak peran pengguna berdasarkan variabel `role` ('admin', 'editor', 'user')!",
+          starterCode: `public class Main {
+    public static void main(String[] args) {
+        String role = "admin";
+
+        switch (role) {
+            case "admin":
+                System.out.println("Akses Penuh: Administrator Sistem");
+                break;
+            case "editor":
+                System.out.println("Akses Terbatas: Editor Konten");
+                break;
+            default:
+                System.out.println("Akses Standar: Pengguna Biasa");
+                break;
+        }
+    }
+}`,
+          expectedHint: "Pastikan menambahkan keyword `break;` di akhir setiap case agar tidak terjadi fall-through."
+        },
+        quiz: [
+          {
+            question: "Apa fungsi dari keyword 'break' pada blok switch-case klasik?",
+            options: [
+              "Menghentikan seluruh aplikasi Java",
+              "Keluar dari blok switch agar tidak mengeksekusi case berikutnya",
+              "Mengulang eksekusi switch dari awal",
+              "Menghapus variabel di memori"
+            ],
+            correctAnswer: 1,
+            explanation: "Keyword 'break' menghentikan evaluasi switch setelah case yang cocok selesai dijalankan."
+          }
+        ]
+      },
+      {
+        id: "j-2-3",
+        title: "2.3 Perulangan (For & For-Each Loop)",
         summary: "Mengulang instruksi dengan for loop standar dan for-each pada koleksi data.",
         content: `### 🔄 Perulangan di Java
 Perulangan (*Looping*) memungkinkan kita mengeksekusi kode berulang kali secara otomatis.
@@ -206,7 +345,7 @@ for (int i = 1; i <= 5; i++) {
 }
 \`\`\`
 
-#### 📌 2. Enhanced For-Each Loop (Pada Array):
+#### 📌 2. Enhanced For-Each Loop:
 \`\`\`java
 String[] buah = {"Apel", "Jeruk", "Mangga"};
 for (String b : buah) {
@@ -251,6 +390,10 @@ for (String b : buah) {
       }
     ]
   },
+
+  // ==========================================
+  // MODUL 3: Struktur Data & Collections
+  // ==========================================
   {
     id: "java-module-3",
     order: 3,
@@ -278,17 +421,14 @@ Array biasa di Java memiliki ukuran tetap (*Fixed Size*). Jika Anda membutuhkan 
 
 public class Main {
     public static void main(String[] args) {
-        // Membuat ArrayList untuk menampung data String
         ArrayList<String> daftarTugas = new ArrayList<>();
 
-        // 1. Menambahkan data
         daftarTugas.add("Belajar Java OOP");
         daftarTugas.add("Mengerjakan Kuis");
         daftarTugas.add("Ngoding REST API");
 
         System.out.println("Jumlah tugas: " + daftarTugas.size());
 
-        // 2. Membaca data dengan loop
         for (int i = 0; i < daftarTugas.size(); i++) {
             System.out.println((i + 1) + ". " + daftarTugas.get(i));
         }
@@ -319,15 +459,80 @@ public class Main {
             explanation: "Di Java ArrayList, pengambilan elemen dilakukan melalui method `.get(index)`."
           }
         ]
+      },
+      {
+        id: "j-3-2",
+        title: "3.2 Kamus Data Key-Value (HashMap)",
+        summary: "Menyimpan data berpasangan (Kunci & Nilai) untuk pencarian instan O(1).",
+        content: `### 🗄️ HashMap di Java
+\`HashMap<K, V>\` adalah struktur data tabel hash yang menyimpan data dalam bentuk pasangan **Kunci (Key)** dan **Nilai (Value)**.
+
+#### 📌 Method Utama HashMap:
+- **\`.put(key, value)\`**: Menyimpan pasangan key-value.
+- **\`.get(key)\`**: Mengambil nilai berdasarkan key.
+- **\`.containsKey(key)\`**: Mengecek apakah key terdaftar.
+- **\`.keySet()\`**: Mendapatkan seluruh daftar key.`,
+        codeSnippet: `import java.util.HashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        // Membuat buku kontak (Key: Nama, Value: No HP)
+        HashMap<String, String> kontak = new HashMap<>();
+
+        kontak.put("Budi", "08123456789");
+        kontak.put("Siti", "08987654321");
+        kontak.put("Andi", "08567890123");
+
+        System.out.println("No HP Budi: " + kontak.get("Budi"));
+        System.out.println("Total Kontak: " + kontak.size());
+
+        System.out.println("\\n=== Daftar Semua Kontak ===");
+        for (String nama : kontak.keySet()) {
+            System.out.println("👤 " + nama + " -> 📞 " + kontak.get(nama));
+        }
+    }
+}`,
+        exercise: {
+          instruction: "Tambahkan data produk baru 'Laptop' dengan harga 15000000 ke dalam `HashMap<String, Integer>`!",
+          starterCode: `import java.util.HashMap;
+
+public class Main {
+    public static void main(String[] args) {
+        HashMap<String, Integer> harga = new HashMap<>();
+        harga.put("Mouse", 150000);
+        harga.put("Laptop", 15000000);
+
+        System.out.println("Harga Laptop: Rp " + harga.get("Laptop"));
+    }
+}`,
+          expectedHint: "Gunakan `harga.put(\"Laptop\", 15000000)`."
+        },
+        quiz: [
+          {
+            question: "Apa yang terjadi jika kita memanggil `.put(key, value)` dengan key yang sudah pernah ada di HashMap?",
+            options: [
+              "Akan terjadi error kompilasi",
+              "Nilai lama akan ditimpa (overwrite) dengan nilai baru",
+              "Key baru akan ditolak otomatis",
+              "Program akan freeze"
+            ],
+            correctAnswer: 1,
+            explanation: "HashMap tidak mengizinkan duplikasi key; pemanggilan put() dengan key yang sama akan memperbarui nilainya."
+          }
+        ]
       }
     ]
   },
+
+  // ==========================================
+  // MODUL 4: Object-Oriented Programming (OOP) Dasar
+  // ==========================================
   {
     id: "java-module-4",
     order: 4,
-    title: "4. Pemrograman Berorientasi Objek (OOP)",
-    subtitle: "Class, Object, Encapsulation, Inheritance & Polymorphism",
-    description: "Jantung utama bahasa Java: memahami konsep Class, Constructor, Hak Akses, Pewarisan Sifat, dan Interface.",
+    title: "4. Object-Oriented Programming (OOP) Dasar",
+    subtitle: "Class, Object, Constructor & Enkapsulasi",
+    description: "Jantung utama bahasa Java: memahami konsep Class, Constructor, Hak Akses, dan Method.",
     icon: "Boxes",
     badge: "OOP Architect",
     color: "#9b5de5",
@@ -359,7 +564,6 @@ class Mobil {
     String warna;
     int kecepatanMaksimal;
 
-    // Method (Perilaku mobil)
     void klakson() {
         System.out.println("🚗 " + merk + " berbunyi: Telolet! Telolet!");
     }
@@ -371,7 +575,6 @@ class Mobil {
 
 public class Main {
     public static void main(String[] args) {
-        // Membuat object mobil1 dari Class Mobil
         Mobil mobil1 = new Mobil();
         mobil1.merk = "Tesla Model 3";
         mobil1.warna = "Hitam Metalik";
@@ -399,7 +602,6 @@ public class Main {
         mobil1.warna = "Putih";
         mobil1.infoMobil();
 
-        // Buat mobil2 di bawah ini:
         Mobil mobil2 = new Mobil();
         mobil2.merk = "Toyota Supra";
         mobil2.warna = "Merah";
@@ -419,26 +621,112 @@ public class Main {
       },
       {
         id: "j-4-2",
-        title: "4.2 Pewarisan (Inheritance - extends)",
+        title: "4.2 Constructor & Keyword 'this'",
+        summary: "Inisialisasi otomatis properti objek saat pertama kali dibuat dengan constructor.",
+        content: `### 🔨 Constructor di Java
+**Constructor** adalah method khusus yang otomatis dipanggil saat objek dibuat dengan keyword \`new\`. Nama constructor **harus sama persis dengan nama Class** dan tidak memiliki return type.
+
+#### 📌 Keyword \`this\`:
+Digunakan untuk membedakan antara variabel milik Class (*field*) dengan parameter method yang memiliki nama sama:
+\`\`\`java
+class Mahasiswa {
+    String nama;
+
+    Mahasiswa(String nama) {
+        this.nama = nama; // this.nama merujuk ke field class
+    }
+}
+\`\`\``,
+        codeSnippet: `class AkunBank {
+    String nomorRekening;
+    String pemilik;
+    double saldo;
+
+    // Constructor
+    AkunBank(String nomorRekening, String pemilik, double saldoAwal) {
+        this.nomorRekening = nomorRekening;
+        this.pemilik = pemilik;
+        this.saldo = saldoAwal;
+    }
+
+    void cekSaldo() {
+        System.out.println("Rekening: " + nomorRekening + " | Pemilik: " + pemilik + " | Saldo: Rp " + saldo);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        // Membuat akun dengan constructor yang praktis
+        AkunBank akun1 = new AkunBank("123-456", "Kevin Pratama", 5000000);
+        akun1.cekSaldo();
+    }
+}`,
+        exercise: {
+          instruction: "Buat constructor pada class `Buku` yang menerima parameter `judul` dan `penulis`!",
+          starterCode: `class Buku {
+    String judul;
+    String penulis;
+
+    Buku(String judul, String penulis) {
+        this.judul = judul;
+        this.penulis = penulis;
+    }
+
+    void info() {
+        System.out.println("Buku: " + judul + " oleh " + penulis);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Buku b = new Buku("Clean Code", "Robert C. Martin");
+        b.info();
+    }
+}`,
+          expectedHint: "Gunakan `this.judul = judul;` di dalam blok constructor."
+        },
+        quiz: [
+          {
+            question: "Manakah ciri-ciri yang BENAR dari sebuah Constructor di Java?",
+            options: [
+              "Harus memiliki tipe kembalian void",
+              "Namanya harus sama persis dengan nama Class dan tidak memiliki tipe kembalian",
+              "Hanya bisa dipanggil dari dalam method static",
+              "Wajib dideklarasikan dengan keyword function"
+            ],
+            correctAnswer: 1,
+            explanation: "Constructor tidak memiliki return type (bahkan bukan void) dan namanya identik dengan Class."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ==========================================
+  // MODUL 5: OOP Lanjut (Inheritance & Polymorphism)
+  // ==========================================
+  {
+    id: "java-module-5",
+    order: 5,
+    title: "5. OOP Lanjut & Abstraksi",
+    subtitle: "Inheritance, Polymorphism, Abstract Class & Interface",
+    description: "Pewarisan sifat class, overriding method, kontrak interface, dan polimorfisme dinamis.",
+    icon: "GitFork",
+    badge: "Polymorph Master",
+    color: "#f72585",
+    xp: 500,
+    lessons: [
+      {
+        id: "j-5-1",
+        title: "5.1 Pewarisan Sifat (Inheritance - extends)",
         summary: "Menurunkan atribut dan method dari Parent Class ke Child Class menggunakan keyword extends.",
         content: `### 🧬 Pewarisan Sifat (Inheritance)
 Inheritance memungkinkan sebuah class baru (*Child Class / Subclass*) mewarisi seluruh kemampuan dari class yang sudah ada (*Parent Class / Superclass*).
 
 #### 📌 Mengapa Menggunakan Inheritance?
 - **Code Reusability**: Tidak perlu menulis ulang kode yang sama berkali-kali.
-- **Hierarki Jelas**: Membentuk hubungan "is-a" (contoh: Kucing *is-a* Hewan).
-
-\`\`\`java
-class Hewan {
-    void bersuara() { ... }
-}
-
-class Kucing extends Hewan {
-    // Otomatis memiliki method bersuara()
-}
-\`\`\``,
-        codeSnippet: `// 1. Parent Class (Superclass)
-class Hewan {
+- **Hierarki Jelas**: Membentuk hubungan "is-a" (contoh: Kucing *is-a* Hewan).`,
+        codeSnippet: `class Hewan {
     String nama;
 
     void makan() {
@@ -446,7 +734,6 @@ class Hewan {
     }
 }
 
-// 2. Child Class (Subclass) mewarisi Hewan
 class Kucing extends Hewan {
     void mengeong() {
         System.out.println("🐱 " + nama + " bersuara: Meoww Meoww!");
@@ -458,10 +745,7 @@ public class Main {
         Kucing mimi = new Kucing();
         mimi.nama = "Mimi si Kucing Anggora";
 
-        // Memanggil method warisan dari class Hewan
         mimi.makan();
-
-        // Memanggil method khusus milik Kucing
         mimi.mengeong();
     }
 }`,
@@ -498,13 +782,89 @@ public class Main {
             explanation: "Keyword 'extends' digunakan untuk pewarisan class, sedangkan 'implements' untuk interface."
           }
         ]
+      },
+      {
+        id: "j-5-2",
+        title: "5.2 Interface (Kontrak Perilaku)",
+        summary: "Mendefinisikan kontrak method wajib yang harus diimplementasikan oleh class.",
+        content: `### 📜 Interface di Java
+**Interface** adalah cetak biru murni dari perilaku. Interface hanya berisi deklarasi nama method tanpa isi (*body*). Class yang menandatangani interface wajib mengimplementasikan seluruh method-nya.
+
+\`\`\`java
+interface Pembayaran {
+    void bayar(double jumlah);
+}
+
+class Qris implements Pembayaran {
+    public void bayar(double jumlah) {
+        System.out.println("Bayar QRIS: Rp " + jumlah);
+    }
+}
+\`\`\``,
+        codeSnippet: `interface Notifikasi {
+    void kirimPesan(String pesan);
+}
+
+class EmailNotifikasi implements Notifikasi {
+    public void kirimPesan(String pesan) {
+        System.out.println("📧 Mengirim Email: " + pesan);
+    }
+}
+
+class WhatsappNotifikasi implements Notifikasi {
+    public void kirimPesan(String pesan) {
+        System.out.println("💬 Mengirim WhatsApp: " + pesan);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Notifikasi notif1 = new EmailNotifikasi();
+        Notifikasi notif2 = new WhatsappNotifikasi();
+
+        notif1.kirimPesan("Akun Anda berhasil dibuat!");
+        notif2.kirimPesan("Kode OTP Anda adalah 8899");
+    }
+}`,
+        exercise: {
+          instruction: "Buat class `SmsNotifikasi implements Notifikasi` yang mencetak pesan SMS!",
+          starterCode: `interface Notifikasi {
+    void kirimPesan(String pesan);
+}
+
+class SmsNotifikasi implements Notifikasi {
+    public void kirimPesan(String pesan) {
+        System.out.println("📱 Mengirim SMS: " + pesan);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Notifikasi sms = new SmsNotifikasi();
+        sms.kirimPesan("Saldo Anda berkurang Rp 50.000");
+    }
+}`,
+          expectedHint: "Gunakan keyword `implements Notifikasi` dan sediakan method `public void kirimPesan(String pesan)`."
+        },
+        quiz: [
+          {
+            question: "Keyword apa yang digunakan oleh Class untuk mengadopsi Interface di Java?",
+            options: ["extends", "implements", "uses", "inherits"],
+            correctAnswer: 1,
+            explanation: "Keyword 'implements' digunakan untuk mengimplementasikan interface."
+          }
+        ]
       }
     ]
   },
+
+  // ==========================================
+  // MODUL 6: Penanganan Error (Exception Handling)
+  // ==========================================
   {
-    id: "java-module-5",
-    order: 5,
-    title: "5. Penanganan Error (Exception Handling)",
+    id: "java-module-6",
+    order: 6,
+    title: "6. Penanganan Error (Exception Handling)",
     subtitle: "Try-Catch, Finally & Pengamanan Crash di Java",
     description: "Mencegah program crash mendadak akibat input salah atau error runtime menggunakan blok try-catch-finally.",
     icon: "ShieldAlert",
@@ -513,8 +873,8 @@ public class Main {
     xp: 400,
     lessons: [
       {
-        id: "j-5-1",
-        title: "5.1 Try, Catch & Finally",
+        id: "j-6-1",
+        title: "6.1 Try, Catch & Finally",
         summary: "Menangkap error runtime (seperti pembagian dengan nol atau array index out of bounds).",
         content: `### 🛡️ Exception Handling di Java
 Di Java, saat terjadi kesalahan tak terduga (*Exception*), program akan berhenti mendadak (*crash*). Untuk mengamankannya, kita menggunakan blok **\`try-catch\`**.
@@ -529,7 +889,7 @@ Di Java, saat terjadi kesalahan tak terduga (*Exception*), program akan berhenti
 
         try {
             int angka = 10;
-            int pembagi = 0; // Pembagian dengan 0 ilegal di matematika
+            int pembagi = 0;
             int hasil = angka / pembagi;
 
             System.out.println("Hasil: " + hasil);
@@ -544,12 +904,12 @@ Di Java, saat terjadi kesalahan tak terduga (*Exception*), program akan berhenti
     }
 }`,
         exercise: {
-          instruction: "Bungkus pembagian angka dengan blok `try-catch` agar program tidak crash!",
+          instruction: "Bungkus akses array di luar batas dengan blok `try-catch` agar program tidak crash!",
           starterCode: `public class Main {
     public static void main(String[] args) {
         try {
             int[] angka = {1, 2, 3};
-            System.out.println(angka[10]); // Indeks di luar batas
+            System.out.println(angka[10]);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("Tertangkap error: Indeks array melebihi panjang data!");
         }
@@ -568,6 +928,165 @@ Di Java, saat terjadi kesalahan tak terduga (*Exception*), program akan berhenti
             ],
             correctAnswer: 2,
             explanation: "Blok 'finally' dijamin selalu berjalan untuk keperluan pembersihan memori atau penutupan file/koneksi."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ==========================================
+  // MODUL 7: Fitur Java Modern (Java 8 s/d 17+)
+  // ==========================================
+  {
+    id: "java-module-7",
+    order: 7,
+    title: "7. Fitur Java Modern (Java 8 - 17+)",
+    subtitle: "Generics, Lambda Expressions & Stream API",
+    description: "Menulis kode Java modern yang ringkas, deklaratif, dan aman tipe data (Type-Safe).",
+    icon: "Sparkles",
+    badge: "Modernist",
+    color: "#4361ee",
+    xp: 500,
+    lessons: [
+      {
+        id: "j-7-1",
+        title: "7.1 Lambda Expressions & Stream API",
+        summary: "Memproses koleksi data secara deklaratif dengan filter, map, dan forEach.",
+        content: `### ⚡ Stream API & Lambda di Java 8+
+Java modern memungkinkan kita memproses daftar data secara fungsional dan elegan tanpa perlu menulis perulangan for bertingkat.
+
+#### 📌 Contoh Stream Pipeline:
+\`\`\`java
+List<Integer> angka = List.of(1, 2, 3, 4, 5, 6);
+angka.stream()
+     .filter(n -> n % 2 == 0) // Ambil hanya yang genap
+     .map(n -> n * 10)        // Kalikan 10
+     .forEach(System.out::println);
+\`\`\``,
+        codeSnippet: `import java.util.ArrayList;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<String> nama = new ArrayList<>();
+        nama.add("Andi");
+        nama.add("Budi");
+        nama.add("Alex");
+        nama.add("Cindy");
+
+        System.out.println("=== 1. Lambda forEach ===");
+        nama.forEach(n -> System.out.println("Halo: " + n));
+
+        System.out.println("\\n=== 2. Stream Filter (Huruf Depan 'A') ===");
+        nama.stream()
+            .filter(n -> n.startsWith("A"))
+            .forEach(n -> System.out.println("Nama berawalan A: " + n));
+    }
+}`,
+        exercise: {
+          instruction: "Gunakan `.filter()` pada Stream untuk menampilkan nama yang memiliki panjang karakter > 4 huruf!",
+          starterCode: `import java.util.ArrayList;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("Budi");
+        list.add("Alexander");
+        list.add("Christine");
+
+        list.stream()
+            .filter(nama -> nama.length() > 5)
+            .forEach(nama -> System.out.println("Nama panjang: " + nama));
+    }
+}`,
+          expectedHint: "Gunakan lambda `nama -> nama.length() > 5` di dalam method `.filter()`."
+        },
+        quiz: [
+          {
+            question: "Apa fungsi method `.filter()` pada Java Stream API?",
+            options: [
+              "Mengubah tipe data elemen",
+              "Menyaring elemen berdasarkan kondisi boolean (Predicate)",
+              "Menghapus seluruh isi koleksi",
+              "Mengurutkan data secara alfabetis"
+            ],
+            correctAnswer: 1,
+            explanation: "Method filter() mengevaluasi setiap elemen dan hanya meloloskan elemen yang memenuhi kondisi true."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ==========================================
+  // MODUL 8: Multithreading & Ekosistem Enterprise
+  // ==========================================
+  {
+    id: "java-module-8",
+    order: 8,
+    title: "8. Multithreading & Ekosistem Enterprise",
+    subtitle: "Thread, Runnable, Concurrency & Pengenalan Spring Boot",
+    description: "Menjalankan proses paralel dengan Thread Java dan memahami arsitektur backend Spring Boot.",
+    icon: "Cpu",
+    badge: "Enterprise Architect",
+    color: "#3a0ca3",
+    xp: 600,
+    lessons: [
+      {
+        id: "j-8-1",
+        title: "8.1 Multithreading Dasar (Thread & Runnable)",
+        summary: "Mengeksekusi banyak tugas secara paralel di latar belakang.",
+        content: `### 🧵 Multithreading di Java
+Multithreading memungkinkan program Java menjalankan beberapa instruksi sekaligus secara bersamaan di CPU multi-core.
+
+#### 📌 Cara Membuat Thread:
+Mengimplementasikan interface \`Runnable\` dan menjalankannya dengan \`Thread.start()\`.`,
+        codeSnippet: `class TugasLatarBelakang implements Runnable {
+    private String namaTugas;
+
+    TugasLatarBelakang(String nama) {
+        this.namaTugas = nama;
+    }
+
+    public void run() {
+        for (int i = 1; i <= 3; i++) {
+            System.out.println("⚙️ [" + namaTugas + "] Memproses data tahap " + i);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Main Thread Dimulai...");
+
+        // Menjalankan thread terpisah secara paralel
+        Thread t1 = new Thread(new TugasLatarBelakang("Download-File"));
+        Thread t2 = new Thread(new TugasLatarBelakang("Sync-Database"));
+
+        t1.start();
+        t2.start();
+
+        System.out.println("Main Thread Selesai.");
+    }
+}`,
+        exercise: {
+          instruction: "Buat thread baru bernama `worker` dan jalankan dengan method `.start()`!",
+          starterCode: `public class Main {
+    public static void main(String[] args) {
+        Thread worker = new Thread(() -> {
+            System.out.println("🚀 Worker thread berjalan secara asinkron!");
+        });
+
+        worker.start();
+    }
+}`,
+          expectedHint: "Panggil method `worker.start()` untuk memicu eksekusi thread."
+        },
+        quiz: [
+          {
+            question: "Method manakah yang harus dipanggil untuk memulai eksekusi thread baru di Java?",
+            options: ["thread.run()", "thread.start()", "thread.execute()", "thread.launch()"],
+            correctAnswer: 1,
+            explanation: "Memanggil `.start()` akan membuat thread baru di OS dan otomatis memanggil method `.run()` di dalamnya."
           }
         ]
       }
