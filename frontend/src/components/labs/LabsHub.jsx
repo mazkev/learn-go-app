@@ -8,11 +8,13 @@ import {
   Zap,
   Database,
   FlaskConical,
-  Sparkles
+  Sparkles,
+  Blocks
 } from "lucide-react";
 import LoadingSpinner from "../common/LoadingSpinner";
 
 // Lazy-load individual simulators on demand for fast initial load
+const VisualCodeBuilder = lazy(() => import("../builder/VisualCodeBuilder"));
 const CleanArchLab = lazy(() => import("../cleanarch/CleanArchLab"));
 const ProjectStartersLab = lazy(() => import("../starters/ProjectStartersLab"));
 const UnitTestLab = lazy(() => import("../testinglab/UnitTestLab"));
@@ -22,6 +24,12 @@ const GrpcCompareLab = lazy(() => import("../grpccompare/GrpcCompareLab"));
 const GormLab = lazy(() => import("../gormlab/GormLab"));
 
 export const LAB_TABS = [
+  {
+    id: "builder",
+    label: "🧩 Visual Code Builder",
+    icon: Blocks,
+    description: "Rakit dan pahami kode Go secara visual seperti LEGO tanpa takut salah ketik (Cocok untuk Pemula)",
+  },
   {
     id: "cleanarch",
     label: "Clean Architecture",
@@ -66,7 +74,7 @@ export const LAB_TABS = [
   },
 ];
 
-export default function LabsHub({ defaultSubTab = "cleanarch" }) {
+export default function LabsHub({ defaultSubTab = "builder", onOpenTryIt }) {
   const [activeSubTab, setActiveSubTab] = useState(defaultSubTab);
 
   const currentLab = LAB_TABS.find((t) => t.id === activeSubTab) || LAB_TABS[0];
@@ -84,7 +92,7 @@ export default function LabsHub({ defaultSubTab = "cleanarch" }) {
               <h2 className="text-sm font-extrabold theme-heading flex items-center gap-2">
                 <span>Interactive Labs Workbench</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-mono font-bold">
-                  7 Simulator
+                  8 Simulator
                 </span>
               </h2>
               <p className="text-[11px] theme-muted">{currentLab.description}</p>
@@ -119,6 +127,7 @@ export default function LabsHub({ defaultSubTab = "cleanarch" }) {
       {/* Active Lab Body Area with Suspense Lazy Loading */}
       <div className="flex-1 overflow-y-auto">
         <Suspense fallback={<LoadingSpinner message={`Memuat ${currentLab.label}...`} />}>
+          {activeSubTab === "builder" && <VisualCodeBuilder onOpenTryIt={onOpenTryIt} />}
           {activeSubTab === "cleanarch" && <CleanArchLab />}
           {activeSubTab === "starters" && <ProjectStartersLab />}
           {activeSubTab === "testing" && <UnitTestLab />}

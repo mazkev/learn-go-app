@@ -134,7 +134,7 @@ export default function App() {
         {activeTab === "labs" && (
           <main className="flex-1 overflow-y-auto">
             <Suspense fallback={<LoadingSpinner message="Memuat Interactive Labs Workbench..." />}>
-              <LabsHub />
+              <LabsHub onOpenTryIt={handleLoadSnippetToTryIt} />
             </Suspense>
           </main>
         )}
