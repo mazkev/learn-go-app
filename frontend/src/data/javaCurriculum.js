@@ -1356,6 +1356,173 @@ public class Main {
             explanation: "Anotasi `@Test` dari package `org.junit.jupiter.api.Test` menandai method pengujian pada JUnit 5."
           }
         ]
+      },
+      {
+        id: "j-8-5",
+        title: "8.5 Spring Security & JWT Authentication",
+        summary: "Mengamankan REST API microservices menggunakan JSON Web Token (JWT) dan filter otorisasi.",
+        content: `### 🔒 Spring Security & Stateless JWT
+Dalam arsitektur microservices modern, autentikasi dilakukan secara **Stateless** menggunakan **JWT (JSON Web Token)** di dalam HTTP Header \`Authorization: Bearer <token>\`.
+
+#### 📌 Alur Autentikasi JWT:
+1. Klien mengirim kredensial (Username & Password) ke \`POST /api/v1/auth/login\`.
+2. Server memvalidasi dan mengembalikan string token terenkripsi HMAC-SHA256.
+3. Klien menyertakan token di setiap request untuk mengakses data terproteksi.`,
+        codeSnippet: `// Simulasi Token Generator & Validator JWT di Java
+class JwtAuthService {
+    public String generateToken(String username, String role) {
+        // Simulasi pembuatan token
+        return "eyJhbGciOiJIUzI1NiJ9." + username + "." + role + ".signatureSecret";
+    }
+
+    public boolean validateToken(String token) {
+        return token != null && token.startsWith("eyJ") && token.contains("signatureSecret");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== Spring Security JWT Service ===");
+        JwtAuthService auth = new JwtAuthService();
+
+        // 1. User Login -> Generate JWT Token
+        String token = auth.generateToken("kevin_admin", "ROLE_ADMIN");
+        System.out.println("🔑 Token Terbit: " + token);
+
+        // 2. Client Request dengan Token
+        boolean isAuthorized = auth.validateToken(token);
+        System.out.println("🛡️ Status Otorisasi: " + (isAuthorized ? "AUTHORIZED (200 OK)" : "FORBIDDEN (403)"));
+    }
+}`,
+        exercise: {
+          instruction: "Uji apakah token yang valid berhasil melewati validasi `auth.validateToken(token)`!",
+          starterCode: `class JwtAuthService {
+    public boolean validateToken(String token) {
+        return token != null && token.length() > 10;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        JwtAuthService auth = new JwtAuthService();
+        String token = "Bearer eyJhbGciOiJIUzI1NiJ9.user";
+        System.out.println("Status Verifikasi Token: " + auth.validateToken(token));
+    }
+}`,
+          expectedHint: "Panggil method `auth.validateToken(token)`."
+        },
+        quiz: [
+          {
+            question: "Di mana standar penempatan token JWT pada request HTTP saat mengakses endpoint yang dilindungi?",
+            options: [
+              "Di dalam URL query parameter",
+              "Di dalam Header 'Authorization: Bearer <token>'",
+              "Di dalam nama file gambar",
+              "Di dalam status code HTTP"
+            ],
+            correctAnswer: 1,
+            explanation: "Standar industri OAuth2/JWT mewajibkan pengiriman token melalui HTTP Header `Authorization: Bearer <token>`."
+          }
+        ]
+      },
+      {
+        id: "j-8-6",
+        title: "8.6 Java Design Patterns (Singleton & Builder)",
+        summary: "Menerapkan pola desain arsitektur software teruji untuk kode yang fleksibel, scalable, dan bersih.",
+        content: `### 🏛️ Java Design Patterns
+Design Pattern adalah solusi teruji untuk masalah umum dalam perancangan arsitektur software berorientasi objek.
+
+#### 📌 2 Pola Paling Populer:
+- **Singleton**: Menjamin sebuah class hanya memiliki **1 instance tunggal** di seluruh aplikasi (contoh: Database Connection Pool).
+- **Builder**: Membangun objek kompleks langkah demi langkah (*Fluent Method Chaining*).`,
+        codeSnippet: `// 1. Singleton Pattern
+class DatabasePool {
+    private static DatabasePool instance;
+
+    private DatabasePool() {
+        System.out.println("🔌 Koneksi Database Pool Diinisialisasi (Hanya 1x!)");
+    }
+
+    public static synchronized DatabasePool getInstance() {
+        if (instance == null) {
+            instance = new DatabasePool();
+        }
+        return instance;
+    }
+}
+
+// 2. Builder Pattern
+class UserBuilder {
+    private String nama;
+    private String email;
+
+    public UserBuilder setNama(String nama) {
+        this.nama = nama;
+        return this;
+    }
+
+    public UserBuilder setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public String build() {
+        return "User(nama=" + nama + ", email=" + email + ")";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("=== 1. Test Singleton Pattern ===");
+        DatabasePool db1 = DatabasePool.getInstance();
+        DatabasePool db2 = DatabasePool.getInstance();
+        System.out.println("Apakah db1 dan db2 adalah instance yang sama? " + (db1 == db2));
+
+        System.out.println("\\n=== 2. Test Builder Pattern ===");
+        String user = new UserBuilder()
+            .setNama("Kevin Pratama")
+            .setEmail("kevin@domain.com")
+            .build();
+        System.out.println("Objek Terbangun: " + user);
+    }
+}`,
+        exercise: {
+          instruction: "Gunakan `UserBuilder` untuk merakit objek dengan nama 'Siti' dan email 'siti@mail.com'!",
+          starterCode: `class UserBuilder {
+    private String nama;
+    private String email;
+
+    public UserBuilder setNama(String nama) {
+        this.nama = nama;
+        return this;
+    }
+
+    public UserBuilder setEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public String build() {
+        return "User: " + nama + " | " + email;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        String u = new UserBuilder().setNama("Siti").setEmail("siti@mail.com").build();
+        System.out.println(u);
+    }
+}`,
+          expectedHint: "Gunakan method chaining `.setNama(\"Siti\").setEmail(\"siti@mail.com\").build()`."
+        },
+        quiz: [
+          {
+            question: "Pola desain (Design Pattern) manakah yang menjamin bahwa sebuah kelas hanya dapat memiliki 1 instance objek di seluruh memori aplikasi?",
+            options: ["Factory Pattern", "Singleton Pattern", "Observer Pattern", "Adapter Pattern"],
+            correctAnswer: 1,
+            explanation: "`Singleton Pattern` membatasi instansiasi kelas menjadi satu objek tunggal (biasanya dengan private constructor dan static getInstance)."
+          }
+        ]
       }
     ]
   }

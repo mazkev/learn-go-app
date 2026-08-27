@@ -880,6 +880,116 @@ print("API Response:", response)`,
             explanation: "`pip` (Pip Installs Packages) adalah package manager resmi standar Python."
           }
         ]
+      },
+      {
+        id: "p-8-2",
+        title: "8.2 Pengolahan Data dengan Pandas & DataFrame",
+        summary: "Menganalisis data tabular (tabel baris & kolom), statistik deskriptif, dan filtering data.",
+        content: `### 📊 Analisis Data dengan Pandas
+**Pandas** adalah library nomor 1 di Python untuk manipulasi dan analisis data terstruktur (mirip Excel bertenaga super di dalam kode).
+
+#### 📌 Konsep DataFrame:
+\`DataFrame\` adalah tabel 2 dimensi dengan baris dan kolom berlabel.
+
+\`\`\`python
+import pandas as pd
+
+data = {
+    "Produk": ["Laptop", "Mouse", "Keyboard"],
+    "Harga": [15000000, 150000, 500000],
+    "Terjual": [12, 140, 45]
+}
+df = pd.DataFrame(data)
+print(df.describe())
+\`\`\``,
+        codeSnippet: `# Simulasi Manipulasi Data Tabular (Pandas Style)
+transaksi = [
+    {"produk": "MacBook Pro", "kategori": "Laptop", "harga": 25000000, "qty": 4},
+    {"produk": "Mouse Wireless", "kategori": "Aksesoris", "harga": 250000, "qty": 30},
+    {"produk": "Monitor 4K", "kategori": "Elektronik", "harga": 4500000, "qty": 8},
+    {"produk": "Keyboard RGB", "kategori": "Aksesoris", "harga": 750000, "qty": 15}
+]
+
+print("=== 1. Ringkasan Data Penjualan ===")
+total_omset = sum(item["harga"] * item["qty"] for item in transaksi)
+print(f"Total Omset Keseluruhan: Rp {total_omset:,}")
+
+print("\\n=== 2. Filter Kategori 'Aksesoris' ===")
+aksesoris = [item for item in transaksi if item["kategori"] == "Aksesoris"]
+for a in aksesoris:
+    omset_item = a["harga"] * a["qty"]
+    print(f"- {a['produk']} ({a['qty']} unit) -> Total: Rp {omset_item:,}")`,
+        exercise: {
+          instruction: "Hitung total pendapatan dari list `penjualan = [{'item': 'A', 'total': 100}, {'item': 'B', 'total': 250}]` menggunakan fungsi `sum()`!",
+          starterCode: `penjualan = [
+    {"item": "Kemeja", "total": 150000},
+    {"item": "Celana", "total": 200000},
+    {"item": "Sepatu", "total": 350000}
+]
+
+total_pendapatan = sum(p["total"] for p in penjualan)
+print(f"Total Pendapatan: Rp {total_pendapatan:,}")`,
+          expectedHint: "Gunakan `sum(p[\"total\"] for p in penjualan)`."
+        },
+        quiz: [
+          {
+            question: "Struktur data utama 2 dimensi (tabel berbaris dan kolom) di library Pandas disebut apa?",
+            options: ["Series", "DataFrame", "Matrix", "DataList"],
+            correctAnswer: 1,
+            explanation: "`DataFrame` adalah struktur data tabular 2 dimensi berlabel yang menjadi fondasi utama Pandas."
+          }
+        ]
+      },
+      {
+        id: "p-8-3",
+        title: "8.3 Web Scraping & Otomasi Data",
+        summary: "Mengekstrak data dari halaman HTML website secara otomatis menggunakan BeautifulSoup.",
+        content: `### 🕷️ Web Scraping dengan BeautifulSoup
+Web Scraping memungkinkan kita mengambil data publik dari halaman web HTML secara otomatis untuk keperluan riset atau agregasi data.
+
+#### 📌 Alur Kerja Web Scraping:
+1. **\`requests.get(url)\`**: Mengunduh kode HTML halaman web.
+2. **\`BeautifulSoup(html, 'html.parser')\`**: Mem-parsing dokumen HTML.
+3. **\`.find_all('tag')\`**: Mengekstrak elemen spesifik (seperti judul berita, harga produk, atau link).`,
+        codeSnippet: `# Simulasi Parsing Dokumen HTML
+html_content = """
+<div class="product-list">
+    <div class="card">
+        <h2 class="title">Kursus Python Master</h2>
+        <span class="price">Rp 250.000</span>
+    </div>
+    <div class="card">
+        <h2 class="title">Kursus Golang Backend</h2>
+        <span class="price">Rp 300.000</span>
+    </div>
+</div>
+"""
+
+# Mengekstrak judul dan harga secara simulasi
+import re
+titles = re.findall(r'<h2 class="title">(.*?)</h2>', html_content)
+prices = re.findall(r'<span class="price">(.*?)</span>', html_content)
+
+print("=== Hasil Ekstraksi Web Scraping ===")
+for t, p in zip(titles, prices):
+    print(f"📦 Produk: {t} | Harga: {p}")`,
+        exercise: {
+          instruction: "Gunakan `zip()` untuk mencetak pasangan judul berita dan tanggal terbit!",
+          starterCode: `berita = ["Rilis Python 3.13", "M3.learn v2 Diluncurkan"]
+tanggal = ["25 Agustus 2026", "27 Agustus 2026"]
+
+for b, t in zip(berita, tanggal):
+    print(f"📰 {b} ({t})")`,
+          expectedHint: "Gunakan `for b, t in zip(berita, tanggal):`."
+        },
+        quiz: [
+          {
+            question: "Library Python populer apakah yang sering digunakan bersama 'requests' untuk mem-parsing dokumen HTML saat web scraping?",
+            options: ["BeautifulSoup", "PyTorch", "Django", "Flask"],
+            correctAnswer: 0,
+            explanation: "`BeautifulSoup` (bs4) adalah library standar de facto di Python untuk mem-parsing dan mengekstrak data dari pohon DOM HTML."
+          }
+        ]
       }
     ]
   }
