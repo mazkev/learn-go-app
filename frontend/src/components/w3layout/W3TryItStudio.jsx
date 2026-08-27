@@ -155,8 +155,14 @@ export default function W3TryItStudio({
         {/* Left: Monaco Go Editor */}
         <div className="flex flex-col min-h-0 bg-white dark:bg-[#070d19]">
           <div className="px-4 py-1.5 bg-slate-100 dark:bg-[#0b1120] border-b border-slate-200 dark:border-white/10 text-xs font-mono font-bold theme-muted flex items-center justify-between shrink-0">
-            <span>Source: {language === "java" ? "Main.java" : "main.go"}</span>
-            <span className="text-[11px] text-[#04AA6D]">{language === "java" ? "Java OpenJDK 15+" : "Golang v1.22+"}</span>
+            <span>Source: {language === "java" ? "Main.java" : language === "python" ? "main.py" : "main.go"}</span>
+            <span className="text-[11px] text-[#04AA6D]">{
+              language === "java"
+                ? "Java OpenJDK 15+"
+                : language === "python"
+                ? "Python 3.12+"
+                : "Golang v1.22+"
+            }</span>
           </div>
 
           <div className="flex-1 min-h-0">

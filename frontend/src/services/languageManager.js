@@ -1,7 +1,9 @@
 import { ROADMAP_MODULES } from "../data/curriculum";
 import { JAVA_MODULES } from "../data/javaCurriculum";
+import { PYTHON_MODULES } from "../data/pythonCurriculum";
 import { executeGoCode } from "./goRunner";
 import { executeJavaCode } from "./javaRunner";
+import { executePythonCode } from "./pythonRunner";
 
 export const SUPPORTED_LANGUAGES = [
   {
@@ -36,6 +38,19 @@ func main() {
     }
 }`,
   },
+  {
+    id: "python",
+    name: "Python 3",
+    shortName: "Python",
+    icon: "🐍",
+    color: "#3776AB",
+    editorLang: "python",
+    tagline: "Clean Syntax, Data Science & Web APIs",
+    modules: PYTHON_MODULES,
+    starterCode: `# Python 3 di M3.learn
+print("Halo dari M3.learn!")
+print("Belajar Python jadi sangat mudah dan ringkas.")`,
+  },
 ];
 
 export function getLanguageConfig(langId = "go") {
@@ -45,6 +60,9 @@ export function getLanguageConfig(langId = "go") {
 export async function executeMultiCode(rawCode, langId = "go") {
   if (langId === "java") {
     return executeJavaCode(rawCode);
+  }
+  if (langId === "python") {
+    return executePythonCode(rawCode);
   }
   return executeGoCode(rawCode);
 }

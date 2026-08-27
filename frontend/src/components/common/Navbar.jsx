@@ -59,15 +59,29 @@ export default function Navbar({
               onClick={() => setActiveTab("tutorial")}
               className="flex items-center gap-2 cursor-pointer select-none group"
             >
-              <div className={`w-8 h-8 rounded-lg ${activeLanguage === "java" ? "bg-[#f89820]" : "bg-[#04AA6D]"} flex items-center justify-center text-white font-black shadow-sm group-hover:scale-105 transition-transform`}>
-                <span className="text-base">{activeLanguage === "java" ? "☕" : "🐹"}</span>
+              <div className={`w-8 h-8 rounded-lg ${
+                activeLanguage === "java"
+                  ? "bg-[#f89820]"
+                  : activeLanguage === "python"
+                  ? "bg-[#3776AB]"
+                  : "bg-[#04AA6D]"
+              } flex items-center justify-center text-white font-black shadow-sm group-hover:scale-105 transition-transform`}>
+                <span className="text-base">
+                  {activeLanguage === "java" ? "☕" : activeLanguage === "python" ? "🐍" : "🐹"}
+                </span>
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="font-extrabold text-base md:text-lg theme-heading tracking-tight">
-                  M3.<span className={activeLanguage === "java" ? "text-[#f89820]" : "text-[#04AA6D]"}>learn</span>
+                  M3.<span className={
+                    activeLanguage === "java"
+                      ? "text-[#f89820]"
+                      : activeLanguage === "python"
+                      ? "text-[#3776AB]"
+                      : "text-[#04AA6D]"
+                  }>learn</span>
                 </span>
                 <span className="text-[10px] font-mono text-[#04AA6D] font-bold hidden sm:inline">
-                  {activeLanguage === "java" ? "• Java" : "• Go"}
+                  {activeLanguage === "java" ? "• Java" : activeLanguage === "python" ? "• Python 3" : "• Go"}
                 </span>
               </div>
             </div>
@@ -85,7 +99,13 @@ export default function Navbar({
                   onClick={() => setActiveTab(item.id)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                     isActive
-                      ? `${activeLanguage === "java" ? "bg-[#f89820]" : "bg-[#04AA6D]"} text-white shadow-sm`
+                      ? `${
+                          activeLanguage === "java"
+                            ? "bg-[#f89820]"
+                            : activeLanguage === "python"
+                            ? "bg-[#3776AB]"
+                            : "bg-[#04AA6D]"
+                        } text-white shadow-sm`
                       : "theme-body hover:bg-black/5 dark:hover:bg-white/5"
                   }`}
                 >
@@ -122,6 +142,17 @@ export default function Navbar({
                   title="Pindah ke materi Java"
                 >
                   <span>☕ Java</span>
+                </button>
+                <button
+                  onClick={() => onSelectLanguage("python")}
+                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    activeLanguage === "python"
+                      ? "bg-[#3776AB] text-white shadow-xs"
+                      : "theme-muted hover:theme-heading"
+                  }`}
+                  title="Pindah ke materi Python 3"
+                >
+                  <span>🐍 Python</span>
                 </button>
               </div>
             )}

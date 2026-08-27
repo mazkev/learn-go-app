@@ -61,11 +61,17 @@ export default function W3Sidebar({
         <div className="p-3 border-b border-slate-200 dark:border-white/[0.08] sticky top-0 bg-inherit z-10 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black tracking-wider uppercase theme-heading flex items-center gap-1.5">
-              <BookOpen size={14} className="text-[#04AA6D]" /> {activeLanguage === "java" ? "☕ JAVA TUTORIAL" : "🐹 GO TUTORIAL"}
+              <BookOpen size={14} className="text-[#04AA6D]" /> {
+                activeLanguage === "java"
+                  ? "☕ JAVA TUTORIAL"
+                  : activeLanguage === "python"
+                  ? "🐍 PYTHON TUTORIAL"
+                  : "🐹 GO TUTORIAL"
+              }
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-mono theme-muted">
-                {progress.completedLessons.length}/32 Selesai
+                {progress.completedLessons.length}/{modules.flatMap((m) => m.lessons).length} Selesai
               </span>
               <button
                 onClick={onCloseMobile}
