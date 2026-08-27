@@ -85,7 +85,7 @@ export default function App() {
       />
 
       {/* Main App Body */}
-      <div className="flex-1 flex min-h-0">
+      <div className="flex-1 flex min-h-0 pb-14 md:pb-0">
         {/* Hub 1: W3 Tutorial Mode */}
         {activeTab === "tutorial" && (
           <>
