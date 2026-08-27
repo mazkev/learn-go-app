@@ -1,6 +1,6 @@
 /**
  * Python 3 Curriculum & Interactive Roadmap Modules
- * Kurikulum Lengkap Pemrograman Python Modern, Data Structures & OOP
+ * Kurikulum Lengkap Pemrograman Python 3 Modern, Data Structures, OOP & Web APIs
  */
 
 export const PYTHON_MODULES = [
@@ -12,7 +12,7 @@ export const PYTHON_MODULES = [
     order: 1,
     title: "1. Dasar Pemrograman Python 3",
     subtitle: "Sintaks Bersih, Indentasi, Variabel & f-Strings",
-    description: "Mempelajari filosofi 'The Zen of Python', aturan indentasi, variabel dinamis, tipe data primitif, dan formatting string.",
+    description: "Mempelajari filosofi 'The Zen of Python', aturan indentasi, variabel dinamis, tipe data primitif, operator dan formatting string.",
     icon: "Terminal",
     badge: "Python Rookie",
     color: "#3776AB",
@@ -112,6 +112,43 @@ print(f"Halo! Saya {nama} dari {asal_kota}, berusia {umur} tahun.")`,
             explanation: "Di Python, nilai boolean wajib diawali huruf kapital: `True` dan `False`."
           }
         ]
+      },
+      {
+        id: "p-1-3",
+        title: "1.3 Operator Aritmatika & Tipe Casting",
+        summary: "Melakukan operasi matematika, pembagian bulat (//), pangkat (**), dan konversi tipe data.",
+        content: `### ➗ Operator Khusus di Python
+Selain operator biasa (\`+\`, \`-\`, \`*\`, \`/\`), Python memiliki operator istimewa:
+- **\`//\`** (*Floor Division*): Pembagian bulat membuang koma (contoh: \`7 // 2\` menghasilkan \`3\`).
+- **\`**\`** (*Exponentiation*): Pangkat (contoh: \`2 ** 3\` menghasilkan \`8\`).
+- **\`%\`** (*Modulo*): Sisa bagi (contoh: \`10 % 3\` menghasilkan \`1\`).
+
+#### 📌 Konversi Tipe Data (Type Casting):
+- **\`int("100")\`** -> Mengubah string ke integer.
+- **\`float("3.14")\`** -> Mengubah string ke desimal.
+- **\`str(42)\`** -> Mengubah angka ke string.`,
+        codeSnippet: `a = 15
+b = 4
+
+print(f"Penjumlahan    : {a} + {b} = {a + b}")
+print(f"Pembagian Float: {a} / {b} = {a / b}")
+print(f"Pembagian Bulat: {a} // {b} = {a // b}")
+print(f"Sisa Bagi (%)  : {a} % {b} = {a % b}")
+print(f"Pangkat (**)   : 2 ** 4 = {2 ** 4}")`,
+        exercise: {
+          instruction: "Hitung nilai 3 pangkat 4 menggunakan operator `**` dan cetak hasilnya!",
+          starterCode: `hasil_pangkat = 3 ** 4
+print(f"Hasil 3 pangkat 4 adalah: {hasil_pangkat}")`,
+          expectedHint: "Gunakan operator `3 ** 4`."
+        },
+        quiz: [
+          {
+            question: "Berapakah hasil dari ekspresi Python `11 // 2`?",
+            options: ["5.5", "5", "6", "1"],
+            correctAnswer: 1,
+            explanation: "Operator `//` adalah pembagian bulat (floor division) yang membulatkan hasil ke bawah (5)."
+          }
+        ]
       }
     ]
   },
@@ -173,6 +210,55 @@ else:
             options: ["else if", "elseif", "elif", "else_if"],
             correctAnswer: 2,
             explanation: "Python menggunakan kata kunci `elif` yang lebih ringkas."
+          }
+        ]
+      },
+      {
+        id: "p-2-2",
+        title: "2.2 Operator Logika (and, or, not) & in",
+        summary: "Menggabungkan beberapa kondisi logika dengan kata bahasa Inggris alami.",
+        content: `### 🧠 Operator Logika Python
+Alih-alih menggunakan simbol \`&&\`, \`||\`, dan \`!\`, Python menggunakan kata bahasa Inggris yang sangat mudah dipahami:
+- **\`and\`**: Bernilai \`True\` hanya jika **semua** kondisi benar.
+- **\`or\`**: Bernilai \`True\` jika **salah satu** kondisi benar.
+- **\`not\`**: Membalik nilai kebenaran (\`not True\` -> \`False\`).
+- **\`in\`**: Memeriksa keberadaan elemen di dalam list/teks.`,
+        codeSnippet: `usia = 22
+punya_sim = True
+kota = "Jakarta"
+
+# Menggabungkan kondisi dengan and
+if usia >= 17 and punya_sim:
+    print("✓ Boleh mengemudikan kendaraan bermotor.")
+else:
+    print("✗ Belum boleh mengemudi.")
+
+# Membership test dengan in
+akses_menu = ["Dashboard", "Laporan", "Profil"]
+if "Laporan" in akses_menu:
+    print("✓ Pengguna memiliki hak akses melihat Laporan.")`,
+        exercise: {
+          instruction: "Gunakan operator `and` untuk mengecek apakah `nilai >= 75` dan `kehadiran >= 80`!",
+          starterCode: `nilai = 80
+kehadiran = 90
+
+if nilai >= 75 and kehadiran >= 80:
+    print("Status: LULUS MATA KULIAH")
+else:
+    print("Status: TIDAK LULUS")`,
+          expectedHint: "Gunakan `nilai >= 75 and kehadiran >= 80`."
+        },
+        quiz: [
+          {
+            question: "Bagaimana cara memeriksa apakah kata 'Python' ada di dalam string kalimat di Python?",
+            options: [
+              "kalimat.has('Python')",
+              "'Python' in kalimat",
+              "kalimat.contains('Python')",
+              "kalimat.indexOf('Python') != -1"
+            ],
+            correctAnswer: 1,
+            explanation: "Operator `'Python' in kalimat` mengembalikan `True` jika kata tersebut ditemukan di dalam string."
           }
         ]
       }
@@ -292,6 +378,47 @@ print("Profil Lengkap:", profil)`,
             explanation: "Method `.items()` mengembalikan pasangan (key, value) yang siap di-loop."
           }
         ]
+      },
+      {
+        id: "p-3-3",
+        title: "3.3 List Comprehension (Koding 1 Baris)",
+        summary: "Membuat dan memfilter list baru hanya dengan 1 baris kode yang ringkas dan cepat.",
+        content: `### ⚡ List Comprehension
+Salah satu fitur paling dicintai di Python adalah **List Comprehension**, yaitu cara membuat list baru dari list yang sudah ada dengan sintaks 1 baris.
+
+\`\`\`python
+# Sintaks: [ekspresi for item in koleksi if kondisi]
+kuadrat = [x**2 for x in range(1, 6)] # [1, 4, 9, 16, 25]
+genap = [x for x in range(10) if x % 2 == 0] # [0, 2, 4, 6, 8]
+\`\`\``,
+        codeSnippet: `angka = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# Mengambil angka genap dan dikalikan 10 dalam 1 baris!
+genap_kali_10 = [x * 10 for x in angka if x % 2 == 0]
+
+print("Angka Asli     :", angka)
+print("Genap x 10     :", genap_kali_10)
+
+# Mengubah nama ke huruf besar
+nama_list = ["andi", "budi", "cindy"]
+nama_kapital = [n.upper() for n in nama_list]
+print("Nama Huruf Besar:", nama_kapital)`,
+        exercise: {
+          instruction: "Buat list comprehension untuk mengalikan setiap angka di dalam `data = [1, 2, 3, 4]` dengan 2!",
+          starterCode: `data = [1, 2, 3, 4]
+hasil = [x * 2 for x in data]
+
+print("Hasil perkalian 2:", hasil)`,
+          expectedHint: "Gunakan `[x * 2 for x in data]`."
+        },
+        quiz: [
+          {
+            question: "Berapakah hasil dari list comprehension `[x for x in [1, 2, 3, 4] if x > 2]`?",
+            options: ["[1, 2]", "[3, 4]", "[2, 3, 4]", "[1, 2, 3, 4]"],
+            correctAnswer: 1,
+            explanation: "Hanya elemen yang lebih besar dari 2 yang lolos filter, yaitu `[3, 4]`."
+          }
+        ]
       }
     ]
   },
@@ -303,8 +430,8 @@ print("Profil Lengkap:", profil)`,
     id: "python-module-4",
     order: 4,
     title: "4. Perulangan (For & While Loop)",
-    subtitle: "For in, Range, While, dan List Comprehension",
-    description: "Mengulang instruksi dengan for loop, fungsi range(), enumerate(), dan list comprehension yang elegan.",
+    subtitle: "For in, Range, While, Enumerate & Zip",
+    description: "Mengulang instruksi dengan for loop, fungsi range(), enumerate(), dan iterasi paralel zip().",
     icon: "Repeat",
     badge: "Loop Master",
     color: "#FFD43B",
@@ -346,6 +473,47 @@ print(f"Total penjumlahan 1 s/d 5 adalah: {total}")`,
             explanation: "`range(3)` menghasilkan 3 angka dimulai dari indeks 0: [0, 1, 2]."
           }
         ]
+      },
+      {
+        id: "p-4-2",
+        title: "4.2 Fungsi enumerate() & zip()",
+        summary: "Membaca indeks otomatis dengan enumerate() dan menggabungkan 2 list dengan zip().",
+        content: `### ⚡ Helper Perulangan Modern di Python
+- **\`enumerate(list)\`**: Mengembalikan pasangan **(indeks, item)** secara otomatis tanpa perlu membuat counter variabel manual.
+- **\`zip(list1, list2)\`**: Menggabungkan dua atau lebih list untuk diiterasi secara bersamaan berdampingan.`,
+        codeSnippet: `# 1. Menggunakan enumerate
+buah = ["Apel", "Jeruk", "Mangga"]
+print("=== 1. Enumerate (Nomor Urut) ===")
+for idx, item in enumerate(buah, start=1):
+    print(f"{idx}. {item}")
+
+# 2. Menggunakan zip
+nama = ["Budi", "Siti", "Andi"]
+nilai = [85, 92, 78]
+print("\\n=== 2. Zip (Daftar Nilai Siswa) ===")
+for n, s in zip(nama, nilai):
+    print(f"Siswa: {n} -> Skor: {s}")`,
+        exercise: {
+          instruction: "Gunakan `enumerate(tugas, start=1)` untuk menampilkan daftar tugas berpenomoran!",
+          starterCode: `tugas = ["Belajar Python", "Latihan Algoritma", "Bikin Project"]
+
+for no, t in enumerate(tugas, start=1):
+    print(f"Tugas #{no}: {t}")`,
+          expectedHint: "Gunakan `for no, t in enumerate(tugas, start=1):`."
+        },
+        quiz: [
+          {
+            question: "Apa fungsi utama dari `enumerate()` pada perulangan for di Python?",
+            options: [
+              "Menghitung waktu eksekusi loop",
+              "Menyediakan nomor indeks dan elemen koleksi secara bersamaan",
+              "Mengurutkan list secara otomatis",
+              "Menghapus duplikasi data"
+            ],
+            correctAnswer: 1,
+            explanation: "`enumerate()` menghasilkan tuple `(index, value)` yang memudahkan pembacaan nomor urut."
+          }
+        ]
       }
     ]
   },
@@ -357,7 +525,7 @@ print(f"Total penjumlahan 1 s/d 5 adalah: {total}")`,
     id: "python-module-5",
     order: 5,
     title: "5. Fungsi & Parameter (Functions)",
-    subtitle: "Def, Return, Default Args, *args, **kwargs & Lambda",
+    subtitle: "Def, Return, Default Args, *args & Lambda",
     description: "Membungkus logika modular ke dalam fungsi, parameter dinamis, dan fungsi anonim lambda.",
     icon: "Code",
     badge: "Function Crafter",
@@ -405,6 +573,52 @@ print(pesan)`,
             explanation: "Python menggunakan kata kunci `def` (kependekan dari define)."
           }
         ]
+      },
+      {
+        id: "p-5-2",
+        title: "5.2 Lambda Functions (Fungsi 1 Baris)",
+        summary: "Fungsi anonim ringkas tanpa nama menggunakan keyword lambda.",
+        content: `### ⚡ Lambda Function
+**Lambda** adalah fungsi anonim kecil yang hanya terdiri dari 1 baris ekspresi.
+
+\`\`\`python
+# Sintaks: lambda argumen: ekspresi
+kali_dua = lambda x: x * 2
+print(kali_dua(5)) # Output: 10
+\`\`\``,
+        codeSnippet: `# Lambda untuk operasi matematika singkat
+tambah = lambda a, b: a + b
+kuadrat = lambda x: x ** 2
+
+print("Hasil 10 + 5 :", tambah(10, 5))
+print("Kuadrat 6    :", kuadrat(6))
+
+# Lambda sebagai key sorting
+produk = [
+    {"nama": "Mouse", "harga": 150000},
+    {"nama": "Laptop", "harga": 15000000},
+    {"nama": "Keyboard", "harga": 500000}
+]
+
+# Urutkan berdasarkan harga termurah
+produk_urut = sorted(produk, key=lambda p: p["harga"])
+print("\\nProduk urut harga termurah:")
+for p in produk_urut:
+    print(f"- {p['nama']}: Rp {p['harga']:,}")`,
+        exercise: {
+          instruction: "Buat fungsi lambda `luas_segitiga = lambda alas, tinggi: ...` dan hitung luas dengan alas 10 dan tinggi 5!",
+          starterCode: `luas_segitiga = lambda alas, tinggi: (alas * tinggi) / 2
+print("Luas Segitiga:", luas_segitiga(10, 5))`,
+          expectedHint: "Gunakan `lambda alas, tinggi: (alas * tinggi) / 2`."
+        },
+        quiz: [
+          {
+            question: "Berapa banyak baris ekspresi yang diperbolehkan di dalam sebuah fungsi Lambda di Python?",
+            options: ["Bebas berapa saja", "Hanya 1 baris ekspresi", "Maksimal 3 baris", "Wajib memiliki keyword return"],
+            correctAnswer: 1,
+            explanation: "Lambda di Python dirancang untuk fungsi ringkas yang hanya memiliki 1 baris ekspresi tunggal."
+          }
+        ]
       }
     ]
   },
@@ -417,7 +631,7 @@ print(pesan)`,
     order: 6,
     title: "6. Pemrograman Berorientasi Objek (OOP)",
     subtitle: "Class, Object, __init__, self & Inheritance",
-    description: "Membangun sistem modular berbasis objek dengan konstruktor __init__, parameter self, dan pewarisan class.",
+    description: "Membangun sistem modular berbasis objek dengan konstruktor __init__, parameter self, dan pewarisan sifat class.",
     icon: "Boxes",
     badge: "OOP Architect",
     color: "#AB47BC",
@@ -481,6 +695,68 @@ mobil2.info()`,
             explanation: "`self` adalah referensi eksplisit ke objek spesifik yang sedang dieksekusi."
           }
         ]
+      },
+      {
+        id: "p-6-2",
+        title: "6.2 Pewarisan (Inheritance) & super()",
+        summary: "Menurunkan atribut dan method dari Parent Class ke Child Class dengan fungsi super().",
+        content: `### 🧬 Pewarisan Sifat (Inheritance)
+Inheritance memungkinkan class anak (*Subclass*) mewarisi sifat dari class induk (*Superclass*).
+
+\`\`\`python
+class Hewan:
+    def bersuara(self):
+        print("Suara hewan...")
+
+class Kucing(Hewan): # Kucing mewarisi Hewan
+    def mengeong(self):
+        print("Meoww!")
+\`\`\``,
+        codeSnippet: `class AkunBank:
+    def __init__(self, nomor_rek, saldo=0):
+        self.nomor_rek = nomor_rek
+        self.saldo = saldo
+
+    def setor(self, jumlah):
+        self.saldo += jumlah
+        print(f"Setor Rp {jumlah:,} | Saldo: Rp {self.saldo:,}")
+
+# Subclass: Rekening Tabungan dengan Bunga
+class TabunganBunga(AkunBank):
+    def __init__(self, nomor_rek, saldo=0, bunga_persen=5):
+        super().__init__(nomor_rek, saldo) # Panggil konstruktor parent
+        self.bunga_persen = bunga_persen
+
+    def tambah_bunga(self):
+        bunga = self.saldo * (self.bunga_persen / 100)
+        self.saldo += bunga
+        print(f"Bunga {self.bunga_persen}% masuk: Rp {int(bunga):,} | Saldo: Rp {int(self.saldo):,}")
+
+rek = TabunganBunga("REK-8899", 1000000)
+rek.setor(500000)
+rek.tambah_bunga()`,
+        exercise: {
+          instruction: "Buat class `Kucing(Hewan)` yang memanggil `super().__init__(nama)` dan memiliki method `mengeong()`!",
+          starterCode: `class Hewan:
+    def __init__(self, nama):
+        self.nama = nama
+
+class Kucing(Hewan):
+    def mengeong(self):
+        print(f"{self.nama} bersuara: Meoww Meoww!")
+
+mimi = Kucing("Mimi")
+mimi.mengeong()`,
+          expectedHint: "Definisikan `class Kucing(Hewan):`."
+        },
+        quiz: [
+          {
+            question: "Fungsi apakah yang digunakan Child Class untuk memanggil constructor atau method milik Parent Class?",
+            options: ["parent()", "super()", "base()", "inherit()"],
+            correctAnswer: 1,
+            explanation: "`super()` mengembalikan objek proxy yang mewakili kelas induk (parent class)."
+          }
+        ]
       }
     ]
   },
@@ -493,7 +769,7 @@ mobil2.info()`,
     order: 7,
     title: "7. Penanganan Error (Exception Handling)",
     subtitle: "Try, Except, Finally, Raise & Context Manager",
-    description: "Mencegah crash aplikasi saat runtime dan mengamankan eksekusi data.",
+    description: "Mencegah crash aplikasi saat runtime, memicu custom error, dan manajemen file yang bersih.",
     icon: "ShieldAlert",
     badge: "Crash Defender",
     color: "#EF5350",
@@ -501,17 +777,14 @@ mobil2.info()`,
     lessons: [
       {
         id: "p-7-1",
-        title: "7.1 Blok Try-Except",
-        summary: "Menangkap error tak terduga (seperti ZeroDivisionError atau ValueError).",
-        content: `### 🛡️ Try-Except di Python
-Gunakan blok **\`try-except\`** untuk menangkap exception agar program tidak berhenti mendadak (*crash*).
-
-\`\`\`python
-try:
-    angka = int("bukan_angka")
-except ValueError as e:
-    print(f"Terjadi error: {e}")
-\`\`\``,
+        title: "7.1 Blok Try-Except-Finally",
+        summary: "Menangkap error runtime agar aplikasi tetap berjalan stabil.",
+        content: `### 🛡️ Exception Handling di Python
+Gunakan blok **\`try-except\`** untuk menangkap error tak terduga:
+- **\`try\`**: Blok kode yang diuji.
+- **\`except\`**: Blok penangkap jika terjadi error.
+- **\`else\`**: Dijalankan jika **TIDAK** ada error.
+- **\`finally\`**: **PASTI** dijalankan apapun yang terjadi.`,
         codeSnippet: `print("=== Memulai Program ===")
 
 try:
