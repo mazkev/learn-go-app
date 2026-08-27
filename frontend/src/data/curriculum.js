@@ -241,7 +241,7 @@ func main() {
         fmt.Printf("Iterasi ke-%d\\n", i)
     }
 
-    fmt.Println("\n--- Loop ala While ---")
+    fmt.Println("\\n--- Loop ala While ---")
     energi := 3
     for energi > 0 {
         fmt.Printf("Energi tersisa: %d⚡\\n", energi)
@@ -453,7 +453,7 @@ func main() {
         fmt.Printf("%s TIDAK ditemukan di katalog!\\n", itemCari)
     }
 
-    fmt.Println("\n--- Daftar Lengkap ---")
+    fmt.Println("\\n--- Daftar Lengkap ---")
     for barang, harga := range hargaBarang {
         fmt.Printf("- %-10s : Rp %d\\n", barang, harga)
     }
@@ -466,7 +466,9 @@ import "fmt"
 
 func main() {
     nilaiSiswa := map[string]int{
-        "Andi": 85,\\n"Budi": 70,\\n"Citra": 92,
+        "Andi": 85,
+        "Budi": 70,
+        "Citra": 92,
     }
 
     fmt.Println("Siswa Berprestasi (Nilai >= 80):")
@@ -1751,8 +1753,12 @@ GORM menyediakan sintaks method-chaining yang elegan.`,
 import "fmt"
 
 func main() {
-    fmt.Println("--- Simulasi GORM CRUD Operations ---")\nfmt.Println("1. [CREATE] db.Create(&User{Nama: 'Farhan'}) -> INSERT INTO users ...")\nfmt.Println("2. [READ]   db.Where('active = ?', true).Find(&users) -> SELECT * FROM users WHERE active = true")\nfmt.Println("3. [UPDATE] db.Model(&user).Update('Role', 'Admin') -> UPDATE users SET role = 'Admin' ...")\nfmt.Println("4. [DELETE] db.Delete(&user, 10) -> UPDATE users SET deleted_at = NOW() WHERE id = 10")\nfmt.Println("
-✅ Semua operasi CRUD GORM tervalidasi!")
+    fmt.Println("--- Simulasi GORM CRUD Operations ---")
+    fmt.Println("1. [CREATE] db.Create(&User{Nama: 'Farhan'}) -> INSERT INTO users ...")
+    fmt.Println("2. [READ]   db.Where('active = ?', true).Find(&users) -> SELECT * FROM users WHERE active = true")
+    fmt.Println("3. [UPDATE] db.Model(&user).Update('Role', 'Admin') -> UPDATE users SET role = 'Admin' ...")
+    fmt.Println("4. [DELETE] db.Delete(&user, 10) -> UPDATE users SET deleted_at = NOW() WHERE id = 10")
+    fmt.Println("\\n✅ Semua operasi CRUD GORM tervalidasi!")
 }`,
         exercise: {
           instruction: "Tuliskan simulasi query GORM untuk mencari produk dengan harga di bawah 50.000.",
@@ -1761,7 +1767,8 @@ func main() {
 import "fmt"
 
 func main() {
-    queryPattern := "db.Where(\"harga < ?\", 50000).Find(&produkMurah)"\nfmt.Println("Query GORM:", queryPattern)
+    queryPattern := "db.Where(\\"harga < ?\\", 50000).Find(&produkMurah)"
+    fmt.Println("Query GORM:", queryPattern)
 }`,
           expectedHint: "db.Where(\"harga < ?\", 50000).Find(&produkMurah)"
         },
@@ -2210,8 +2217,7 @@ func main() {
 
     fmt.Println("--- Standar Response Sukses ---")
     fmt.Println(string(jsonSukses))
-    fmt.Println("
---- Standar Response Gagal ---")
+    fmt.Println("\\n--- Standar Response Gagal ---")
     fmt.Println(string(jsonError))
 }`,
         exercise: {
@@ -2219,7 +2225,8 @@ func main() {
           starterCode: `package main
 
 import (
-    "encoding/json"\\n"fmt"
+    "encoding/json"
+    "fmt"
 )
 
 type PaymentResponse struct {
@@ -2294,7 +2301,7 @@ type UserResponseProto struct {
 
 func main() {
     req := UserRequestProto{UserID: 88401}
-    fmt.Printf("📡 [gRPC Client] Mengirim RPC Request: GetUserByID(%d)\n", req.UserID)
+    fmt.Printf("📡 [gRPC Client] Mengirim RPC Request: GetUserByID(%d)\\n", req.UserID)
 
     // Simulasi respons gRPC
     res := UserResponseProto{
@@ -2304,7 +2311,7 @@ func main() {
     }
 
     fmt.Println("⚡ [gRPC Server via HTTP/2 Multiplexing] Respons diterima:")
-    fmt.Printf("   User: %s | Email: %s (Latensi: 1.2ms)\n", res.Name, res.Email)
+    fmt.Printf("   User: %s | Email: %s (Latensi: 1.2ms)\\n", res.Name, res.Email)
 }`,
         exercise: {
           instruction: "Lengkapi simulasi payload gRPC response untuk service produk.",
@@ -2319,7 +2326,8 @@ type ProductProto struct {
 }
 
 func main() {
-    p := ProductProto{ID: 10, Title: "Server Bare Metal", Price: 15000000}\nfmt.Printf("gRPC Payload: #%d %s ($%.0f)\\n", p.ID, p.Title, p.Price)
+    p := ProductProto{ID: 10, Title: "Server Bare Metal", Price: 15000000}
+    fmt.Printf("gRPC Payload: #%d %s ($%.0f)\\n", p.ID, p.Title, p.Price)
 }`,
           expectedHint: "Definisikan field struct ProductProto."
         },
@@ -2516,22 +2524,32 @@ CMD ["./server"]
         codeSnippet: `package main
 
 import (
-    "fmt"\\n"runtime"
+    "fmt"
+    "runtime"
 )
 
 func main() {
-    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")\nfmt.Printf("Sistem Operasi Target : %s\\n", runtime.GOOS)\n    fmt.Printf("Arsitektur CPU         : %s\\n", runtime.GOARCH)\n    fmt.Printf("Versi Compiler Go     : %s\\n", runtime.Version())\n    fmt.Println("\nFlag Optimasi Biner:")\nfmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")\nfmt.Println("2. -ldflags=\"-s -w\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")\nfmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
+    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")
+    fmt.Printf("Sistem Operasi Target : %s\\n", runtime.GOOS)
+    fmt.Printf("Arsitektur CPU         : %s\\n", runtime.GOARCH)
+    fmt.Printf("Versi Compiler Go     : %s\\n", runtime.Version())
+    fmt.Println("\\nFlag Optimasi Biner:")
+    fmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")
+    fmt.Println("2. -ldflags=\\"-s -w\\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")
+    fmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
 }`,
         exercise: {
           instruction: "Pelajari bagaimana runtime.GOOS dan runtime.GOARCH mendeteksi target kompilasi lintas platform (*Cross Compilation*).",
           starterCode: `package main
 
 import (
-    "fmt"\\n"runtime"
+    "fmt"
+    "runtime"
 )
 
 func main() {
-    fmt.Println("Target OS:", runtime.GOOS)\nfmt.Println("Target Arch:", runtime.GOARCH)
+    fmt.Println("Target OS:", runtime.GOOS)
+    fmt.Println("Target Arch:", runtime.GOARCH)
 }`,
           expectedHint: "Cetak runtime.GOOS dan runtime.GOARCH."
         },
