@@ -103,7 +103,7 @@ export default function W3TryItStudio({
           <span className="h-4 w-px bg-slate-300 dark:bg-white/10 hidden md:block" />
 
           <div className="hidden md:flex items-center gap-2">
-            <span className="font-mono font-black text-xs text-[#04AA6D]">W3 Go Tryit Editor</span>
+            <span className="font-mono font-black text-xs text-[#04AA6D]">M3.learn Tryit Editor</span>
             <span className="text-xs theme-muted truncate max-w-xs">• {lessonTitle}</span>
           </div>
         </div>

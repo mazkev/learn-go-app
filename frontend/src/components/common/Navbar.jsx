@@ -64,10 +64,10 @@ export default function Navbar({
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="font-extrabold text-base md:text-lg theme-heading tracking-tight">
-                  W3.<span className={activeLanguage === "java" ? "text-[#f89820]" : "text-[#04AA6D]"}>{activeLanguage === "java" ? "JavaLearn" : "GoLearn"}</span>
+                  M3.<span className={activeLanguage === "java" ? "text-[#f89820]" : "text-[#04AA6D]"}>learn</span>
                 </span>
                 <span className="text-[10px] font-mono text-[#04AA6D] font-bold hidden sm:inline">
-                  {activeLanguage === "java" ? "v17+" : "v1.22"}
+                  {activeLanguage === "java" ? "• Java" : "• Go"}
                 </span>
               </div>
             </div>

@@ -9,7 +9,7 @@ export default function LoadingSpinner({ message = "Memuat modul..." }) {
       </div>
       <div className="space-y-1">
         <p className="text-xs font-extrabold theme-heading tracking-wide">{message}</p>
-        <p className="text-[10px] theme-muted font-mono">W3.GoLearn Platform Engine</p>
+        <p className="text-[10px] theme-muted font-mono">M3.learn Platform Engine</p>
       </div>
     </div>
   );

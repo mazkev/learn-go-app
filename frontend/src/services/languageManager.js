@@ -18,7 +18,7 @@ export const SUPPORTED_LANGUAGES = [
 import "fmt"
 
 func main() {
-    fmt.Println("Halo dari W3.GoLearn!")
+    fmt.Println("Halo dari M3.learn!")
 }`,
   },
   {
@@ -32,7 +32,7 @@ func main() {
     modules: JAVA_MODULES,
     starterCode: `public class Main {
     public static void main(String[] args) {
-        System.out.println("Halo dari W3.JavaLearn!");
+        System.out.println("Halo dari M3.learn!");
     }
 }`,
   },

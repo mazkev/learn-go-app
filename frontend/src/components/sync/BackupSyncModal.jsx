@@ -35,8 +35,8 @@ export default function BackupSyncModal({
   };
 
   const currentPayload = {
-    appName: "W3.GoLearn",
-    version: "1.22",
+    appName: "M3.learn",
+    version: "2.0.0",
     exportedAt: new Date().toISOString(),
     progress: progress,
   };

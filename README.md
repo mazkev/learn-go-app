@@ -1,6 +1,6 @@
-# 🐹 GoLearn Hub • Platform Belajar Golang Interaktif dengan React
+# 🚀 M3.learn • Platform Belajar Pemrograman Multi-Bahasa Interaktif
 
-Platform pembelajaran interaktif komprehensif untuk menguasai bahasa pemrograman **Golang** dari dasar hingga arsitektur backend skala produksi (*Production-Grade*), dibangun dengan **React**, **Vite**, **Tailwind CSS**, dan **Monaco Editor**.
+Platform pembelajaran interaktif komprehensif untuk menguasai bahasa pemrograman **Golang (Go)** dan **Java (OOP)** dari dasar hingga arsitektur backend skala produksi (*Production-Grade*), dibangun dengan **React**, **Vite**, **Tailwind CSS**, dan **Monaco Editor**.
 
 ---
 
