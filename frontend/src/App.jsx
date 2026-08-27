@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import Navbar from "./components/common/Navbar";
 import W3Sidebar from "./components/w3layout/W3Sidebar";
 import W3TutorialReader from "./components/w3layout/W3TutorialReader";
-import W3TryItStudio from "./components/w3layout/W3TryItStudio";
-import LabsHub from "./components/labs/LabsHub";
-import InterviewPrepLab from "./components/interview/InterviewPrepLab";
-import CheatSheet from "./components/cheatsheet/CheatSheet";
-import BackupSyncModal from "./components/sync/BackupSyncModal";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 import { useLearningProgress } from "./store/learningStore";
+
+// Code-split heavy views with React.lazy
+const W3TryItStudio = lazy(() => import("./components/w3layout/W3TryItStudio"));
+const LabsHub = lazy(() => import("./components/labs/LabsHub"));
+const InterviewPrepLab = lazy(() => import("./components/interview/InterviewPrepLab"));
+const CheatSheet = lazy(() => import("./components/cheatsheet/CheatSheet"));
+const BackupSyncModal = lazy(() => import("./components/sync/BackupSyncModal"));
 
 const THEME_STORAGE_KEY = "w3_golearn_theme";
 
@@ -112,14 +115,16 @@ export default function App() {
             ) : (
               /* W3 Split-Screen Tryit Editor */
               <div className="flex-1">
-                <W3TryItStudio
-                  key={`${currentLessonId}_${tryItCode ? tryItCode.slice(0, 15) : ""}`}
-                  initialCode={tryItCode}
-                  lessonTitle={`Lesson ${currentLessonId}`}
-                  onBackToTutorial={() => setIsTryItMode(false)}
-                  theme={theme}
-                  onToggleTheme={toggleTheme}
-                />
+                <Suspense fallback={<LoadingSpinner message="Mempersiapkan W3 Tryit Studio..." />}>
+                  <W3TryItStudio
+                    key={`${currentLessonId}_${tryItCode ? tryItCode.slice(0, 15) : ""}`}
+                    initialCode={tryItCode}
+                    lessonTitle={`Lesson ${currentLessonId}`}
+                    onBackToTutorial={() => setIsTryItMode(false)}
+                    theme={theme}
+                    onToggleTheme={toggleTheme}
+                  />
+                </Suspense>
               </div>
             )}
           </>
@@ -128,33 +133,43 @@ export default function App() {
         {/* Hub 2: Interactive Labs Workbench */}
         {activeTab === "labs" && (
           <main className="flex-1 overflow-y-auto">
-            <LabsHub />
+            <Suspense fallback={<LoadingSpinner message="Memuat Interactive Labs Workbench..." />}>
+              <LabsHub />
+            </Suspense>
           </main>
         )}
 
         {/* Hub 3: Interview Preparation Center */}
         {activeTab === "interview" && (
           <main className="flex-1 overflow-y-auto">
-            <InterviewPrepLab />
+            <Suspense fallback={<LoadingSpinner message="Memuat Interview Prep & Quiz Arena..." />}>
+              <InterviewPrepLab />
+            </Suspense>
           </main>
         )}
 
         {/* Hub 4: Cheatsheet & Snippets Reference */}
         {activeTab === "cheatsheet" && (
           <main className="flex-1 overflow-y-auto">
-            <CheatSheet onLoadSnippetToStudio={handleLoadSnippetToTryIt} />
+            <Suspense fallback={<LoadingSpinner message="Memuat Go Cheatsheet..." />}>
+              <CheatSheet onLoadSnippetToStudio={handleLoadSnippetToTryIt} />
+            </Suspense>
           </main>
         )}
       </div>
 
       {/* Backup & Sync Modal */}
-      <BackupSyncModal
-        isOpen={isSyncModalOpen}
-        onClose={() => setIsSyncModalOpen(false)}
-        progress={progress}
-        onImportProgress={importProgress}
-        onResetProgress={resetAllProgress}
-      />
+      {isSyncModalOpen && (
+        <Suspense fallback={null}>
+          <BackupSyncModal
+            isOpen={isSyncModalOpen}
+            onClose={() => setIsSyncModalOpen(false)}
+            progress={progress}
+            onImportProgress={importProgress}
+            onResetProgress={resetAllProgress}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Suspense, lazy } from "react";
 import {
   Layers,
   FolderCode,
@@ -10,13 +10,16 @@ import {
   FlaskConical,
   Sparkles
 } from "lucide-react";
-import CleanArchLab from "../cleanarch/CleanArchLab";
-import ProjectStartersLab from "../starters/ProjectStartersLab";
-import UnitTestLab from "../testinglab/UnitTestLab";
-import ConcurrencyVisualizer from "../visualizer/ConcurrencyVisualizer";
-import APITester from "../apitester/APITester";
-import GrpcCompareLab from "../grpccompare/GrpcCompareLab";
-import GormLab from "../gormlab/GormLab";
+import LoadingSpinner from "../common/LoadingSpinner";
+
+// Lazy-load individual simulators on demand for fast initial load
+const CleanArchLab = lazy(() => import("../cleanarch/CleanArchLab"));
+const ProjectStartersLab = lazy(() => import("../starters/ProjectStartersLab"));
+const UnitTestLab = lazy(() => import("../testinglab/UnitTestLab"));
+const ConcurrencyVisualizer = lazy(() => import("../visualizer/ConcurrencyVisualizer"));
+const APITester = lazy(() => import("../apitester/APITester"));
+const GrpcCompareLab = lazy(() => import("../grpccompare/GrpcCompareLab"));
+const GormLab = lazy(() => import("../gormlab/GormLab"));
 
 export const LAB_TABS = [
   {
@@ -113,15 +116,17 @@ export default function LabsHub({ defaultSubTab = "cleanarch" }) {
         </div>
       </div>
 
-      {/* Active Lab Body Area */}
+      {/* Active Lab Body Area with Suspense Lazy Loading */}
       <div className="flex-1 overflow-y-auto">
-        {activeSubTab === "cleanarch" && <CleanArchLab />}
-        {activeSubTab === "starters" && <ProjectStartersLab />}
-        {activeSubTab === "testing" && <UnitTestLab />}
-        {activeSubTab === "concurrency" && <ConcurrencyVisualizer />}
-        {activeSubTab === "apitester" && <APITester />}
-        {activeSubTab === "grpc" && <GrpcCompareLab />}
-        {activeSubTab === "gorm" && <GormLab />}
+        <Suspense fallback={<LoadingSpinner message={`Memuat ${currentLab.label}...`} />}>
+          {activeSubTab === "cleanarch" && <CleanArchLab />}
+          {activeSubTab === "starters" && <ProjectStartersLab />}
+          {activeSubTab === "testing" && <UnitTestLab />}
+          {activeSubTab === "concurrency" && <ConcurrencyVisualizer />}
+          {activeSubTab === "apitester" && <APITester />}
+          {activeSubTab === "grpc" && <GrpcCompareLab />}
+          {activeSubTab === "gorm" && <GormLab />}
+        </Suspense>
       </div>
     </div>
   );
