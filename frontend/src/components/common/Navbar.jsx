@@ -21,7 +21,9 @@ export default function Navbar({
   onToggleSidebar,
   isSidebarOpen,
   onOpenSyncModal,
-  totalLessonsCount = 32
+  totalLessonsCount = 32,
+  activeLanguage = "go",
+  onSelectLanguage
 }) {
   const completedCount = progress.completedLessons.length;
   const progressPercent = Math.min(100, Math.round((completedCount / totalLessonsCount) * 100));
@@ -57,15 +59,15 @@ export default function Navbar({
               onClick={() => setActiveTab("tutorial")}
               className="flex items-center gap-2 cursor-pointer select-none group"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#04AA6D] flex items-center justify-center text-white font-black shadow-sm group-hover:scale-105 transition-transform">
-                <span className="text-base">🐹</span>
+              <div className={`w-8 h-8 rounded-lg ${activeLanguage === "java" ? "bg-[#f89820]" : "bg-[#04AA6D]"} flex items-center justify-center text-white font-black shadow-sm group-hover:scale-105 transition-transform`}>
+                <span className="text-base">{activeLanguage === "java" ? "☕" : "🐹"}</span>
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="font-extrabold text-base md:text-lg theme-heading tracking-tight">
-                  W3.<span className="text-[#04AA6D]">GoLearn</span>
+                  W3.<span className={activeLanguage === "java" ? "text-[#f89820]" : "text-[#04AA6D]"}>{activeLanguage === "java" ? "JavaLearn" : "GoLearn"}</span>
                 </span>
                 <span className="text-[10px] font-mono text-[#04AA6D] font-bold hidden sm:inline">
-                  v1.22
+                  {activeLanguage === "java" ? "v17+" : "v1.22"}
                 </span>
               </div>
             </div>
@@ -83,7 +85,7 @@ export default function Navbar({
                   onClick={() => setActiveTab(item.id)}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                     isActive
-                      ? "bg-[#04AA6D] text-white shadow-sm"
+                      ? `${activeLanguage === "java" ? "bg-[#f89820]" : "bg-[#04AA6D]"} text-white shadow-sm`
                       : "theme-body hover:bg-black/5 dark:hover:bg-white/5"
                   }`}
                 >
@@ -94,8 +96,35 @@ export default function Navbar({
             })}
           </nav>
 
-          {/* Right: Stats, Sync, Progress, Theme */}
+          {/* Right: Language Switcher, Stats, Sync, Progress, Theme */}
           <div className="flex items-center gap-2">
+            {/* Language Switcher Pill */}
+            {onSelectLanguage && (
+              <div className="flex items-center p-0.5 rounded-xl bg-slate-200 dark:bg-white/10 text-xs font-bold font-mono">
+                <button
+                  onClick={() => onSelectLanguage("go")}
+                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    activeLanguage === "go"
+                      ? "bg-[#04AA6D] text-white shadow-xs"
+                      : "theme-muted hover:theme-heading"
+                  }`}
+                  title="Pindah ke materi Go"
+                >
+                  <span>🐹 Go</span>
+                </button>
+                <button
+                  onClick={() => onSelectLanguage("java")}
+                  className={`px-2 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                    activeLanguage === "java"
+                      ? "bg-[#f89820] text-white shadow-xs"
+                      : "theme-muted hover:theme-heading"
+                  }`}
+                  title="Pindah ke materi Java"
+                >
+                  <span>☕ Java</span>
+                </button>
+              </div>
+            )}
             {/* XP & Level */}
             <div className="flex items-center gap-2 px-2.5 py-1 rounded-lg theme-card-subtle text-xs font-mono font-bold">
               <span className="text-amber-500">⚡ {progress.totalXP} XP</span>

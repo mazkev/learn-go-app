@@ -18,7 +18,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
-import { executeGoCode } from "../../services/goRunner";
+import { executeMultiCode } from "../../services/languageManager";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
 import CodeAnatomyModal from "../common/CodeAnatomyModal";
 
@@ -209,13 +209,15 @@ export default function W3TutorialReader({
   onOpenTryIt,
   progress,
   markLessonComplete,
-  recordQuizResult
+  recordQuizResult,
+  modules = ROADMAP_MODULES,
+  activeLanguage = "go"
 }) {
   const { currentModule, currentLesson, prevLesson, nextLesson } = useMemo(() => {
     let mod = null;
     let les = null;
 
-    for (const m of ROADMAP_MODULES) {
+    for (const m of modules) {
       const found = m.lessons.find((l) => l.id === currentLessonId);
       if (found) {
         mod = m;
@@ -225,11 +227,11 @@ export default function W3TutorialReader({
     }
 
     if (!les) {
-      mod = ROADMAP_MODULES[0];
-      les = ROADMAP_MODULES[0].lessons[0];
+      mod = modules[0] || ROADMAP_MODULES[0];
+      les = mod.lessons[0];
     }
 
-    const allLessons = ROADMAP_MODULES.flatMap((m) => m.lessons);
+    const allLessons = modules.flatMap((m) => m.lessons);
     const cIdx = allLessons.findIndex((l) => l.id === les.id);
     const prev = cIdx > 0 ? allLessons[cIdx - 1] : null;
     const next = cIdx < allLessons.length - 1 ? allLessons[cIdx + 1] : null;
@@ -240,7 +242,7 @@ export default function W3TutorialReader({
       prevLesson: prev,
       nextLesson: next,
     };
-  }, [currentLessonId]);
+  }, [currentLessonId, modules]);
 
   const isCompleted = progress.completedLessons.includes(currentLesson.id);
 
@@ -280,13 +282,13 @@ export default function W3TutorialReader({
     setExampleRun({
       isRunning: true,
       isOpen: true,
-      text: "⚡ Mengompilasi kode Go...",
+      text: "⚡ Mengompilasi kode...",
       isError: false,
       executionTime: null,
     });
 
     try {
-      const result = await executeGoCode(currentLesson.codeSnippet);
+      const result = await executeMultiCode(currentLesson.codeSnippet, activeLanguage);
       setExampleRun({
         isRunning: false,
         isOpen: true,
@@ -315,7 +317,7 @@ export default function W3TutorialReader({
     });
 
     try {
-      const result = await executeGoCode(currentLesson.exercise.starterCode);
+      const result = await executeMultiCode(currentLesson.exercise.starterCode, activeLanguage);
       setExerciseRun({
         isRunning: false,
         isOpen: true,

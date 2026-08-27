@@ -7,7 +7,9 @@ export default function W3Sidebar({
   onSelectLesson,
   progress,
   isOpen,
-  onCloseMobile
+  onCloseMobile,
+  modules = ROADMAP_MODULES,
+  activeLanguage = "go"
 }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsedModules, setCollapsedModules] = useState({});
@@ -21,9 +23,9 @@ export default function W3Sidebar({
 
   const filteredModules = useMemo(() => {
     const q = searchQuery.toLowerCase();
-    if (!q) return ROADMAP_MODULES;
+    if (!q) return modules;
 
-    return ROADMAP_MODULES.map((mod) => {
+    return modules.map((mod) => {
       const filteredLessons = mod.lessons.filter(
         (l) =>
           l.title.toLowerCase().includes(q) ||
@@ -31,7 +33,7 @@ export default function W3Sidebar({
       );
       return { ...mod, lessons: filteredLessons };
     }).filter((mod) => mod.lessons.length > 0);
-  }, [searchQuery]);
+  }, [searchQuery, modules]);
 
   const handleLessonClick = (lessonId) => {
     onSelectLesson(lessonId);
@@ -59,7 +61,7 @@ export default function W3Sidebar({
         <div className="p-3 border-b border-slate-200 dark:border-white/[0.08] sticky top-0 bg-inherit z-10 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black tracking-wider uppercase theme-heading flex items-center gap-1.5">
-              <BookOpen size={14} className="text-[#04AA6D]" /> GO TUTORIAL
+              <BookOpen size={14} className="text-[#04AA6D]" /> {activeLanguage === "java" ? "☕ JAVA TUTORIAL" : "🐹 GO TUTORIAL"}
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-mono theme-muted">

@@ -4,6 +4,7 @@ import W3Sidebar from "./components/w3layout/W3Sidebar";
 import W3TutorialReader from "./components/w3layout/W3TutorialReader";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import { useLearningProgress } from "./store/learningStore";
+import { getLanguageConfig } from "./services/languageManager";
 
 // Code-split heavy views with React.lazy
 const W3TryItStudio = lazy(() => import("./components/w3layout/W3TryItStudio"));
@@ -13,10 +14,24 @@ const CheatSheet = lazy(() => import("./components/cheatsheet/CheatSheet"));
 const BackupSyncModal = lazy(() => import("./components/sync/BackupSyncModal"));
 
 const THEME_STORAGE_KEY = "w3_golearn_theme";
+const LANG_STORAGE_KEY = "w3_active_language";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("tutorial");
-  const [currentLessonId, setCurrentLessonId] = useState("1-1");
+  const [activeLanguage, setActiveLanguage] = useState(() => {
+    try {
+      const saved = localStorage.getItem(LANG_STORAGE_KEY);
+      if (saved) return saved;
+    } catch {}
+    return "go";
+  });
+
+  const langConfig = getLanguageConfig(activeLanguage);
+  const activeModules = langConfig.modules;
+
+  const [currentLessonId, setCurrentLessonId] = useState(() => {
+    return activeModules[0]?.lessons[0]?.id || "1-1";
+  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [tryItCode, setTryItCode] = useState(null);
   const [isTryItMode, setIsTryItMode] = useState(false);
@@ -39,6 +54,18 @@ export default function App() {
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  }, []);
+
+  const handleSelectLanguage = useCallback((langId) => {
+    setActiveLanguage(langId);
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, langId);
+    } catch {}
+    const targetConfig = getLanguageConfig(langId);
+    if (targetConfig && targetConfig.modules[0]?.lessons[0]) {
+      setCurrentLessonId(targetConfig.modules[0].lessons[0].id);
+    }
+    setIsTryItMode(false);
   }, []);
 
   const {
@@ -82,6 +109,8 @@ export default function App() {
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
         isSidebarOpen={isSidebarOpen}
         onOpenSyncModal={() => setIsSyncModalOpen(true)}
+        activeLanguage={activeLanguage}
+        onSelectLanguage={handleSelectLanguage}
       />
 
       {/* Main App Body */}
@@ -98,6 +127,8 @@ export default function App() {
                   progress={progress}
                   isOpen={isSidebarOpen}
                   onCloseMobile={() => setIsSidebarOpen(false)}
+                  modules={activeModules}
+                  activeLanguage={activeLanguage}
                 />
 
                 {/* Central Tutorial Article Reader */}
@@ -109,6 +140,8 @@ export default function App() {
                     progress={progress}
                     markLessonComplete={markLessonComplete}
                     recordQuizResult={recordQuizResult}
+                    modules={activeModules}
+                    activeLanguage={activeLanguage}
                   />
                 </main>
               </div>
@@ -123,6 +156,7 @@ export default function App() {
                     onBackToTutorial={() => setIsTryItMode(false)}
                     theme={theme}
                     onToggleTheme={toggleTheme}
+                    language={activeLanguage}
                   />
                 </Suspense>
               </div>

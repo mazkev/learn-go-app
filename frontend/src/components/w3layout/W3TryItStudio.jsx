@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun, Sparkles } from "lucide-react";
-import { executeGoCode } from "../../services/goRunner";
+import { executeMultiCode } from "../../services/languageManager";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
 import CodeAnatomyModal from "../common/CodeAnatomyModal";
 
@@ -10,7 +10,8 @@ export default function W3TryItStudio({
   lessonTitle,
   onBackToTutorial,
   theme = "dark",
-  onToggleTheme
+  onToggleTheme,
+  language = "go"
 }) {
   const editorRef = useRef(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -37,14 +38,14 @@ export default function W3TryItStudio({
     const codeToRun = editorRef.current ? editorRef.current.getValue() : (initialCode || "");
     setIsRunning(true);
     setOutput({
-      text: "⚡ Mengompilasi kode Go...",
+      text: "⚡ Mengompilasi kode...",
       isError: false,
       executionTime: null,
       source: null,
     });
 
     try {
-      const result = await executeGoCode(codeToRun);
+      const result = await executeMultiCode(codeToRun, language);
       setOutput({
         text: result.output,
         isError: result.isError,
@@ -154,14 +155,15 @@ export default function W3TryItStudio({
         {/* Left: Monaco Go Editor */}
         <div className="flex flex-col min-h-0 bg-white dark:bg-[#070d19]">
           <div className="px-4 py-1.5 bg-slate-100 dark:bg-[#0b1120] border-b border-slate-200 dark:border-white/10 text-xs font-mono font-bold theme-muted flex items-center justify-between shrink-0">
-            <span>Source: main.go</span>
-            <span className="text-[11px] text-[#04AA6D]">Golang v1.22+</span>
+            <span>Source: {language === "java" ? "Main.java" : "main.go"}</span>
+            <span className="text-[11px] text-[#04AA6D]">{language === "java" ? "Java OpenJDK 15+" : "Golang v1.22+"}</span>
           </div>
 
           <div className="flex-1 min-h-0">
             <Editor
               height="100%"
-              defaultLanguage="go"
+              defaultLanguage={language}
+              language={language}
               theme={monacoTheme}
               defaultValue={initialCode || ""}
               onMount={handleEditorDidMount}
