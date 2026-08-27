@@ -2661,6 +2661,210 @@ func main() {
             explanation: "Flag `-s` (strip symbol table) dan `-w` (strip DWARF debugging info) memangkas ukuran binary Go secara signifikan untuk deployment produksi."
           }
         ]
+      },
+      {
+        id: "8-5",
+        title: "8.5 Go Generics (Type Parameters Go 1.18+)",
+        summary: "Menulis fungsi dan struktur data fleksibel yang bekerja untuk semua tipe data dengan Type Safety murni.",
+        content: `### 🧬 Go Generics (Type Parameters)
+Mulai Go 1.18+, Golang resmi mendukung **Generics**! Fitur ini memungkinkan kita menulis kode yang reusable untuk berbagai tipe data tanpa perlu mengorbankan keamanan tipe (*Type Safety*) atau melakukan casting \`interface{}\`.
+
+#### 📌 Contoh Generic Function:
+\`\`\`go
+func CetakSlice[T any](items []T) {
+    for _, item := range items {
+        fmt.Println(item)
+    }
+}
+\`\`\`
+
+#### 📌 Type Constraint \`comparable\`:
+Digunakan jika Anda membutuhkan operasi pembanding seperti \`==\` atau \`!=\` (misal untuk mencari elemen di dalam slice).`,
+        codeSnippet: `package main
+
+import "fmt"
+
+// 1. Generic Function untuk membalikkan (Reverse) Slice tipe apa pun
+func BalikSlice[T any](s []T) []T {
+    hasil := make([]T, len(s))
+    for i, item := range s {
+        hasil[len(s)-1-i] = item
+    }
+    return hasil
+}
+
+// 2. Generic Struct Stack LIFO
+type Stack[T any] struct {
+    elements []T
+}
+
+func (s *Stack[T]) Push(item T) {
+    s.elements = append(s.elements, item)
+}
+
+func (s *Stack[T]) Pop() (T, bool) {
+    if len(s.elements) == 0 {
+        var zero T
+        return zero, false
+    }
+    top := s.elements[len(s.elements)-1]
+    s.elements = s.elements[:len(s.elements)-1]
+    return top, true
+}
+
+func main() {
+    // Membalik slice angka
+    angka := []int{1, 2, 3, 4, 5}
+    fmt.Println("Angka Terbalik :", BalikSlice(angka))
+
+    // Membalik slice string dengan fungsi yang SAMA!
+    bahasa := []string{"Go", "Java", "Python"}
+    fmt.Println("Bahasa Terbalik:", BalikSlice(bahasa))
+
+    // Menggunakan Generic Stack
+    stackAngka := Stack[int]{}
+    stackAngka.Push(100)
+    stackAngka.Push(200)
+    val, _ := stackAngka.Pop()
+    fmt.Println("Pop Stack Int  :", val)
+}`,
+        exercise: {
+          instruction: "Buat generic function `CariIndex[T comparable](slice []T, target T) int` yang mengembalikan indeks elemen yang dicari!",
+          starterCode: `package main
+
+import "fmt"
+
+func CariIndex[T comparable](slice []T, target T) int {
+    for i, v := range slice {
+        if v == target {
+            return i
+        }
+    }
+    return -1
+}
+
+func main() {
+    names := []string{"Alice", "Bob", "Charlie"}
+    idx := CariIndex(names, "Bob")
+    fmt.Printf("Bob ditemukan di indeks: %d\n", idx)
+}`,
+          expectedHint: "Gunakan constraint `[T comparable]` agar bisa membandingkan `v == target`."
+        },
+        quiz: [
+          {
+            question: "Constraint apakah yang digunakan pada Go Generics agar tipe data mendukung operator perbandingan `==` dan `!=`?",
+            options: ["any", "comparable", "interface{}", "ordered"],
+            correctAnswer: 1,
+            explanation: "`comparable` adalah built-in constraint di Go yang menjamin tipe data dapat dibandingkan dengan operator `==` dan `!=`."
+          }
+        ]
+      },
+      {
+        id: "8-6",
+        title: "8.6 Worker Pool Pattern (High-Throughput Concurrency)",
+        summary: "Mengontrol ribuan tugas background dengan kumpulan worker goroutine terbatas untuk mencegah overload server.",
+        content: `### 🏭 Worker Pool Concurrency Pattern
+Jika Anda menerima 100.000 request bersamaan, membuat 100.000 goroutine sekaligus dapat menghabiskan memori dan membebani database. 
+
+Pola **Worker Pool** membatasi eksekusi hanya pada sejumlah worker aktif (misal 5 worker), yang terus mengambil tugas dari antrian channel (*Job Queue*).
+
+\`\`\`mermaid
+graph LR
+    JobQueue["Job Queue Channel (100.000 Tasks)"]
+    W1["Worker 1"]
+    W2["Worker 2"]
+    W3["Worker 3"]
+    Res["Results Channel"]
+
+    JobQueue --> W1 --> Res
+    JobQueue --> W2 --> Res
+    JobQueue --> W3 --> Res
+\`\`\``,
+        codeSnippet: `package main
+
+import (
+    "fmt"
+    "sync"
+    "time"
+)
+
+// Fungsi Worker yang memproses antrian job
+func Worker(id int, jobs <-chan int, results chan<- string, wg *sync.WaitGroup) {
+    defer wg.Done()
+    for j := range jobs {
+        // Simulasi proses komputasi job
+        time.Sleep(10 * time.Millisecond)
+        results <- fmt.Sprintf("Worker #%d menyelesaikan Job #%d", id, j)
+    }
+}
+
+func main() {
+    totalJobs := 6
+    totalWorkers := 3
+
+    jobs := make(chan int, totalJobs)
+    results := make(chan string, totalJobs)
+    var wg sync.WaitGroup
+
+    // 1. Menyalakan 3 Worker Goroutine
+    for w := 1; w <= totalWorkers; w++ {
+        wg.Add(1)
+        go Worker(w, jobs, results, &wg)
+    }
+
+    // 2. Mengirim 6 Job ke antrian
+    for j := 1; j <= totalJobs; j++ {
+        jobs <- j
+    }
+    close(jobs) // Menutup antrian job setelah semua dikirim
+
+    // 3. Menunggu seluruh worker selesai di background
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+
+    // 4. Membaca seluruh hasil pemrosesan
+    fmt.Println("=== Worker Pool Processing Engine ===")
+    for res := range results {
+        fmt.Println("✓", res)
+    }
+}`,
+        exercise: {
+          instruction: "Pelajari bagaimana pola worker pool menyalurkan job secara efisien ke worker goroutine tanpa terjadi deadlock!",
+          starterCode: `package main
+
+import (
+    "fmt"
+    "sync"
+)
+
+func main() {
+    jobs := make(chan int, 3)
+    jobs <- 10
+    jobs <- 20
+    jobs <- 30
+    close(jobs)
+
+    for j := range jobs {
+        fmt.Printf("Memproses job: %d\n", j)
+    }
+}`,
+          expectedHint: "Ingat untuk menutup channel dengan close(jobs) saat selesai memasukkan antrian."
+        },
+        quiz: [
+          {
+            question: "Apa tujuan utama penggunaan pola arsitektur Worker Pool di backend Go?",
+            options: [
+              "Menghentikan fungsi goroutine agar tidak bisa berjalan",
+              "Membatasi jumlah eksekusi konkurensi aktif agar penggunaan CPU, RAM, dan koneksi database tetap stabil dan terkontrol",
+              "Menghapus kebutuhan akan sync.WaitGroup",
+              "Memperlambat kompilasi biner"
+            ],
+            correctAnswer: 1,
+            explanation: "Worker Pool membatasi jumlah goroutine simultan ke batas aman terukur (misal 10-50 worker), mencegah starvation atau crash pada database."
+          }
+        ]
       }
     ]
   }
