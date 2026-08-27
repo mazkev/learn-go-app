@@ -2876,5 +2876,91 @@ req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)` },
     }
 }` }
     ]
+  },
+  {
+    title: "9. Manipulasi String & Format Waktu (Strings & Time)",
+    snippets: [
+      { label: "Strings Functions (Contains, Split, Join)", code: `import "strings"
+
+ ada := strings.Contains("Golang Developer", "Go") // true
+ parts := strings.Split("a,b,c", ",")             // []string{"a", "b", "c"}
+ gabung := strings.Join(parts, "-")               // "a-b-c"
+ lower := strings.ToLower("GOPHER")               // "gopher"
+ replace := strings.ReplaceAll("banana", "a", "o") // "bonono"` },
+      { label: "Time Now & Format Tanggal", code: `import "time"
+
+ now := time.Now()
+ // Ingat patokan format Go: Mon Jan 2 15:04:05 MST 2006
+ formatTgl := now.Format("2006-01-02 15:04:05")
+ formatHari := now.Format("02 January 2006")` },
+      { label: "Time Parse & Duration", code: `// Parse string ke waktu
+ t, _ := time.Parse("2006-01-02", "2026-08-27")
+ // Operasi durasi & sleep
+ time.Sleep(500 * time.Millisecond)
+ besok := time.Now().Add(24 * time.Hour)` }
+    ]
+  },
+  {
+    title: "10. JSON Serialization & Parsing",
+    snippets: [
+      { label: "JSON Marshal (Struct / Map -> JSON String)", code: `import "encoding/json"
+
+ type Profil struct {
+     Nama string \`json:"nama"\`
+     Umur int    \`json:"umur"\`
+ }
+ p := Profil{Nama: "Alex", Umur: 25}
+ bytes, err := json.Marshal(p)
+ jsonStr := string(bytes)` },
+      { label: "JSON Unmarshal (JSON String -> Struct)", code: `jsonInput := \`{"nama":"Budi","umur":30}\`
+ var hasil Profil
+ err := json.Unmarshal([]byte(jsonInput), &hasil)
+ fmt.Println("Nama:", hasil.Nama)` },
+      { label: "JSON Dynamic Parsing (Map Interface)", code: `var data map[string]interface{}
+ json.Unmarshal([]byte(jsonInput), &data)
+ fmt.Println("Nama:", data["nama"])` }
+    ]
+  },
+  {
+    title: "11. File I/O & Environment Variables",
+    snippets: [
+      { label: "Read & Write File (os / io)", code: `import "os"
+
+ // Menulis file teks
+ os.WriteFile("data.txt", []byte("Halo Go!"), 0644)
+
+ // Membaca file teks
+ content, err := os.ReadFile("data.txt")
+ fmt.Println(string(content))` },
+      { label: "Environment Variables (os.Getenv)", code: `port := os.Getenv("PORT")
+ if port == "" {
+     port = "8080"
+ }
+ os.Setenv("APP_ENV", "production")` }
+    ]
+  },
+  {
+    title: "12. Sorting, Math & Regular Expressions",
+    snippets: [
+      { label: "Sorting Slice (sort package)", code: `import "sort"
+
+ angka := []int{5, 2, 8, 1, 9}
+ sort.Ints(angka) // [1, 2, 5, 8, 9]
+
+ nama := []string{"Zack", "Alex", "Cindy"}
+ sort.Strings(nama) // ["Alex", "Cindy", "Zack"]` },
+      { label: "Math & Random Number", code: `import (
+     "math"
+     "math/rand"
+ )
+
+ maks := math.Max(10.5, 20.8)
+ acak := rand.Intn(100) // Angka acak 0 - 99` },
+      { label: "Regex Matching (regexp)", code: `import "regexp"
+
+ matched, _ := regexp.MatchString("^[a-z]+$", "gopher")
+ re := regexp.MustCompile("[0-9]+")
+ hasil := re.FindAllString("harga: 5000 qty: 2", -1)` }
+    ]
   }
 ];
