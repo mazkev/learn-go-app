@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
-import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun } from "lucide-react";
+import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun, Sparkles } from "lucide-react";
 import { executeGoCode } from "../../services/goRunner";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
+import CodeAnatomyModal from "../common/CodeAnatomyModal";
 
 export default function W3TryItStudio({
   initialCode,
@@ -21,6 +22,7 @@ export default function W3TryItStudio({
   });
 
   const [toastMessage, setToastMessage] = useState(null);
+  const [isAnatomyOpen, setIsAnatomyOpen] = useState(false);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -107,6 +109,16 @@ export default function W3TryItStudio({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2">
+          {/* Bedah Kode Button */}
+          <button
+            onClick={() => setIsAnatomyOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[#04AA6D] border border-[#04AA6D]/30 text-xs font-bold transition-all cursor-pointer shadow-xs"
+            title="Bedah fungsi dan alur kode baris per baris"
+          >
+            <Sparkles size={13} />
+            <span>🔬 Bedah Kode</span>
+          </button>
+
           <button
             onClick={handleReset}
             title="Reset Kode"
@@ -199,6 +211,14 @@ export default function W3TryItStudio({
           </div>
         </div>
       </div>
+
+      {/* Interactive Code Anatomy Modal */}
+      <CodeAnatomyModal
+        isOpen={isAnatomyOpen}
+        onClose={() => setIsAnatomyOpen(false)}
+        code={editorRef.current ? editorRef.current.getValue() : (initialCode || "")}
+        title={lessonTitle || "W3 Tryit Code"}
+      />
     </div>
   );
 }

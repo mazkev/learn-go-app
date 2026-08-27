@@ -20,6 +20,7 @@ import {
 import { ROADMAP_MODULES } from "../../data/curriculum";
 import { executeGoCode } from "../../services/goRunner";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
+import CodeAnatomyModal from "../common/CodeAnatomyModal";
 
 /**
  * Format string inline (bold, code, arrow)
@@ -265,6 +266,9 @@ export default function W3TutorialReader({
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
 
+  // Code Anatomy Modal Target
+  const [anatomyTarget, setAnatomyTarget] = useState(null);
+
   useEffect(() => {
     setExampleRun({ isRunning: false, isOpen: false, text: "", isError: false, executionTime: null });
     setExerciseRun({ isRunning: false, isOpen: false, text: "", isError: false, executionTime: null });
@@ -411,7 +415,7 @@ export default function W3TutorialReader({
           {currentLesson.codeSnippet}
         </pre>
 
-        {/* Action Buttons: Run Direct vs Try It */}
+        {/* Action Buttons: Run Direct vs Try It vs Bedah Kode */}
         <div className="flex items-center gap-2.5 flex-wrap">
           <button
             onClick={handleRunExampleDirect}
@@ -420,6 +424,14 @@ export default function W3TutorialReader({
           >
             <Play size={14} className={exampleRun.isRunning ? "animate-spin" : "fill-white"} />
             <span>{exampleRun.isRunning ? "Menjalankan..." : "⚡ Jalankan di Tempat (Run Direct)"}</span>
+          </button>
+
+          <button
+            onClick={() => setAnatomyTarget({ code: currentLesson.codeSnippet, title: currentLesson.title })}
+            className="px-4 py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[#04AA6D] border border-[#04AA6D]/30 text-xs md:text-sm font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+          >
+            <Sparkles size={14} />
+            <span>🔬 Bedah Kode Ini</span>
           </button>
 
           <button
@@ -486,7 +498,7 @@ export default function W3TutorialReader({
               💡 {currentLesson.exercise.expectedHint}
             </span>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={handleRunExerciseDirect}
                 disabled={exerciseRun.isRunning}
@@ -494,6 +506,14 @@ export default function W3TutorialReader({
               >
                 <Play size={13} className={exerciseRun.isRunning ? "animate-spin" : "fill-white"} />
                 <span>{exerciseRun.isRunning ? "Menguji..." : "⚡ Uji Latihan di Tempat"}</span>
+              </button>
+
+              <button
+                onClick={() => setAnatomyTarget({ code: currentLesson.exercise.starterCode, title: `Latihan: ${currentLesson.title}` })}
+                className="px-3.5 py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[#04AA6D] border border-[#04AA6D]/30 text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              >
+                <Sparkles size={13} />
+                <span>🔬 Bedah Kode Latihan</span>
               </button>
 
               <button
@@ -652,6 +672,16 @@ export default function W3TutorialReader({
           )}
         </div>
       </div>
+
+      {/* Interactive Code Anatomy Modal */}
+      {anatomyTarget && (
+        <CodeAnatomyModal
+          isOpen={Boolean(anatomyTarget)}
+          onClose={() => setAnatomyTarget(null)}
+          code={anatomyTarget.code}
+          title={anatomyTarget.title}
+        />
+      )}
     </div>
   );
 }
