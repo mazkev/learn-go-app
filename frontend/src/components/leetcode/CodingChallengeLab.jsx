@@ -17,7 +17,10 @@ import {
   Flame,
   ArrowRight,
   Check,
-  Lightbulb
+  Lightbulb,
+  Unlock,
+  Copy,
+  ExternalLink
 } from "lucide-react";
 import { executeGoCode } from "../../services/goRunner";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
@@ -42,7 +45,23 @@ import (
 
 // Selesaikan fungsi FizzBuzz di bawah ini:
 func FizzBuzz(n int) string {
-    // Tulis kodemu di sini
+    // TODO: Tulis kodemu di sini
+    
+    return ""
+}
+
+func main() {
+    // Uji fungsi Anda
+    fmt.Println(FizzBuzz(3))
+}`,
+    solutionCode: `package main
+
+import (
+    "fmt"
+    "strconv"
+)
+
+func FizzBuzz(n int) string {
     if n%15 == 0 {
         return "FizzBuzz"
     } else if n%3 == 0 {
@@ -54,10 +73,7 @@ func FizzBuzz(n int) string {
 }
 
 func main() {
-    // Jalankan test case
     fmt.Println(FizzBuzz(3))
-    fmt.Println(FizzBuzz(5))
-    fmt.Println(FizzBuzz(15))
 }`,
     testCases: [
       { id: 1, inputDisplay: "n = 3", expected: "Fizz", runnerCall: "fmt.Println(FizzBuzz(3))" },
@@ -69,7 +85,7 @@ func main() {
     hints: [
       "Gunakan operator modulo '%' untuk mengecek sisa bagi (misal n%3 == 0).",
       "Periksa kondisi kelipatan 15 (kelipatan 3 DAN 5) paling awal sebelum mengecek kelipatan 3 atau 5.",
-      "Gunakan 'strconv.Itoa(n)' untuk mengubah integer ke string.",
+      "Gunakan 'strconv.Itoa(n)' untuk mengubah integer ke string jika bukan kelipatan 3 atau 5.",
     ],
     xpReward: 50,
   },
@@ -88,7 +104,20 @@ import "fmt"
 
 // Selesaikan fungsi IsPalindrome di bawah ini:
 func IsPalindrome(s string) bool {
-    // Tulis kodemu di sini
+    // TODO: Tulis kodemu di sini
+    
+    return false
+}
+
+func main() {
+    // Uji fungsi Anda
+    fmt.Println(IsPalindrome("katak"))
+}`,
+    solutionCode: `package main
+
+import "fmt"
+
+func IsPalindrome(s string) bool {
     n := len(s)
     for i := 0; i < n/2; i++ {
         if s[i] != s[n-1-i] {
@@ -100,7 +129,6 @@ func IsPalindrome(s string) bool {
 
 func main() {
     fmt.Println(IsPalindrome("katak"))
-    fmt.Println(IsPalindrome("golang"))
 }`,
     testCases: [
       { id: 1, inputDisplay: 's = "katak"', expected: "true", runnerCall: 'fmt.Println(IsPalindrome("katak"))' },
@@ -131,7 +159,21 @@ import "fmt"
 
 // Selesaikan fungsi FindMinMax di bawah ini:
 func FindMinMax(nums []int) (int, int) {
-    // Tulis kodemu di sini
+    // TODO: Tulis kodemu di sini
+    
+    return 0, 0
+}
+
+func main() {
+    // Uji fungsi Anda
+    min, max := FindMinMax([]int{15, 3, 90, 22, 5})
+    fmt.Printf("%d %d\\n", min, max)
+}`,
+    solutionCode: `package main
+
+import "fmt"
+
+func FindMinMax(nums []int) (int, int) {
     minVal := nums[0]
     maxVal := nums[0]
 
@@ -177,7 +219,21 @@ import "fmt"
 
 // Selesaikan fungsi CountItems di bawah ini:
 func CountItems(items []string) map[string]int {
-    // Tulis kodemu di sini
+    // TODO: Tulis kodemu di sini
+    
+    return nil
+}
+
+func main() {
+    // Uji fungsi Anda
+    hasil := CountItems([]string{"apel", "jeruk", "apel"})
+    fmt.Printf("apel:%d jeruk:%d\\n", hasil["apel"], hasil["jeruk"])
+}`,
+    solutionCode: `package main
+
+import "fmt"
+
+func CountItems(items []string) map[string]int {
     counts := make(map[string]int)
     for _, item := range items {
         counts[item]++
@@ -214,7 +270,21 @@ import "fmt"
 
 // Selesaikan fungsi ReverseSlice di bawah ini:
 func ReverseSlice(nums []int) []int {
-    // Tulis kodemu di sini
+    // TODO: Tulis kodemu di sini
+    
+    return nums
+}
+
+func main() {
+    // Uji fungsi Anda
+    hasil := ReverseSlice([]int{1, 2, 3, 4, 5})
+    fmt.Println(hasil)
+}`,
+    solutionCode: `package main
+
+import "fmt"
+
+func ReverseSlice(nums []int) []int {
     left := 0
     right := len(nums) - 1
     for left < right {
@@ -256,7 +326,21 @@ import "fmt"
 
 // Selesaikan fungsi TwoSum di bawah ini:
 func TwoSum(nums []int, target int) []int {
-    // Tulis kodemu di sini
+    // TODO: Tulis kodemu di sini
+    
+    return []int{}
+}
+
+func main() {
+    // Uji fungsi Anda
+    hasil := TwoSum([]int{2, 7, 11, 15}, 9)
+    fmt.Println(hasil)
+}`,
+    solutionCode: `package main
+
+import "fmt"
+
+func TwoSum(nums []int, target int) []int {
     seen := make(map[int]int)
     for i, num := range nums {
         complement := target - num
@@ -289,6 +373,7 @@ export default function CodingChallengeLab() {
   const [selectedChallengeId, setSelectedChallengeId] = useState("fizzbuzz");
   const [activeTestCaseIdx, setActiveTestCaseIdx] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSolution, setShowSolution] = useState(false);
 
   // Challenge Solved State in LocalStorage
   const [solvedIds, setSolvedIds] = useState(() => {
@@ -326,6 +411,7 @@ export default function CodingChallengeLab() {
     setTestResults(null);
     setOverallVerdict(null);
     setRawErrorOutput(null);
+    setShowSolution(false);
   };
 
   const handleReset = () => {
@@ -339,6 +425,17 @@ export default function CodingChallengeLab() {
     setTestResults(null);
     setOverallVerdict(null);
     setRawErrorOutput(null);
+    setShowSolution(false);
+  };
+
+  const handleApplySolution = () => {
+    setUserCodes((prev) => ({
+      ...prev,
+      [currentChallenge.id]: currentChallenge.solutionCode,
+    }));
+    if (editorRef.current) {
+      editorRef.current.setValue(currentChallenge.solutionCode);
+    }
   };
 
   // Run Test Cases
@@ -443,7 +540,7 @@ export default function CodingChallengeLab() {
             </span>
           </h1>
           <p className="text-xs md:text-sm theme-muted mt-1">
-            Latih algoritma Go standar tes kerja teknis dengan verifikasi kasus uji (*Test Cases*) otomatis.
+            Latih algoritma Go standar tes kerja teknis dengan template kosong dan verifikasi kasus uji otomatis.
           </p>
         </div>
 
@@ -488,7 +585,7 @@ export default function CodingChallengeLab() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[620px]">
         {/* Left Col (5 cols): Problem Description, Examples & Hints */}
         <div className="lg:col-span-5 flex flex-col gap-4">
-          <div className="theme-card rounded-2xl p-5 space-y-4 shadow-sm border border-slate-200 dark:border-white/10 flex-1 overflow-y-auto max-h-[700px]">
+          <div className="theme-card rounded-2xl p-5 space-y-4 shadow-sm border border-slate-200 dark:border-white/10 flex-1 overflow-y-auto max-h-[720px]">
             {/* Header info */}
             <div className="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/10 pb-3">
               <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -525,12 +622,13 @@ export default function CodingChallengeLab() {
               ))}
             </div>
 
-            {/* Hints Accordion */}
-            <div className="pt-2 space-y-2">
+            {/* Hints & Solution Section */}
+            <div className="pt-2 space-y-3 border-t border-slate-200 dark:border-white/10">
               <h4 className="text-xs font-black uppercase tracking-wider text-amber-500 flex items-center gap-1.5">
                 <Lightbulb size={14} />
                 <span>Petunjuk Pengerjaan (Hints):</span>
               </h4>
+
               <div className="space-y-1.5">
                 {currentChallenge.hints.map((hint, hIdx) => (
                   <div
@@ -542,6 +640,37 @@ export default function CodingChallengeLab() {
                     </p>
                   </div>
                 ))}
+              </div>
+
+              {/* Reveal Solution Button */}
+              <div className="pt-2">
+                {!showSolution ? (
+                  <button
+                    onClick={() => setShowSolution(true)}
+                    className="w-full py-2 px-3 rounded-xl border border-dashed border-[#04AA6D]/40 text-[#04AA6D] hover:bg-[#04AA6D]/10 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Unlock size={14} />
+                    <span>Mentok? Buka Kunci Solusi Jawaban</span>
+                  </button>
+                ) : (
+                  <div className="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-2.5 animate-in fade-in duration-150">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <Sparkles size={14} /> Kunci Solusi Jawaban:
+                      </span>
+                      <button
+                        onClick={handleApplySolution}
+                        className="px-2.5 py-1 rounded-lg bg-[#04AA6D] text-white text-[10px] font-bold hover:bg-[#038857] transition-all flex items-center gap-1 cursor-pointer shadow-xs"
+                      >
+                        <ExternalLink size={12} /> Terapkan ke Editor
+                      </button>
+                    </div>
+
+                    <pre className="p-3 rounded-lg bg-slate-950 text-emerald-400 font-mono text-[11px] overflow-x-auto leading-relaxed border border-emerald-500/20">
+                      {currentChallenge.solutionCode}
+                    </pre>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -557,9 +686,9 @@ export default function CodingChallengeLab() {
                 <button
                   onClick={handleReset}
                   className="px-2.5 py-1 rounded-lg theme-card-subtle theme-muted hover:theme-heading text-xs font-bold flex items-center gap-1 cursor-pointer"
-                  title="Reset ke Template Awal"
+                  title="Reset ke Template Kosong"
                 >
-                  <RotateCcw size={12} /> Reset
+                  <RotateCcw size={12} /> Reset Template
                 </button>
               </div>
             </div>
