@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy, useCallback } from "react";
 import Navbar from "./components/common/Navbar";
 import W3Sidebar from "./components/w3layout/W3Sidebar";
 import W3TutorialReader from "./components/w3layout/W3TutorialReader";
@@ -37,9 +37,9 @@ export default function App() {
     } catch {}
   }, [theme]);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
+  }, []);
 
   const {
     progress,
@@ -50,22 +50,22 @@ export default function App() {
     resetAllProgress,
   } = useLearningProgress();
 
-  const handleSelectLesson = (lessonId) => {
+  const handleSelectLesson = useCallback((lessonId) => {
     setCurrentLessonId(lessonId);
     setIsTryItMode(false);
     setActiveTab("tutorial");
-  };
+  }, []);
 
-  const handleOpenTryIt = (codeSnippet) => {
+  const handleOpenTryIt = useCallback((codeSnippet) => {
     setTryItCode(codeSnippet);
     setIsTryItMode(true);
-  };
+  }, []);
 
-  const handleLoadSnippetToTryIt = (customCode) => {
+  const handleLoadSnippetToTryIt = useCallback((customCode) => {
     setTryItCode(customCode);
     setIsTryItMode(true);
     setActiveTab("tutorial");
-  };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col selection:bg-[#04AA6D]/20 selection:text-[#04AA6D]">

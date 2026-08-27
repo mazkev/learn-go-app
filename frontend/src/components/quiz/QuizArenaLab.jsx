@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Swords,
   Clock,
@@ -45,7 +45,7 @@ export function extractAllQuizQuestions() {
 }
 
 export default function QuizArenaLab() {
-  const allQuestions = extractAllQuizQuestions();
+  const allQuestions = useMemo(() => extractAllQuizQuestions(), []);
 
   // Arena States: 'setup' | 'playing' | 'result'
   const [arenaState, setArenaState] = useState("setup");
@@ -120,75 +120,85 @@ export default function QuizArenaLab() {
     setIsFinished(false);
   };
 
-  const handleSelectOption = (qId, optionIdx) => {
+  const handleSelectOption = useCallback((qId, optionIdx) => {
     setUserAnswers((prev) => ({
       ...prev,
       [qId]: optionIdx,
     }));
-  };
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < activeQuizList.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else {
-      handleFinishQuiz();
+      setArenaState("result");
+      setIsFinished(true);
     }
-  };
+  }, [currentIndex, activeQuizList.length]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1);
     }
-  };
+  }, [currentIndex]);
 
-  const handleFinishQuiz = () => {
+  const handleFinishQuiz = useCallback(() => {
     setArenaState("result");
     setIsFinished(true);
-  };
+  }, []);
 
-  // Evaluation calculations
-  const totalQuestions = activeQuizList.length;
-  let correctCount = 0;
-  const topicStats = {};
+  // Memoized Evaluation calculations
+  const { totalQuestions, correctCount, topicStats, scorePercentage, rankBadge } = useMemo(() => {
+    const total = activeQuizList.length;
+    let correct = 0;
+    const stats = {};
 
-  activeQuizList.forEach((q) => {
-    const isCorrect = userAnswers[q.id] === q.correctAnswer;
-    if (isCorrect) correctCount++;
+    activeQuizList.forEach((q) => {
+      const isCorrect = userAnswers[q.id] === q.correctAnswer;
+      if (isCorrect) correct++;
 
-    if (!topicStats[q.category]) {
-      topicStats[q.category] = { total: 0, correct: 0 };
+      if (!stats[q.category]) {
+        stats[q.category] = { total: 0, correct: 0 };
+      }
+      stats[q.category].total++;
+      if (isCorrect) stats[q.category].correct++;
+    });
+
+    const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+    let rank = {
+      title: "Gopher Apprentice 🌱",
+      color: "text-amber-500",
+      desc: "Awal yang bagus! Terus pelajari konsep-konsep inti Golang di modul tutorial.",
+    };
+    if (score >= 90) {
+      rank = {
+        title: "Gopher Architect 🏆",
+        color: "text-emerald-500",
+        desc: "Luar biasa! Pemahaman Anda tentang memori, konkurensi, dan arsitektur Go sangat solid.",
+      };
+    } else if (score >= 70) {
+      rank = {
+        title: "Senior Gopher ⚔️",
+        color: "text-blue-500",
+        desc: "Kemampuan teknis yang mantap! Siap untuk tantangan backend level industri.",
+      };
     }
-    topicStats[q.category].total++;
-    if (isCorrect) topicStats[q.category].correct++;
-  });
 
-  const scorePercentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+    return {
+      totalQuestions: total,
+      correctCount: correct,
+      topicStats: stats,
+      scorePercentage: score,
+      rankBadge: rank,
+    };
+  }, [activeQuizList, userAnswers]);
 
   const formatTimer = (seconds) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m}:${s < 10 ? "0" : ""}${s}`;
   };
-
-  // Rank determination
-  let rankBadge = {
-    title: "Gopher Apprentice 🌱",
-    color: "text-amber-500",
-    desc: "Awal yang bagus! Terus pelajari konsep-konsep inti Golang di modul tutorial.",
-  };
-  if (scorePercentage >= 90) {
-    rankBadge = {
-      title: "Gopher Architect 🏆",
-      color: "text-emerald-500",
-      desc: "Luar biasa! Pemahaman Anda tentang memori, konkurensi, dan arsitektur Go sangat solid.",
-    };
-  } else if (scorePercentage >= 70) {
-    rankBadge = {
-      title: "Senior Gopher ⚔️",
-      color: "text-blue-500",
-      desc: "Kemampuan teknis yang mantap! Siap untuk tantangan backend level industri.",
-    };
-  }
 
   const currentQ = activeQuizList[currentIndex];
   const progressPercent = totalQuestions > 0 ? Math.round(((currentIndex + 1) / totalQuestions) * 100) : 0;

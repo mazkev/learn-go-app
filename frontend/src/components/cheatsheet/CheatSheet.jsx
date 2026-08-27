@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   BookOpen,
   Search,
@@ -12,21 +12,26 @@ export default function CheatSheet({ onLoadSnippetToStudio }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  const handleCopy = (text, idx) => {
+  const handleCopy = useCallback((text, idx) => {
     navigator.clipboard.writeText(text);
     setCopiedIndex(idx);
     setTimeout(() => setCopiedIndex(null), 2000);
-  };
+  }, []);
 
-  const filteredCategories = CHEATSHEET_CATEGORIES.map((cat) => {
-    const filteredSnippets = cat.snippets.filter(
-      (s) =>
-        s.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        cat.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    return { ...cat, snippets: filteredSnippets };
-  }).filter((cat) => cat.snippets.length > 0);
+  const filteredCategories = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    if (!q) return CHEATSHEET_CATEGORIES;
+
+    return CHEATSHEET_CATEGORIES.map((cat) => {
+      const filteredSnippets = cat.snippets.filter(
+        (s) =>
+          s.label.toLowerCase().includes(q) ||
+          s.code.toLowerCase().includes(q) ||
+          cat.title.toLowerCase().includes(q)
+      );
+      return { ...cat, snippets: filteredSnippets };
+    }).filter((cat) => cat.snippets.length > 0);
+  }, [searchQuery]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">

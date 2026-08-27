@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Search, CheckCircle, ChevronDown, ChevronRight, BookOpen } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
 
@@ -12,21 +12,26 @@ export default function W3Sidebar({
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsedModules, setCollapsedModules] = useState({});
 
-  const toggleModule = (modId) => {
+  const toggleModule = useCallback((modId) => {
     setCollapsedModules((prev) => ({
       ...prev,
       [modId]: !prev[modId],
     }));
-  };
+  }, []);
 
-  const filteredModules = ROADMAP_MODULES.map((mod) => {
-    const filteredLessons = mod.lessons.filter(
-      (l) =>
-        l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        mod.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    return { ...mod, lessons: filteredLessons };
-  }).filter((mod) => mod.lessons.length > 0);
+  const filteredModules = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    if (!q) return ROADMAP_MODULES;
+
+    return ROADMAP_MODULES.map((mod) => {
+      const filteredLessons = mod.lessons.filter(
+        (l) =>
+          l.title.toLowerCase().includes(q) ||
+          mod.title.toLowerCase().includes(q)
+      );
+      return { ...mod, lessons: filteredLessons };
+    }).filter((mod) => mod.lessons.length > 0);
+  }, [searchQuery]);
 
   return (
     <aside

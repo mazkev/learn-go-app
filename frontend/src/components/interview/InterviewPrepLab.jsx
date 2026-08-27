@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Briefcase,
   Search,
@@ -311,25 +311,29 @@ export default function InterviewPrepLab() {
     } catch {}
   }, [masteredIds]);
 
-  const toggleMastered = (id) => {
+  const toggleMastered = useCallback((id) => {
     setMasteredIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
-  };
+  }, []);
 
-  const filteredQuestions = INTERVIEW_QUESTIONS.filter((q) => {
-    const matchTopic = selectedTopic === "Semua Kategori" || q.category === selectedTopic;
-    const matchDiff = selectedDifficulty === "Semua Level" || q.difficulty === selectedDifficulty;
-    const matchSearch =
-      q.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      q.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      q.company.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchTopic && matchDiff && matchSearch;
-  });
+  const filteredQuestions = useMemo(() => {
+    const qLower = searchQuery.toLowerCase();
+    return INTERVIEW_QUESTIONS.filter((q) => {
+      const matchTopic = selectedTopic === "Semua Kategori" || q.category === selectedTopic;
+      const matchDiff = selectedDifficulty === "Semua Level" || q.difficulty === selectedDifficulty;
+      const matchSearch =
+        !qLower ||
+        q.question.toLowerCase().includes(qLower) ||
+        q.summary.toLowerCase().includes(qLower) ||
+        q.company.toLowerCase().includes(qLower);
+      return matchTopic && matchDiff && matchSearch;
+    });
+  }, [selectedTopic, selectedDifficulty, searchQuery]);
 
-  const masteryPercent = Math.round(
-    (masteredIds.length / INTERVIEW_QUESTIONS.length) * 100
-  );
+  const masteryPercent = useMemo(() => {
+    return Math.round((masteredIds.length / INTERVIEW_QUESTIONS.length) * 100);
+  }, [masteredIds.length]);
 
   return (
     <div className="min-h-full flex flex-col">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -209,27 +209,36 @@ export default function W3TutorialReader({
   markLessonComplete,
   recordQuizResult
 }) {
-  let currentModule = null;
-  let currentLesson = null;
+  const { currentModule, currentLesson, prevLesson, nextLesson } = useMemo(() => {
+    let mod = null;
+    let les = null;
 
-  for (const mod of ROADMAP_MODULES) {
-    const found = mod.lessons.find((l) => l.id === currentLessonId);
-    if (found) {
-      currentModule = mod;
-      currentLesson = found;
-      break;
+    for (const m of ROADMAP_MODULES) {
+      const found = m.lessons.find((l) => l.id === currentLessonId);
+      if (found) {
+        mod = m;
+        les = found;
+        break;
+      }
     }
-  }
 
-  if (!currentLesson) {
-    currentModule = ROADMAP_MODULES[0];
-    currentLesson = ROADMAP_MODULES[0].lessons[0];
-  }
+    if (!les) {
+      mod = ROADMAP_MODULES[0];
+      les = ROADMAP_MODULES[0].lessons[0];
+    }
 
-  const allLessons = ROADMAP_MODULES.flatMap((m) => m.lessons);
-  const currentIndex = allLessons.findIndex((l) => l.id === currentLesson.id);
-  const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
-  const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+    const allLessons = ROADMAP_MODULES.flatMap((m) => m.lessons);
+    const cIdx = allLessons.findIndex((l) => l.id === les.id);
+    const prev = cIdx > 0 ? allLessons[cIdx - 1] : null;
+    const next = cIdx < allLessons.length - 1 ? allLessons[cIdx + 1] : null;
+
+    return {
+      currentModule: mod,
+      currentLesson: les,
+      prevLesson: prev,
+      nextLesson: next,
+    };
+  }, [currentLessonId]);
 
   const isCompleted = progress.completedLessons.includes(currentLesson.id);
 
