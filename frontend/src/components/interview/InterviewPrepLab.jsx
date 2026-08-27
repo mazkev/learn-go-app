@@ -13,9 +13,12 @@ import {
   Activity,
   Code2,
   Filter,
-  Swords
+  Swords,
+  Terminal,
+  Code
 } from "lucide-react";
 import QuizArenaLab from "../quiz/QuizArenaLab";
+import CodingChallengeLab from "../leetcode/CodingChallengeLab";
 
 export const INTERVIEW_QUESTIONS = [
   // 1. Memory & Internals
@@ -349,16 +352,18 @@ export default function InterviewPrepLab() {
                 <span>Career & Assessment Center</span>
               </h2>
               <p className="text-[11px] theme-muted">
-                {activeView === "bank" ? "25 Soal Teknis Wawancara Top Tech" : "Simulasi Ujian & Evaluasi Kuis Interaktif"}
+                {activeView === "bank" && "25 Soal Teknis Wawancara Top Tech"}
+                {activeView === "challenges" && "Latihan Algoritma Standar HackerRank & LeetCode (Beginner)"}
+                {activeView === "arena" && "Simulasi Ujian & Evaluasi Kuis Interaktif"}
               </p>
             </div>
           </div>
 
-          {/* Sub-tab Switcher Pill */}
-          <div className="flex items-center gap-1.5">
+          {/* Sub-tab Switcher Pill (3 Mode) */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
             <button
               onClick={() => setActiveView("bank")}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
                 activeView === "bank"
                   ? "bg-[#04AA6D] text-white shadow-sm"
                   : "theme-card-subtle theme-muted hover:theme-heading hover:bg-black/5 dark:hover:bg-white/5"
@@ -369,8 +374,20 @@ export default function InterviewPrepLab() {
             </button>
 
             <button
+              onClick={() => setActiveView("challenges")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                activeView === "challenges"
+                  ? "bg-[#04AA6D] text-white shadow-sm"
+                  : "theme-card-subtle theme-muted hover:theme-heading hover:bg-black/5 dark:hover:bg-white/5"
+              }`}
+            >
+              <Code size={14} />
+              <span>💻 Coding Challenges</span>
+            </button>
+
+            <button
               onClick={() => setActiveView("arena")}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
                 activeView === "arena"
                   ? "bg-[#04AA6D] text-white shadow-sm"
                   : "theme-card-subtle theme-muted hover:theme-heading hover:bg-black/5 dark:hover:bg-white/5"
@@ -384,11 +401,19 @@ export default function InterviewPrepLab() {
       </div>
 
       {/* Body View */}
-      {activeView === "arena" ? (
+      {activeView === "challenges" && (
+        <div className="flex-1 overflow-y-auto">
+          <CodingChallengeLab />
+        </div>
+      )}
+
+      {activeView === "arena" && (
         <div className="flex-1 overflow-y-auto">
           <QuizArenaLab />
         </div>
-      ) : (
+      )}
+
+      {activeView === "bank" && (
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 space-y-8 flex-1 overflow-y-auto">
           {/* Header Banner */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-200 dark:border-white/[0.08] pb-6">
