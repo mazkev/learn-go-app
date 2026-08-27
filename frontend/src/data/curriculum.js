@@ -1989,7 +1989,9 @@ func main() {
         total    float64
         expected float64
     }{
-        {"Member Belanja Besar", true, 100000, 85000},\n{"Non Member Belanja Besar", false, 100000, 100000},\n{"Member Belanja Kecil", true, 50000, 50000},
+        {"Member Belanja Besar", true, 100000, 85000},
+        {"Non Member Belanja Besar", false, 100000, 100000},
+        {"Member Belanja Kecil", true, 50000, 50000},
     }
 
     fmt.Println("=== RUN Unit Test: TestHitungDiskon ===")
@@ -2027,7 +2029,9 @@ func main() {
         skor     int
         expected string
     }{
-        {80, "LULUS"},\n{60, "GAGAL"},\n{75, "LULUS"},
+        {80, "LULUS"},
+        {60, "GAGAL"},
+        {75, "LULUS"},
     }
 
     for _, tc := range testCases {

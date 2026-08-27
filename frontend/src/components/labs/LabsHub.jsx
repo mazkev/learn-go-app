@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Layers,
   FolderCode,
+  ShieldCheck,
   Activity,
   Globe,
   Zap,
@@ -11,6 +12,7 @@ import {
 } from "lucide-react";
 import CleanArchLab from "../cleanarch/CleanArchLab";
 import ProjectStartersLab from "../starters/ProjectStartersLab";
+import UnitTestLab from "../testinglab/UnitTestLab";
 import ConcurrencyVisualizer from "../visualizer/ConcurrencyVisualizer";
 import APITester from "../apitester/APITester";
 import GrpcCompareLab from "../grpccompare/GrpcCompareLab";
@@ -28,6 +30,12 @@ export const LAB_TABS = [
     label: "Production Starters",
     icon: FolderCode,
     description: "Blueprint template proyek nyata: JWT Auth, WebSockets Chat, dan Clean Microservice",
+  },
+  {
+    id: "testing",
+    label: "Unit Testing & Coverage",
+    icon: ShieldCheck,
+    description: "Simulator pengujian *_test.go, Table-Driven Tests, dan Line Coverage Heatmap",
   },
   {
     id: "concurrency",
@@ -73,7 +81,7 @@ export default function LabsHub({ defaultSubTab = "cleanarch" }) {
               <h2 className="text-sm font-extrabold theme-heading flex items-center gap-2">
                 <span>Interactive Labs Workbench</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-mono font-bold">
-                  6 Simulator
+                  7 Simulator
                 </span>
               </h2>
               <p className="text-[11px] theme-muted">{currentLab.description}</p>
@@ -109,6 +117,7 @@ export default function LabsHub({ defaultSubTab = "cleanarch" }) {
       <div className="flex-1 overflow-y-auto">
         {activeSubTab === "cleanarch" && <CleanArchLab />}
         {activeSubTab === "starters" && <ProjectStartersLab />}
+        {activeSubTab === "testing" && <UnitTestLab />}
         {activeSubTab === "concurrency" && <ConcurrencyVisualizer />}
         {activeSubTab === "apitester" && <APITester />}
         {activeSubTab === "grpc" && <GrpcCompareLab />}
