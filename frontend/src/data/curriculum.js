@@ -2572,6 +2572,75 @@ import (
     "fmt"
     "runtime"
 )
+    taskChan <- "Send WhatsApp Notification"
+
+    time.Sleep(50 * time.Millisecond)
+}`,
+          expectedHint: "Gunakan channel buffered untuk menampung event antrian."
+        },
+        quiz: [
+          {
+            question: "Apa keuntungan utama memproses tugas berat (seperti kirim email atau proses pembayaran) via Message Broker asinkron?",
+            options: [
+              "Response HTTP ke user tetap instan (milidetik) tanpa tertahan oleh proses berat di background",
+              "Biaya server otomatis menjadi gratis",
+              "Tidak memerlukan database",
+              "Mengurangi baris kode hingga 90%"
+            ],
+            correctAnswer: 0,
+            explanation: "Arsitektur asinkron membuat API web responsif dan handal karena tugas berat diproses di latar belakang oleh worker terpisah."
+          }
+        ]
+      },
+      {
+        id: "8-4",
+        title: "8.4 Dockerization & Production Build Optimization",
+        summary: "Multi-stage Dockerfile, flag kompilasi CGO_ENABLED=0, dan binary Go super ramping (~15MB).",
+        content: `### 🐳 Multi-Stage Dockerfile untuk Go
+Salah satu keunggulan terbesar Golang di dunia cloud native adalah kemampuan menghasilkan biner mesin mandiri (*Single Static Binary*) tanpa perlu runtime terinstall!
+
+#### 📦 Contoh Multi-Stage Dockerfile:
+\`\`\`dockerfile
+# Stage 1: Build binary
+FROM golang:1.22-alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/server
+
+# Stage 2: Minimal Runtime (Ukuran image hanya ~15MB!)
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/server .
+EXPOSE 8080
+CMD ["./server"]
+\`\`\``,
+        codeSnippet: `package main
+
+import (
+    "fmt"
+    "runtime"
+)
+
+func main() {
+    fmt.Println("🐳 --- Info Kompilasi Biner Produksi Go ---")
+    fmt.Printf("Sistem Operasi Target : %s\n", runtime.GOOS)
+    fmt.Printf("Arsitektur CPU         : %s\n", runtime.GOARCH)
+    fmt.Printf("Versi Compiler Go     : %s\n", runtime.Version())
+    fmt.Println("\nFlag Optimasi Biner:")
+    fmt.Println("1. CGO_ENABLED=0      -> Menghasilkan static binary murni tanpa dependensi library C")
+    fmt.Println("2. -ldflags=\"-s -w\"   -> Menghapus debug symbol untuk memangkas ukuran biner hingga ~40%")
+    fmt.Println("3. Distroless / Scratch -> Menghasilkan Docker image ultra-ringan (~15 MB) & super aman!")
+}`,
+        exercise: {
+          instruction: "Pelajari bagaimana runtime.GOOS dan runtime.GOARCH mendeteksi target kompilasi lintas platform (*Cross Compilation*).",
+          starterCode: `package main
+
+import (
+    "fmt"
+    "runtime"
+)
 
 func main() {
     fmt.Println("Target OS:", runtime.GOOS)
@@ -2599,109 +2668,213 @@ func main() {
 
 export const CHEATSHEET_CATEGORIES = [
   {
-    title: "1. Variabel & Tipe Data",
+    title: "1. Variabel, Konstanta & Tipe Data",
     snippets: [
-      { label: "Short Variable", code: `nama := "Gopher"
+      { label: "Short Variable (:=)", code: `nama := "Gopher"
 umur := 25
-isDev := true` },
-      { label: "Explicit Variable", code: `var skor float64 = 99.5
+isAktif := true` },
+      { label: "Explicit Declaration (var)", code: `var skor float64 = 99.5
+var total int
 var status bool` },
-      { label: "Constants", code: `const MaxConnections = 100
-const Pi = 3.14159` },
-      { label: "Type Conversion", code: `var a int = 42
+      { label: "Constants (const)", code: `const MaxConnections = 100
+const BaseURL = "https://api.domain.com"` },
+      { label: "Type Conversion & Casting", code: `var a int = 42
 var b float64 = float64(a)
-var c string = fmt.Sprint(a)` }
+var str string = fmt.Sprintf("%d", a)` }
     ]
   },
   {
-    title: "2. Struktur Data",
+    title: "2. Percabangan Logika (If / Else & Switch)",
     snippets: [
-      { label: "Slice & Append", code: `items := []string{"A", "B"}
-items = append(items, "C")
-sub := items[1:3]` },
-      { label: "Map (Hash Table)", code: `m := make(map[string]int)
-m["kunci"] = 100
-val, exists := m["kunci"]
-delete(m, "kunci")` },
-      { label: "Struct", code: `type User struct {
-    ID   int
-    Nama string
+      { label: "If - Else If - Else", code: `if nilai >= 85 {
+    fmt.Println("Grade A")
+} else if nilai >= 70 {
+    fmt.Println("Grade B")
+} else {
+    fmt.Println("Grade C / Remedial")
+}` },
+      { label: "If dengan Short Statement (Idiom Go)", code: `if err := simpanData(); err != nil {
+    log.Printf("Gagal menyimpan data: %v", err)
+    return err
+}` },
+      { label: "Switch-Case Standar", code: `switch role {
+case "admin":
+    fmt.Println("Akses Penuh")
+case "editor", "author":
+    fmt.Println("Akses Konten")
+default:
+    fmt.Println("Akses Pengguna Biasa")
+}` },
+      { label: "Switch Tanpa Kondisi (Clean If-Else)", code: `switch {
+case jam < 12:
+    fmt.Println("Selamat Pagi")
+case jam < 18:
+    fmt.Println("Selamat Sore")
+default:
+    fmt.Println("Selamat Malam")
+}` },
+      { label: "Type Switch (Interface{})", code: `var i interface{} = "Halo"
+switch v := i.(type) {
+case int:
+    fmt.Printf("Integer: %d\n", v)
+case string:
+    fmt.Printf("String: %s\n", v)
+default:
+    fmt.Println("Tipe data lain")
+}` }
+    ]
+  },
+  {
+    title: "3. Perulangan (For Loop & For-Range)",
+    snippets: [
+      { label: "Standard For Loop", code: `for i := 0; i < 5; i++ {
+    fmt.Println("Iterasi ke-", i)
+}` },
+      { label: "While-Style For Loop", code: `angka := 1
+for angka <= 10 {
+    angka *= 2
+}` },
+      { label: "Infinite Loop & Break", code: `for {
+    if !antrianTersedia() {
+        break
+    }
+    prosesItem()
+}` },
+      { label: "For Range pada Slice / Array", code: `buah := []string{"Apel", "Jeruk", "Mangga"}
+for idx, item := range buah {
+    fmt.Printf("[%d] %s\n", idx, item)
+}` },
+      { label: "For Range pada Map (Key-Value)", code: `kontak := map[string]string{"Budi": "0812", "Siti": "0899"}
+for nama, noHp := range kontak {
+    fmt.Printf("%s -> %s\n", nama, noHp)
+}` }
+    ]
+  },
+  {
+    title: "4. Fungsi & Error Handling",
+    snippets: [
+      { label: "Multiple Return Values", code: `func Bagi(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, fmt.Errorf("tidak bisa membagi dengan nol")
+    }
+    return a / b, nil
+}` },
+      { label: "Variadic Parameters (...)", code: `func Jumlahkan(angka ...int) int {
+    total := 0
+    for _, a := range angka {
+        total += a
+    }
+    return total
+}` },
+      { label: "Anonymous Function & Closure", code: `hitung := func(x int) int {
+    return x * 2
+}
+hasil := hitung(10)` },
+      { label: "Defer Execution & Recover", code: `defer fmt.Println("Pasti dieksekusi di akhir fungsi")
+
+defer func() {
+    if r := recover(); r != nil {
+        fmt.Printf("Aplikasi selamat dari panic: %v\n", r)
+    }
+}()` }
+    ]
+  },
+  {
+    title: "5. Struktur Data (Slice, Map, Struct)",
+    snippets: [
+      { label: "Slice Make, Append & Slice Cut", code: `items := make([]string, 0, 10)
+items = append(items, "Item A", "Item B")
+sub := items[0:2] // Ambil indeks 0 s/d 1` },
+      { label: "Map (Hash Table & Comma-OK)", code: `m := make(map[string]int)
+m["skor"] = 100
+
+if val, ok := m["skor"]; ok {
+    fmt.Println("Ditemukan:", val)
+}
+delete(m, "skor")` },
+      { label: "Struct & JSON Tag", code: `type User struct {
+    ID    int    \`json:"id"\`
+    Nama  string \`json:"nama"\`
+    Email string \`json:"email,omitempty"\`
 }
 u := User{ID: 1, Nama: "Alex"}` }
     ]
   },
   {
-    title: "3. Pointer & Method",
+    title: "6. Pointer & Method Receiver",
     snippets: [
-      { label: "Pointer Syntax", code: `var x int = 10
-var p *int = &x // Ambil alamat
-*p = 20         // Dereference` },
-      { label: "Method Receiver", code: `func (u *User) UbahNama(baru string) {
-    u.Nama = baru
+      { label: "Pointer Syntax (& dan *)", code: `var x int = 10
+var p *int = &x // Ambil alamat memori
+*p = 20         // Modifikasi nilai langsung via pointer` },
+      { label: "Pointer Receiver Method", code: `func (u *User) SetNama(namaBaru string) {
+    u.Nama = namaBaru // Memodifikasi struct asli
 }` },
-      { label: "Interface", code: `type Greeter interface {
-    Greet() string
+      { label: "Interface (Duck Typing)", code: `type Pembayaran interface {
+    Bayar(jumlah float64) error
 }` }
     ]
   },
   {
-    title: "4. Concurrency (Goroutines & Channels)",
+    title: "7. Concurrency (Goroutines & Channels)",
     snippets: [
       { label: "Spawn Goroutine", code: `go func() {
-    fmt.Println("Background task")
+    fmt.Println("Berjalan paralel di background goroutine")
 }()` },
-      { label: "Channel Communication", code: `ch := make(chan int, 2)
+      { label: "Channel Buffer & Close", code: `ch := make(chan int, 5)
 ch <- 42
-hasil := <-ch
+val := <-ch
 close(ch)` },
-      { label: "Select Statement", code: `select {
+      { label: "Select & Timeout Multiplexer", code: `select {
 case msg := <-ch:
-    fmt.Println(msg)
-case <-time.After(1 * time.Second):
-    fmt.Println("Timeout")
+    fmt.Println("Diterima:", msg)
+case <-time.After(2 * time.Second):
+    fmt.Println("Timeout! Server tidak merespons")
 }` },
-      { label: "Sync WaitGroup", code: `var wg sync.WaitGroup
+      { label: "Sync WaitGroup & Mutex", code: `var wg sync.WaitGroup
+var mu sync.Mutex
+
 wg.Add(1)
 go func() {
     defer wg.Done()
-    // proses...
+    mu.Lock()
+    totalAkun++
+    mu.Unlock()
 }()
 wg.Wait()` }
     ]
   },
   {
-    title: "5. Web & GORM",
+    title: "8. Web REST API, Database & Testing",
     snippets: [
-      { label: "HTTP Server", code: `http.HandleFunc("GET /ping", func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintln(w, "pong")
+      { label: "HTTP Server Go 1.22+", code: `mux := http.NewServeMux()
+mux.HandleFunc("GET /api/v1/users/{id}", func(w http.ResponseWriter, r *http.Request) {
+    id := r.PathValue("id")
+    fmt.Fprintf(w, "User ID: %s", id)
 })
-http.ListenAndServe(":8080", nil)` },
-      { label: "JSON Encode", code: `w.Header().Set("Content-Type", "application/json")
-json.NewEncoder(w).Encode(data)` },
-      { label: "GORM CRUD", code: `db.Create(&user)
-db.First(&user, id)
-db.Model(&user).Update("Nama", "Baru")
-db.Delete(&user, id)` }
-    ]
-  },
-  {
-    title: "6. Production Context, Testing & Docker",
-    snippets: [
-      { label: "Context with Timeout", code: `ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+http.ListenAndServe(":8080", mux)` },
+      { label: "JSON Response Envelope", code: `w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(map[string]interface{}{
+    "success": true,
+    "message": "Data berhasil dimuat",
+})` },
+      { label: "GORM CRUD Operations", code: `db.Create(&user)
+db.First(&user, "email = ?", "user@mail.com")
+db.Model(&user).Update("Nama", "Alex Baru")
+db.Delete(&user, id)` },
+      { label: "Context with Timeout", code: `ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 defer cancel()
-<-ctx.Done()` },
-      { label: "Table-Driven Test", code: `func TestAdd(t *testing.T) {
-    tests := []struct{ a, b, want int }{
-        {1, 2, 3},
+req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)` },
+      { label: "Table-Driven Unit Test", code: `func TestHitung(t *testing.T) {
+    cases := []struct{ a, b, want int }{
         {2, 3, 5},
+        {10, -5, 5},
     }
-    for _, tt := range tests {
-        if got := Add(tt.a, tt.b); got != tt.want {
-            t.Errorf("Add() = %v, want %v", got, tt.want)
+    for _, c := range cases {
+        if got := c.a + c.b; got != c.want {
+            t.Errorf("got %d, want %d", got, c.want)
         }
     }
-}` },
-      { label: "Docker Build Command", code: `CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/server` }
+}` }
     ]
   }
 ];
