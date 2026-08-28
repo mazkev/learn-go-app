@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
-import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun, Sparkles } from "lucide-react";
+import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun, Sparkles, Code } from "lucide-react";
 import { executeMultiCode } from "../../services/languageManager";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
 import CodeAnatomyModal from "../common/CodeAnatomyModal";
@@ -15,6 +15,7 @@ export default function W3TryItStudio({
 }) {
   const editorRef = useRef(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [mobileTab, setMobileTab] = useState("editor"); // "editor" | "output"
   const [output, setOutput] = useState({
     text: "Klik tombol hijau 'Run ❯' untuk melihat output kompilasi.",
     isError: false,
@@ -37,6 +38,8 @@ export default function W3TryItStudio({
   const handleRun = async () => {
     const codeToRun = editorRef.current ? editorRef.current.getValue() : (initialCode || "");
     setIsRunning(true);
+    // Auto-switch to output tab on mobile
+    setMobileTab("output");
     setOutput({
       text: "⚡ Mengompilasi kode...",
       isError: false,
@@ -90,14 +93,15 @@ export default function W3TryItStudio({
       )}
 
       {/* Tryit Header Toolbar */}
-      <div className="theme-navbar px-4 py-2.5 flex items-center justify-between gap-3 shrink-0 border-b border-slate-200 dark:border-white/10">
-        <div className="flex items-center gap-3">
+      <div className="theme-navbar px-3 md:px-4 py-2.5 flex items-center justify-between gap-2 md:gap-3 shrink-0 border-b border-slate-200 dark:border-white/10 flex-wrap">
+        <div className="flex items-center gap-2 md:gap-3">
           <button
             onClick={onBackToTutorial}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg theme-card-subtle text-xs font-bold theme-heading hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg theme-card-subtle text-xs font-bold theme-heading hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
           >
             <ArrowLeft size={14} />
-            <span>« Back to Tutorial</span>
+            <span className="hidden sm:inline">« Back to Tutorial</span>
+            <span className="sm:hidden">« Kembali</span>
           </button>
 
           <span className="h-4 w-px bg-slate-300 dark:bg-white/10 hidden md:block" />
@@ -109,40 +113,31 @@ export default function W3TryItStudio({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 md:gap-2">
           {/* Bedah Kode Button */}
           <button
             onClick={() => setIsAnatomyOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[#04AA6D] border border-[#04AA6D]/30 text-xs font-bold transition-all cursor-pointer shadow-xs"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[#04AA6D] border border-[#04AA6D]/30 text-xs font-bold transition-all cursor-pointer shadow-xs"
             title="Bedah fungsi dan alur kode baris per baris"
           >
             <Sparkles size={13} />
-            <span>🔬 Bedah Kode</span>
+            <span className="hidden sm:inline">🔬 Bedah Kode</span>
+            <span className="sm:hidden">🔬 Bedah</span>
           </button>
 
           <button
             onClick={handleReset}
             title="Reset Kode"
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg theme-card-subtle text-xs font-bold theme-muted hover:theme-heading transition-colors cursor-pointer"
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg theme-card-subtle text-xs font-bold theme-muted hover:theme-heading transition-colors cursor-pointer"
           >
             <RotateCcw size={13} /> Reset
           </button>
-
-          {onToggleTheme && (
-            <button
-              onClick={onToggleTheme}
-              className="p-1.5 rounded-lg theme-card-subtle text-xs theme-heading hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-              title="Ganti Tema"
-            >
-              {theme === "light" ? <Moon size={14} /> : <Sun size={14} />}
-            </button>
-          )}
 
           {/* Iconic W3 Green Run Button */}
           <button
             onClick={handleRun}
             disabled={isRunning}
-            className="w3-btn-green px-5 py-1.5 rounded-lg text-xs md:text-sm font-black flex items-center gap-2 shadow-md cursor-pointer disabled:opacity-50"
+            className="w3-btn-green px-4 md:px-5 py-1.5 rounded-lg text-xs md:text-sm font-black flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
           >
             <Play size={14} className={isRunning ? "animate-spin" : "fill-white"} />
             <span>{isRunning ? "Running..." : "Run ❯"}</span>
@@ -150,10 +145,39 @@ export default function W3TryItStudio({
         </div>
       </div>
 
-      {/* Split Screen (Left: Editor, Right: Result Terminal) */}
+      {/* Mobile View Switcher Tabs (Phone Viewports) */}
+      <div className="md:hidden flex items-center p-1 bg-slate-100 dark:bg-black/40 border-b border-slate-200 dark:border-white/10 shrink-0">
+        <button
+          onClick={() => setMobileTab("editor")}
+          className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+            mobileTab === "editor"
+              ? "bg-white dark:bg-[#1e293b] text-[#04AA6D] shadow-xs"
+              : "theme-muted hover:theme-heading"
+          }`}
+        >
+          <Code size={14} />
+          <span>Kode Editor</span>
+        </button>
+        <button
+          onClick={() => setMobileTab("output")}
+          className={`flex-1 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer relative ${
+            mobileTab === "output"
+              ? "bg-white dark:bg-[#1e293b] text-[#04AA6D] shadow-xs"
+              : "theme-muted hover:theme-heading"
+          }`}
+        >
+          <Terminal size={14} />
+          <span>Output Terminal</span>
+          {output.executionTime && (
+            <span className="w-2 h-2 rounded-full bg-[#04AA6D] animate-ping" />
+          )}
+        </button>
+      </div>
+
+      {/* Split Screen / Mobile Single View */}
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 dark:divide-white/10 min-h-0 overflow-hidden">
-        {/* Left: Monaco Go Editor */}
-        <div className="flex flex-col min-h-0 bg-white dark:bg-[#070d19]">
+        {/* Left: Monaco Editor */}
+        <div className={`flex flex-col min-h-0 bg-white dark:bg-[#070d19] ${mobileTab === "editor" ? "flex-1" : "hidden md:flex"}`}>
           <div className="px-4 py-1.5 bg-slate-100 dark:bg-[#0b1120] border-b border-slate-200 dark:border-white/10 text-xs font-mono font-bold theme-muted flex items-center justify-between shrink-0">
             <span>Source: {language === "java" ? "Main.java" : language === "python" ? "main.py" : language === "javascript" ? "main.js" : language === "php" ? "main.php" : "main.go"}</span>
             <span className="text-[11px] text-[#04AA6D]">{
@@ -200,8 +224,8 @@ export default function W3TryItStudio({
           </div>
         </div>
 
-        {/* Right: Result Pane (Adaptive Light/Dark W3 Style) */}
-        <div className="flex flex-col min-h-0 bg-white dark:bg-[#0b1120] text-slate-900 dark:text-slate-100">
+        {/* Right: Result Pane */}
+        <div className={`flex flex-col min-h-0 bg-white dark:bg-[#0b1120] text-slate-900 dark:text-slate-100 ${mobileTab === "output" ? "flex-1" : "hidden md:flex"}`}>
           <div className="px-4 py-1.5 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-white/10 text-xs font-mono font-bold theme-muted flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <Terminal size={14} className="text-[#04AA6D]" />

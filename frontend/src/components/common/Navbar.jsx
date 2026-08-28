@@ -207,7 +207,7 @@ export default function Navbar({
             )}
 
             {/* Unified XP & Level Stats Pill */}
-            <div className="flex items-center gap-2 px-2.5 py-1 rounded-xl theme-card-subtle text-xs font-mono font-bold border border-slate-200 dark:border-white/5">
+            <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-xl theme-card-subtle text-xs font-mono font-bold border border-slate-200 dark:border-white/5">
               <span className="text-amber-500 flex items-center gap-0.5">
                 <Zap size={11} className="fill-amber-500" /> {progress.totalXP}
               </span>
@@ -244,8 +244,8 @@ export default function Navbar({
         </div>
       </header>
 
-      {/* Mobile Bottom Navigation Bar (Fixed for phone viewports) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 theme-navbar border-t border-slate-200 dark:border-white/[0.08] px-2 py-1.5 flex items-center justify-around shadow-2xl backdrop-blur-md">
+      {/* Mobile Bottom App Navigation Bar (Native App Feel) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 theme-navbar border-t border-slate-200 dark:border-white/[0.08] px-3 py-2 flex items-center justify-around shadow-2xl backdrop-blur-lg bg-white/90 dark:bg-[#070d19]/90">
         {navLinks.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -254,14 +254,19 @@ export default function Navbar({
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl text-[10px] font-bold transition-all cursor-pointer ${
+              className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer relative ${
                 isActive
-                  ? "text-[#04AA6D] font-extrabold"
+                  ? "text-[#04AA6D] font-black scale-105"
                   : "theme-muted hover:theme-heading"
               }`}
             >
-              <Icon size={18} className={isActive ? "text-[#04AA6D]" : ""} />
-              <span className="mt-0.5">{item.label}</span>
+              <div className={`p-1 rounded-xl transition-all ${isActive ? "bg-[#04AA6D]/15" : ""}`}>
+                <Icon size={19} className={isActive ? "text-[#04AA6D]" : ""} />
+              </div>
+              <span className="text-[10px] mt-0.5 font-bold tracking-tight">{item.label}</span>
+              {isActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#04AA6D] absolute -bottom-0.5" />
+              )}
             </button>
           );
         })}

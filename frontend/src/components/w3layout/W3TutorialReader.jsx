@@ -847,10 +847,10 @@ export default function W3TutorialReader({
       )}
 
       {/* Bottom Completion & Navigation Bar */}
-      <div className="border-t border-slate-200 dark:border-white/[0.08] pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="border-t border-slate-200 dark:border-white/[0.08] pt-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 pb-8 md:pb-0">
         <button
           onClick={() => markLessonComplete(currentLesson.id, 100)}
-          className={`px-5 py-2.5 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 cursor-pointer shadow-md ${
+          className={`w-full md:w-auto px-5 py-3 md:py-2.5 rounded-xl text-xs md:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all ${
             isCompleted
               ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40"
               : "w3-btn-green"
@@ -860,11 +860,11 @@ export default function W3TutorialReader({
           <span>{isCompleted ? "✓ Materi Sudah Selesai (+100 XP)" : "Tandai Selesai (+100 XP)"}</span>
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full md:w-auto">
           {prevLesson && (
             <button
               onClick={() => onSelectLesson(prevLesson.id)}
-              className="w3-nav-btn cursor-pointer"
+              className="w3-nav-btn flex-1 md:flex-initial justify-center py-2.5 md:py-1.5 cursor-pointer"
             >
               <ChevronLeft size={16} /> ❮ Previous
             </button>
@@ -873,7 +873,7 @@ export default function W3TutorialReader({
           {nextLesson && (
             <button
               onClick={() => onSelectLesson(nextLesson.id)}
-              className="w3-nav-btn cursor-pointer"
+              className="w3-nav-btn flex-1 md:flex-initial justify-center py-2.5 md:py-1.5 cursor-pointer"
             >
               Next ❯ <ChevronRight size={16} />
             </button>
