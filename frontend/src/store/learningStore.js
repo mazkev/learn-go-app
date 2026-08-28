@@ -78,11 +78,15 @@ export function useLearningProgress() {
   });
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-    } catch (e) {
-      console.error("Gagal menyimpan progress", e);
-    }
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+      } catch (e) {
+        console.error("Gagal menyimpan progress", e);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [progress]);
 
   const markLessonComplete = useCallback((lessonId, xpReward = 100) => {
