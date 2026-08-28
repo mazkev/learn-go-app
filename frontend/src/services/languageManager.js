@@ -53,16 +53,75 @@ print("Belajar Python jadi sangat mudah dan ringkas.")`,
   },
 ];
 
+// In-Memory Execution Memoization Map
+const executionCache = new Map();
+const MAX_CACHE_ENTRIES = 120;
+
+function computeCodeHash(langId, code) {
+  const normalized = (code || "").trim().replace(/\r\n/g, "\n");
+  let hash = 0;
+  const str = `${langId}:::${normalized}`;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return `m3_exec_${langId}_${hash}`;
+}
+
 export function getLanguageConfig(langId = "go") {
   return SUPPORTED_LANGUAGES.find((l) => l.id === langId) || SUPPORTED_LANGUAGES[0];
 }
 
-export async function executeMultiCode(rawCode, langId = "go") {
+export async function executeMultiCode(rawCode, langId = "go", forceLive = false) {
+  const cacheKey = computeCodeHash(langId, rawCode);
+
+  // 1. Check in-memory & session storage cache (0ms instant execution)
+  if (!forceLive) {
+    if (executionCache.has(cacheKey)) {
+      const cached = executionCache.get(cacheKey);
+      return {
+        ...cached,
+        executionTime: "0.00s (⚡ Instant Cache)",
+        cached: true,
+      };
+    }
+    try {
+      const stored = sessionStorage.getItem(cacheKey);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        executionCache.set(cacheKey, parsed);
+        return {
+          ...parsed,
+          executionTime: "0.00s (⚡ Instant Cache)",
+          cached: true,
+        };
+      }
+    } catch {}
+  }
+
+  // 2. Live Cloud / Runtime Execution
+  let result;
   if (langId === "java") {
-    return executeJavaCode(rawCode);
+    result = await executeJavaCode(rawCode);
+  } else if (langId === "python") {
+    result = await executePythonCode(rawCode);
+  } else {
+    result = await executeGoCode(rawCode);
   }
-  if (langId === "python") {
-    return executePythonCode(rawCode);
+
+  // 3. Cache successful results
+  if (result && result.success && !result.isError) {
+    if (executionCache.size >= MAX_CACHE_ENTRIES) {
+      const firstKey = executionCache.keys().next().value;
+      executionCache.delete(firstKey);
+    }
+    executionCache.set(cacheKey, result);
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify(result));
+    } catch {}
   }
-  return executeGoCode(rawCode);
+
+  return result;
 }
+
