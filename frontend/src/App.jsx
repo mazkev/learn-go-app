@@ -14,12 +14,14 @@ const CheatSheet = lazy(() => import("./components/cheatsheet/CheatSheet"));
 const BackupSyncModal = lazy(() => import("./components/sync/BackupSyncModal"));
 const CommandPaletteModal = lazy(() => import("./components/common/CommandPaletteModal"));
 const StreakDetailModal = lazy(() => import("./components/common/StreakDetailModal"));
+const MobileLearningHub = lazy(() => import("./components/mobile/MobileLearningHub"));
 
 const THEME_STORAGE_KEY = "w3_golearn_theme";
 const LANG_STORAGE_KEY = "w3_active_language";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("tutorial");
+  const [mobileTutorialMode, setMobileTutorialMode] = useState("hub"); // "hub" | "reader"
   const [activeLanguage, setActiveLanguage] = useState(() => {
     try {
       const saved = localStorage.getItem(LANG_STORAGE_KEY);
@@ -61,29 +63,6 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
   }, []);
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, theme);
-    } catch {}
-  }, [theme]);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  }, []);
-
-  const handleSelectLanguage = useCallback((langId) => {
-    setActiveLanguage(langId);
-    try {
-      localStorage.setItem(LANG_STORAGE_KEY, langId);
-    } catch {}
-    const targetConfig = getLanguageConfig(langId);
-    if (targetConfig && targetConfig.modules[0]?.lessons[0]) {
-      setCurrentLessonId(targetConfig.modules[0].lessons[0].id);
-    }
-    setIsTryItMode(false);
-  }, []);
-
   const {
     progress,
     markLessonComplete,
@@ -93,10 +72,35 @@ export default function App() {
     resetAllProgress,
   } = useLearningProgress();
 
-  const handleSelectLesson = useCallback((lessonId) => {
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme);
+    } catch {}
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  }, []);
+
+  const handleSelectLanguage = useCallback((langId) => {
+    setActiveLanguage(langId);
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, langId);
+    } catch {}
+    const config = getLanguageConfig(langId);
+    if (config && config.modules && config.modules[0]?.lessons[0]?.id) {
+      setCurrentLessonId(config.modules[0].lessons[0].id);
+    }
+  }, []);
+
+  const handleSelectLesson = useCallback((lessonId, openReader = false) => {
     setCurrentLessonId(lessonId);
     setIsTryItMode(false);
-    setActiveTab("tutorial");
+    if (openReader) {
+      setMobileTutorialMode("reader");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   }, []);
 
   const handleOpenTryIt = useCallback((codeSnippet) => {
@@ -104,20 +108,21 @@ export default function App() {
     setIsTryItMode(true);
   }, []);
 
-  const handleLoadSnippetToTryIt = useCallback((customCode) => {
-    setTryItCode(customCode);
-    setIsTryItMode(true);
+  const handleLoadSnippetToTryIt = useCallback((codeSnippet) => {
+    setTryItCode(codeSnippet);
     setActiveTab("tutorial");
+    setIsTryItMode(true);
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-[#04AA6D]/20 selection:text-[#04AA6D]">
-      {/* Top Header Navbar (4 Primary Hubs) */}
+    <div className="min-h-screen flex flex-col theme-navbar">
+      {/* Top Navbar */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={(tab) => {
           setActiveTab(tab);
           setIsTryItMode(false);
+          if (tab === "tutorial") setMobileTutorialMode("hub");
         }}
         progress={progress}
         theme={theme}
@@ -138,30 +143,61 @@ export default function App() {
           <>
             {!isTryItMode ? (
               <div className="flex-1 flex min-h-0">
-                {/* W3 Collapsible Sidebar */}
-                <W3Sidebar
-                  currentLessonId={currentLessonId}
-                  onSelectLesson={handleSelectLesson}
-                  progress={progress}
-                  isOpen={isSidebarOpen}
-                  onCloseMobile={() => setIsSidebarOpen(false)}
-                  modules={activeModules}
-                  activeLanguage={activeLanguage}
-                />
+                {/* Mobile View: Dedicated Mobile Learning Hub vs Reader */}
+                <div className="flex-1 md:hidden overflow-y-auto">
+                  {mobileTutorialMode === "hub" ? (
+                    <Suspense fallback={<LoadingSpinner message="Memuat Peta Petualangan Belajar..." />}>
+                      <MobileLearningHub
+                        activeLanguage={activeLanguage}
+                        onSelectLanguage={handleSelectLanguage}
+                        modules={activeModules}
+                        currentLessonId={currentLessonId}
+                        onSelectLesson={(lessonId) => handleSelectLesson(lessonId, true)}
+                        progress={progress}
+                        onOpenStreakModal={() => setIsStreakModalOpen(true)}
+                        onOpenSyncModal={() => setIsSyncModalOpen(true)}
+                      />
+                    </Suspense>
+                  ) : (
+                    <W3TutorialReader
+                      currentLessonId={currentLessonId}
+                      onSelectLesson={handleSelectLesson}
+                      onOpenTryIt={handleOpenTryIt}
+                      progress={progress}
+                      markLessonComplete={markLessonComplete}
+                      recordQuizResult={recordQuizResult}
+                      modules={activeModules}
+                      activeLanguage={activeLanguage}
+                      onBackToMobileHub={() => setMobileTutorialMode("hub")}
+                    />
+                  )}
+                </div>
 
-                {/* Central Tutorial Article Reader */}
-                <main className="flex-1 overflow-y-auto">
-                  <W3TutorialReader
+                {/* Desktop View: Split Sidebar + Reader */}
+                <div className="hidden md:flex flex-1 min-h-0">
+                  <W3Sidebar
                     currentLessonId={currentLessonId}
                     onSelectLesson={handleSelectLesson}
-                    onOpenTryIt={handleOpenTryIt}
                     progress={progress}
-                    markLessonComplete={markLessonComplete}
-                    recordQuizResult={recordQuizResult}
+                    isOpen={isSidebarOpen}
+                    onCloseMobile={() => setIsSidebarOpen(false)}
                     modules={activeModules}
                     activeLanguage={activeLanguage}
                   />
-                </main>
+
+                  <main className="flex-1 overflow-y-auto">
+                    <W3TutorialReader
+                      currentLessonId={currentLessonId}
+                      onSelectLesson={handleSelectLesson}
+                      onOpenTryIt={handleOpenTryIt}
+                      progress={progress}
+                      markLessonComplete={markLessonComplete}
+                      recordQuizResult={recordQuizResult}
+                      modules={activeModules}
+                      activeLanguage={activeLanguage}
+                    />
+                  </main>
+                </div>
               </div>
             ) : (
               /* W3 Split-Screen Tryit Editor */

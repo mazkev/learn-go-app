@@ -21,6 +21,7 @@ import {
   Pause,
   Square,
   Clock,
+  Compass,
 } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
 import { executeMultiCode } from "../../services/languageManager";
@@ -216,7 +217,8 @@ export default function W3TutorialReader({
   markLessonComplete,
   recordQuizResult,
   modules = ROADMAP_MODULES,
-  activeLanguage = "go"
+  activeLanguage = "go",
+  onBackToMobileHub,
 }) {
   const { currentModule, currentLesson, prevLesson, nextLesson } = useMemo(() => {
     let mod = null;
@@ -481,17 +483,32 @@ export default function W3TutorialReader({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 space-y-8 relative">
+    <div className="max-w-4xl mx-auto px-3 md:px-8 py-4 md:py-6 space-y-6 md:space-y-8 relative">
       {/* Sticky Reading Scroll Progress Bar */}
-      <div className="sticky top-0 z-30 h-1 bg-slate-200/50 dark:bg-white/5 overflow-hidden -mx-4 md:-mx-8 -mt-6 mb-4">
+      <div className="sticky top-0 z-30 h-1 bg-slate-200/50 dark:bg-white/5 overflow-hidden -mx-3 md:-mx-8 -mt-4 md:-mt-6 mb-4">
         <div
           className="h-full bg-gradient-to-r from-[#04AA6D] via-teal-400 to-emerald-500 transition-all duration-150 ease-out shadow-xs"
           style={{ width: `${scrollProgress}%` }}
         />
       </div>
 
+      {/* Mobile Back to Map Hub Banner */}
+      {onBackToMobileHub && (
+        <button
+          onClick={onBackToMobileHub}
+          className="md:hidden w-full flex items-center justify-between p-3 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 text-[#04AA6D] border border-[#04AA6D]/30 text-xs font-black transition-all cursor-pointer shadow-xs active:scale-98"
+        >
+          <span className="flex items-center gap-1.5">
+            <Compass size={15} /> « Kembali ke Peta Belajar
+          </span>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#04AA6D] text-white font-bold">
+            {currentModule.title.split(".")[0] || "Modul"}
+          </span>
+        </button>
+      )}
+
       {/* Top Breadcrumb & Navigation */}
-      <div className="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/[0.08] pb-4">
+      <div className="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/[0.08] pb-3 md:pb-4">
         <div className="text-xs font-bold theme-muted flex items-center gap-1.5 flex-wrap">
           <span>{currentModule.title}</span>
           <span>&gt;</span>
