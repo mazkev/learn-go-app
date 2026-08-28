@@ -74,6 +74,11 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    if (theme === "light") {
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+    }
     try {
       localStorage.setItem(THEME_STORAGE_KEY, theme);
     } catch {}
