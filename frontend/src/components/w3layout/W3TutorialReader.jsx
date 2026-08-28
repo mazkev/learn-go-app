@@ -62,23 +62,45 @@ function renderInlineFormatted(text) {
 }
 
 /**
+ * Normalize raw markdown to separate combined numbered lists & headers
+ */
+function normalizeMarkdownContent(raw) {
+  if (!raw) return "";
+
+  let text = raw;
+
+  // 1. Separate combined numbered lists: e.g. "aturan: 1. **package main** 2. **import**"
+  text = text.replace(/([^\n])\s+(\d+\.\s+)/g, "$1\n$2");
+
+  // 2. Separate emoji headers into standalone paragraphs: e.g. "...sebelumnya. 📌 Struktur Dasar"
+  text = text.replace(/([^\n])\s+([📌💡⚡🎯🔥💎🛡️🚀]\s+)/g, "$1\n\n$2");
+
+  // 3. Separate combined bullet points: e.g. "berikut: - item 1 - item 2"
+  text = text.replace(/([^\n])\s+(-\s+)/g, "$1\n$2");
+
+  return text;
+}
+
+/**
  * Rich Tutorial Markdown Content Renderer
  */
 function RichContentRenderer({ content }) {
   if (!content) return null;
 
-  const blocks = content.split("\n\n");
+  const normalized = normalizeMarkdownContent(content);
+  const rawBlocks = normalized.split(/\n\s*\n/);
 
   return (
-    <div className="space-y-5 text-sm md:text-base theme-body leading-relaxed">
-      {blocks.map((block, idx) => {
+    <div className="space-y-6 text-sm md:text-base theme-body leading-relaxed">
+      {rawBlocks.map((block, idx) => {
         const trimmed = block.trim();
+        if (!trimmed) return null;
 
         // 1. Heading 3: ### Title
         if (trimmed.startsWith("### ")) {
           return (
-            <div key={idx} className="pt-5 border-b border-slate-200 dark:border-white/[0.08] pb-2.5">
-              <h2 className="text-xl md:text-2xl font-black theme-heading tracking-tight flex items-center gap-2">
+            <div key={idx} className="pt-6 border-b border-slate-200 dark:border-white/[0.08] pb-3">
+              <h2 className="text-xl md:text-2xl font-black theme-heading tracking-tight flex items-center gap-2.5">
                 <span className="w-2 h-6 rounded-full bg-[#04AA6D]" />
                 <span>{trimmed.replace("### ", "")}</span>
               </h2>
@@ -89,7 +111,7 @@ function RichContentRenderer({ content }) {
         // 2. Heading 4: #### Subtitle
         if (trimmed.startsWith("#### ")) {
           return (
-            <h3 key={idx} className="text-base md:text-lg font-bold text-[#04AA6D] pt-3 tracking-tight flex items-center gap-2">
+            <h3 key={idx} className="text-base md:text-lg font-bold text-[#04AA6D] pt-4 tracking-tight flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#04AA6D]" />
               <span>{trimmed.replace("#### ", "")}</span>
             </h3>
@@ -102,7 +124,7 @@ function RichContentRenderer({ content }) {
           return (
             <div
               key={idx}
-              className="bg-emerald-500/[0.07] dark:bg-emerald-500/[0.1] border-l-4 border-[#04AA6D] p-4 rounded-r-xl text-xs md:text-sm theme-heading space-y-1 my-3 shadow-sm flex items-start gap-3"
+              className="bg-emerald-500/[0.07] dark:bg-emerald-500/[0.1] border-l-4 border-[#04AA6D] p-4 rounded-r-2xl text-xs md:text-sm theme-heading space-y-1.5 my-4 shadow-2xs flex items-start gap-3"
             >
               <Info size={18} className="text-[#04AA6D] shrink-0 mt-0.5" />
               <div className="flex-1 leading-relaxed">
@@ -116,10 +138,10 @@ function RichContentRenderer({ content }) {
 
         // 4. Code Block: ```go ... ```
         if (trimmed.startsWith("```")) {
-          const codeLines = trimmed.replace(/```go|```/g, "").trim();
+          const codeLines = trimmed.replace(/```[a-z]*|```/g, "").trim();
           return (
-            <div key={idx} className="my-3">
-              <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-xl border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto shadow-inner leading-relaxed">
+            <div key={idx} className="my-4">
+              <pre className="bg-slate-100 dark:bg-[#070d19] text-slate-800 dark:text-emerald-400 p-4 rounded-2xl border border-slate-200 dark:border-white/10 font-mono text-xs md:text-sm overflow-x-auto shadow-inner leading-relaxed">
                 {codeLines}
               </pre>
             </div>
@@ -136,12 +158,12 @@ function RichContentRenderer({ content }) {
             );
 
             return (
-              <div key={idx} className="overflow-x-auto my-4 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm">
+              <div key={idx} className="overflow-x-auto my-4 rounded-2xl border border-slate-200 dark:border-white/10 shadow-2xs">
                 <table className="w-full text-left text-xs md:text-sm">
                   <thead className="theme-card-subtle theme-heading border-b border-slate-200 dark:border-white/10 font-bold">
                     <tr>
                       {headerCols.map((h, hIdx) => (
-                        <th key={hIdx} className="p-3">{renderInlineFormatted(h)}</th>
+                        <th key={hIdx} className="p-3.5">{renderInlineFormatted(h)}</th>
                       ))}
                     </tr>
                   </thead>
@@ -149,7 +171,7 @@ function RichContentRenderer({ content }) {
                     {bodyRows.map((r, rIdx) => (
                       <tr key={rIdx} className="hover:bg-black/[0.02] dark:hover:bg-white/[0.02]">
                         {r.map((cell, cIdx) => (
-                          <td key={cIdx} className="p-3 theme-body">{renderInlineFormatted(cell)}</td>
+                          <td key={cIdx} className="p-3.5 theme-body">{renderInlineFormatted(cell)}</td>
                         ))}
                       </tr>
                     ))}
@@ -160,47 +182,72 @@ function RichContentRenderer({ content }) {
           }
         }
 
-        // 6. Unordered List: - item / * item
-        if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
-          const items = trimmed.split("\n").filter((l) => l.trim().startsWith("- ") || l.trim().startsWith("* "));
+        // 6. Block with Mixed Lines (Paragraph + Numbered Lists / Bullet points)
+        const lines = trimmed.split("\n").map((l) => l.trim()).filter(Boolean);
+        const hasListItems = lines.some((l) => /^\d+\.\s+/.test(l) || /^[-*]\s+/.test(l));
+
+        if (hasListItems) {
           return (
-            <ul key={idx} className="space-y-2 my-2 pl-1">
-              {items.map((item, itemIdx) => {
-                const textOnly = item.replace(/^[-*]\s+/, "");
+            <div key={idx} className="space-y-3 my-3">
+              {lines.map((line, lIdx) => {
+                // Ordered List Item: 1. ...
+                if (/^\d+\.\s+/.test(line)) {
+                  const match = line.match(/^(\d+)\.\s+(.*)/);
+                  const num = match ? match[1] : lIdx + 1;
+                  const textOnly = match ? match[2] : line;
+                  return (
+                    <div key={lIdx} className="flex items-start gap-3 p-3.5 rounded-2xl bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/5 shadow-2xs">
+                      <span className="w-6 h-6 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 font-mono">
+                        {num}
+                      </span>
+                      <div className="flex-1 leading-relaxed text-slate-800 dark:text-slate-200">
+                        {renderInlineFormatted(textOnly)}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Unordered List Item: - ...
+                if (/^[-*]\s+/.test(line)) {
+                  const textOnly = line.replace(/^[-*]\s+/, "");
+                  return (
+                    <div key={lIdx} className="flex items-start gap-3 pl-2">
+                      <span className="w-2 h-2 rounded-full bg-[#04AA6D] shrink-0 mt-2" />
+                      <div className="flex-1 leading-relaxed text-slate-800 dark:text-slate-200">
+                        {renderInlineFormatted(textOnly)}
+                      </div>
+                    </div>
+                  );
+                }
+
+                // Regular intro / section line
                 return (
-                  <li key={itemIdx} className="flex items-start gap-2.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#04AA6D] shrink-0 mt-2" />
-                    <span className="flex-1">{renderInlineFormatted(textOnly)}</span>
-                  </li>
+                  <p key={lIdx} className="leading-relaxed font-bold text-slate-900 dark:text-slate-100">
+                    {renderInlineFormatted(line)}
+                  </p>
                 );
               })}
-            </ul>
+            </div>
           );
         }
 
-        // 7. Ordered List: 1. item
-        if (/^\d+\.\s+/.test(trimmed)) {
-          const items = trimmed.split("\n").filter((l) => /^\d+\.\s+/.test(l.trim()));
+        // 7. Highlight Feature Callout for Emojis (📌, 💡, ⚡, 🎯, 🔥, 💎, 🛡️, 🚀)
+        if (/^[📌💡⚡🎯🔥💎🛡️🚀]/.test(trimmed)) {
           return (
-            <ol key={idx} className="space-y-2.5 my-2 pl-1">
-              {items.map((item, itemIdx) => {
-                const textOnly = item.replace(/^\d+\.\s+/, "");
-                return (
-                  <li key={itemIdx} className="flex items-start gap-3">
-                    <span className="w-5 h-5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-bold text-xs flex items-center justify-center shrink-0 mt-0.5 font-mono">
-                      {itemIdx + 1}
-                    </span>
-                    <span className="flex-1">{renderInlineFormatted(textOnly)}</span>
-                  </li>
-                );
-              })}
-            </ol>
+            <div
+              key={idx}
+              className="p-4.5 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/90 dark:border-white/10 shadow-2xs space-y-2 my-4"
+            >
+              <div className="leading-relaxed font-semibold text-slate-900 dark:text-slate-100">
+                {renderInlineFormatted(trimmed)}
+              </div>
+            </div>
           );
         }
 
-        // 8. Regular Paragraph
+        // 8. Standard Clean Paragraph
         return (
-          <p key={idx} className="leading-relaxed">
+          <p key={idx} className="leading-relaxed text-slate-800 dark:text-slate-200">
             {renderInlineFormatted(trimmed)}
           </p>
         );
