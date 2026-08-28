@@ -290,16 +290,16 @@ export default function CommandPaletteModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-16 md:pt-24 px-4 bg-black/60 backdrop-blur-sm animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 md:pt-24 px-4 bg-black/40 dark:bg-black/70 backdrop-blur-md animate-fadeIn"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-2xl bg-white dark:bg-[#0d1527] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-scaleUp"
+        className="w-full max-w-2xl theme-card rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-scaleUp border border-slate-300 dark:border-white/15"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Header */}
-        <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center gap-3 bg-slate-50/50 dark:bg-black/20">
-          <Search size={20} className="text-slate-400 dark:text-slate-500 shrink-0" />
+        <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center gap-3 theme-card-subtle">
+          <Search size={20} className="text-[#04AA6D] shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -319,7 +319,7 @@ export default function CommandPaletteModal({
               <X size={16} />
             </button>
           )}
-          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[11px] font-mono font-bold text-slate-400 dark:text-slate-500 bg-slate-200 dark:bg-white/10 rounded border border-slate-300 dark:border-white/10">
+          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-white/10 rounded border border-slate-300 dark:border-white/15 shadow-2xs">
             ESC
           </kbd>
         </div>
@@ -329,8 +329,8 @@ export default function CommandPaletteModal({
           {filteredItems.length === 0 ? (
             <div className="py-12 text-center text-slate-400 dark:text-slate-500 space-y-2">
               <Sparkles size={32} className="mx-auto text-amber-400/80 animate-pulse" />
-              <p className="text-sm font-semibold">Tidak ada hasil yang cocok dengan "{query}"</p>
-              <p className="text-xs">Coba kata kunci lain seperti "Go", "Java", "Python", "if", "loop", "api", atau "test".</p>
+              <p className="text-sm font-semibold theme-heading">Tidak ada hasil yang cocok dengan "{query}"</p>
+              <p className="text-xs theme-muted">Coba kata kunci lain seperti "Go", "Java", "Python", "if", "loop", "api", atau "test".</p>
             </div>
           ) : (
             filteredItems.map((item, idx) => {
@@ -343,12 +343,12 @@ export default function CommandPaletteModal({
                   onMouseEnter={() => setSelectedIndex(idx)}
                   className={`p-3 rounded-xl flex items-center justify-between gap-3 cursor-pointer transition-all ${
                     isSelected
-                      ? "bg-slate-100 dark:bg-white/10 text-[#04AA6D]"
+                      ? "bg-slate-100 dark:bg-white/10 text-[#04AA6D] shadow-2xs ring-1 ring-[#04AA6D]/30"
                       : "hover:bg-slate-50 dark:hover:bg-white/5"
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <span className="text-xl shrink-0 p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                    <span className="text-xl shrink-0 p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200/60 dark:border-white/5">
                       {item.icon}
                     </span>
                     <div className="min-w-0 flex-1">
@@ -356,12 +356,12 @@ export default function CommandPaletteModal({
                         <span className="text-sm font-bold theme-heading truncate">
                           {item.title}
                         </span>
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-200 dark:bg-white/10 text-slate-600 dark:text-slate-400 shrink-0 font-semibold">
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-300 shrink-0 font-semibold border border-slate-300/60 dark:border-white/10">
                           {item.badge}
                         </span>
                       </div>
                       <p className="text-xs theme-muted truncate mt-0.5">
-                        <span className="text-slate-400 dark:text-slate-500 font-medium">[{item.category}]</span> {item.subtitle}
+                        <span className="text-slate-500 dark:text-slate-400 font-medium">[{item.category}]</span> {item.subtitle}
                       </p>
                     </div>
                   </div>
@@ -380,17 +380,17 @@ export default function CommandPaletteModal({
         </div>
 
         {/* Footer info */}
-        <div className="p-3 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/30 flex items-center justify-between text-[11px] font-mono theme-muted">
+        <div className="p-3 border-t border-slate-200 dark:border-white/10 theme-card-subtle flex items-center justify-between text-[11px] font-mono theme-muted">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10">↑</kbd>
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10">↓</kbd> Navigasi
+              <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-400">↑</kbd>
+              <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-400">↓</kbd> Navigasi
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10">↵</kbd> Pilih
+              <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-400">↵</kbd> Pilih
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10">ESC</kbd> Tutup
+              <kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-white/10 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-400">ESC</kbd> Tutup
             </span>
           </div>
           <span className="hidden sm:inline text-[#04AA6D] font-bold">
