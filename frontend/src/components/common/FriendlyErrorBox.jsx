@@ -7,13 +7,14 @@ import {
   ChevronUp,
   Terminal,
   Stethoscope,
+  Sparkles,
   HelpCircle
 } from "lucide-react";
-import { explainGoError } from "../../services/errorExplainer";
+import { explainPolyglotError } from "../../services/errorExplainer";
 
-export default function FriendlyErrorBox({ rawError, codeContext = "" }) {
+export default function FriendlyErrorBox({ rawError, codeContext = "", language = "go" }) {
   const [showRawLog, setShowRawLog] = useState(false);
-  const diagnosis = explainGoError(rawError, codeContext);
+  const diagnosis = explainPolyglotError(rawError, codeContext, language);
 
   if (!rawError || !diagnosis) return null;
 
@@ -28,7 +29,7 @@ export default function FriendlyErrorBox({ rawError, codeContext = "" }) {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] uppercase font-bold tracking-wider text-rose-500 font-mono">
-                Smart Error Doctor
+                AI Smart Code Doctor ({String(language).toUpperCase()})
               </span>
             </div>
             <h4 className="text-sm font-black text-rose-600 dark:text-rose-400">
@@ -38,7 +39,7 @@ export default function FriendlyErrorBox({ rawError, codeContext = "" }) {
         </div>
 
         <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-500 font-bold shrink-0">
-          Kompilasi Gagal
+          Evaluasi Gagal
         </span>
       </div>
 
@@ -57,7 +58,7 @@ export default function FriendlyErrorBox({ rawError, codeContext = "" }) {
       <div className="space-y-1.5 bg-emerald-500/10 dark:bg-emerald-950/30 p-3 rounded-xl border border-emerald-500/25">
         <div className="flex items-center gap-1.5 font-bold text-emerald-700 dark:text-emerald-300">
           <Wrench size={14} className="text-emerald-500 shrink-0" />
-          <span>Cara Memperbaikinya:</span>
+          <span>Petunjuk Solusi:</span>
         </div>
         <p className="text-emerald-800 dark:text-emerald-200 leading-relaxed pl-5 font-mono text-[11px]">
           {diagnosis.solution}
@@ -72,7 +73,7 @@ export default function FriendlyErrorBox({ rawError, codeContext = "" }) {
         >
           <span className="flex items-center gap-1.5">
             <Terminal size={12} />
-            <span>{showRawLog ? "Sembunyikan" : "Lihat"} Pesan Asli Compiler Go</span>
+            <span>{showRawLog ? "Sembunyikan" : "Lihat"} Pesan Asli Compiler</span>
           </span>
           {showRawLog ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
