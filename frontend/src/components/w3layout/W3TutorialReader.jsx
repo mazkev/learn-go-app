@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -15,7 +15,12 @@ import {
   BookOpen,
   Info,
   ArrowRight,
-  CheckCircle2
+  CheckCircle2,
+  Volume2,
+  VolumeX,
+  Pause,
+  Square,
+  Clock,
 } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
 import { executeMultiCode } from "../../services/languageManager";
@@ -271,11 +276,135 @@ export default function W3TutorialReader({
   // Code Anatomy Modal Target
   const [anatomyTarget, setAnatomyTarget] = useState(null);
 
+  // Reading Scroll Progress State
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Text-to-Speech Voice Narrator State (100% Offline)
+  const [speechState, setSpeechState] = useState({
+    isPlaying: false,
+    isPaused: false,
+    rate: 1.0,
+  });
+
+  // Reading Time Estimation (Words / 180 wpm)
+  const readingTimeMinutes = useMemo(() => {
+    if (!currentLesson?.content) return 2;
+    const words = (currentLesson.content + " " + (currentLesson.summary || "")).split(/\s+/).length;
+    return Math.max(1, Math.ceil(words / 180));
+  }, [currentLesson]);
+
+  // Clean Markdown Text for Natural Speech
+  const getCleanSpeechText = useCallback(() => {
+    if (!currentLesson) return "";
+    const title = currentLesson.title || "";
+    const summary = currentLesson.summary || "";
+    let content = currentLesson.content || "";
+
+    content = content
+      .replace(/```[\s\S]*?```/g, "Contoh kode pemrograman berikut dapat Anda coba langsung di editor.")
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/###\s*(.*)/g, "Bagian: $1. ")
+      .replace(/####\s*(.*)/g, "Poin: $1. ")
+      .replace(/>\s*(.*)/g, "Catatan penting: $1. ")
+      .replace(/[*_#\[\]\(\)]/g, " ");
+
+    return `${title}. ${summary}. ${content}`;
+  }, [currentLesson]);
+
+  const handleStartSpeech = () => {
+    if (!("speechSynthesis" in window)) {
+      alert("Browser Anda belum mendukung Web Speech API.");
+      return;
+    }
+
+    if (speechState.isPaused) {
+      window.speechSynthesis.resume();
+      setSpeechState((prev) => ({ ...prev, isPlaying: true, isPaused: false }));
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    const text = getCleanSpeechText();
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // Auto-detect Indonesian voice if installed
+    const voices = window.speechSynthesis.getVoices();
+    const idVoice = voices.find(
+      (v) => v.lang.includes("id") || v.lang.includes("ID") || v.name.toLowerCase().includes("indonesia")
+    );
+    if (idVoice) {
+      utterance.voice = idVoice;
+    }
+    utterance.lang = "id-ID";
+    utterance.rate = speechState.rate;
+
+    utterance.onend = () => {
+      setSpeechState((prev) => ({ ...prev, isPlaying: false, isPaused: false }));
+    };
+    utterance.onerror = () => {
+      setSpeechState((prev) => ({ ...prev, isPlaying: false, isPaused: false }));
+    };
+
+    window.speechSynthesis.speak(utterance);
+    setSpeechState((prev) => ({ ...prev, isPlaying: true, isPaused: false }));
+  };
+
+  const handlePauseSpeech = () => {
+    if ("speechSynthesis" in window && speechState.isPlaying) {
+      window.speechSynthesis.pause();
+      setSpeechState((prev) => ({ ...prev, isPaused: true }));
+    }
+  };
+
+  const handleStopSpeech = () => {
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      setSpeechState((prev) => ({ ...prev, isPlaying: false, isPaused: false }));
+    }
+  };
+
+  const handleCycleRate = () => {
+    const nextRate = speechState.rate === 1.0 ? 1.25 : speechState.rate === 1.25 ? 1.5 : 1.0;
+    setSpeechState((prev) => ({ ...prev, rate: nextRate }));
+    if (speechState.isPlaying && !speechState.isPaused) {
+      handleStopSpeech();
+      setTimeout(handleStartSpeech, 50);
+    }
+  };
+
+  // Track Reading Scroll Progress
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollEl = document.querySelector("main.overflow-y-auto") || document.documentElement;
+      const scrollTop = scrollEl.scrollTop || window.scrollY;
+      const scrollHeight = scrollEl.scrollHeight - scrollEl.clientHeight;
+      if (scrollHeight > 0) {
+        setScrollProgress(Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100)));
+      }
+    };
+
+    const mainEl = document.querySelector("main.overflow-y-auto");
+    if (mainEl) mainEl.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      if (mainEl) mainEl.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [currentLessonId]);
+
+  // Cancel speech on lesson change or unmount
   useEffect(() => {
     setExampleRun({ isRunning: false, isOpen: false, text: "", isError: false, executionTime: null });
     setExerciseRun({ isRunning: false, isOpen: false, text: "", isError: false, executionTime: null });
     setSelectedAnswers({});
     setQuizSubmitted(false);
+    setScrollProgress(0);
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      setSpeechState((prev) => ({ ...prev, isPlaying: false, isPaused: false }));
+    }
   }, [currentLessonId]);
 
   const handleRunExampleDirect = async () => {
@@ -352,7 +481,15 @@ export default function W3TutorialReader({
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 space-y-8 relative">
+      {/* Sticky Reading Scroll Progress Bar */}
+      <div className="sticky top-0 z-30 h-1 bg-slate-200/50 dark:bg-white/5 overflow-hidden -mx-4 md:-mx-8 -mt-6 mb-4">
+        <div
+          className="h-full bg-gradient-to-r from-[#04AA6D] via-teal-400 to-emerald-500 transition-all duration-150 ease-out shadow-xs"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
+
       {/* Top Breadcrumb & Navigation */}
       <div className="flex items-center justify-between gap-2 border-b border-slate-200 dark:border-white/[0.08] pb-4">
         <div className="text-xs font-bold theme-muted flex items-center gap-1.5 flex-wrap">
@@ -398,6 +535,75 @@ export default function W3TutorialReader({
         <p className="text-sm md:text-base theme-muted leading-relaxed font-normal">
           {currentLesson.summary}
         </p>
+
+        {/* Lesson Meta Bar: Reading Time + Voice Narrator Controls (100% Offline) */}
+        <div className="flex items-center justify-between gap-3 p-3 rounded-2xl theme-card-subtle border border-slate-200 dark:border-white/10 flex-wrap mt-4">
+          <div className="flex items-center gap-3 text-xs font-mono theme-muted">
+            <span className="flex items-center gap-1.5 font-bold">
+              <Clock size={13} className="text-[#04AA6D]" /> ⏱️ ~{readingTimeMinutes} Menit Baca
+            </span>
+            <span className="h-3 w-px bg-slate-300 dark:bg-white/10" />
+            <span className="hidden sm:inline">100% Offline Voice</span>
+          </div>
+
+          {/* Audio Narrator Button Group */}
+          <div className="flex items-center gap-2">
+            {!speechState.isPlaying ? (
+              <button
+                onClick={handleStartSpeech}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#04AA6D] hover:bg-[#059862] text-white text-xs font-bold font-mono transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                title="Dengarkan narasi suara otomatis materi ini (100% Offline)"
+              >
+                <Volume2 size={14} className="fill-white" />
+                <span>Dengarkan Materi 🎧</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-emerald-500/15 border border-[#04AA6D]/30 animate-fadeIn">
+                {/* Animated Equalizer Wave */}
+                <div className="flex items-end gap-0.5 h-4 px-1.5">
+                  <span className={`w-0.5 bg-[#04AA6D] rounded-full ${speechState.isPaused ? "h-2" : "h-3.5 animate-bounce"}`} />
+                  <span className={`w-0.5 bg-[#04AA6D] rounded-full ${speechState.isPaused ? "h-3" : "h-2 animate-pulse"}`} />
+                  <span className={`w-0.5 bg-[#04AA6D] rounded-full ${speechState.isPaused ? "h-1.5" : "h-4 animate-bounce"}`} />
+                </div>
+
+                {speechState.isPaused ? (
+                  <button
+                    onClick={handleStartSpeech}
+                    className="p-1.5 rounded-lg bg-[#04AA6D] text-white hover:bg-[#059862] cursor-pointer"
+                    title="Lanjutkan Suara"
+                  >
+                    <Play size={12} className="fill-white" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={handlePauseSpeech}
+                    className="p-1.5 rounded-lg theme-card text-amber-500 hover:bg-black/5 cursor-pointer"
+                    title="Jeda Suara"
+                  >
+                    <Pause size={12} />
+                  </button>
+                )}
+
+                <button
+                  onClick={handleStopSpeech}
+                  className="p-1.5 rounded-lg theme-card text-rose-500 hover:bg-black/5 cursor-pointer"
+                  title="Hentikan Suara"
+                >
+                  <Square size={12} className="fill-rose-500" />
+                </button>
+
+                {/* Speed Multiplier Cycle Button */}
+                <button
+                  onClick={handleCycleRate}
+                  className="px-2 py-1 rounded-lg bg-white dark:bg-black/40 text-[10px] font-mono font-black text-[#04AA6D] hover:bg-slate-100 cursor-pointer border border-[#04AA6D]/30"
+                  title="Ubah Kecepatan Suara (1.0x / 1.25x / 1.5x)"
+                >
+                  {speechState.rate}x
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Tutorial Content Body with Rich Typography & Markdown Formatting */}
