@@ -478,5 +478,143 @@ console.log("Response JSON:", JSON.stringify(apiResponse, null, 2));`,
         ]
       }
     ]
+  },
+
+  // ==========================================
+  // MODUL 7: DOM Manipulation & Web Storage
+  // ==========================================
+  {
+    id: "js-module-7",
+    order: 7,
+    title: "7. DOM Manipulation & Web Storage",
+    subtitle: "QuerySelector, Event Listeners & LocalStorage",
+    description: "Mengendalikan elemen visual HTML, menangkap interaksi klik/keyboard, dan persistensi data lokal.",
+    icon: "Layout",
+    badge: "DOM Master",
+    color: "#E5A00D",
+    xp: 450,
+    lessons: [
+      {
+        id: "js-7-1",
+        title: "7.1 Manipulasi DOM & LocalStorage",
+        summary: "Mengubah teks, kelas CSS dinamis, dan menyimpan preferensi pengguna.",
+        content: `### 🌐 Document Object Model (DOM) & Web Storage
+JavaScript mengontrol tampilan website secara interaktif melalui **DOM API** dan menyimpan data di browser dengan **\`localStorage\`**.
+
+#### 📌 Operasi Utama:
+- **\`document.querySelector('#id')\`**: Memilih elemen HTML.
+- **\`element.addEventListener('click', fn)\`**: Menangkap event interaksi user.
+- **\`localStorage.setItem('key', val)\`**: Menyimpan data yang tidak hilang saat browser di-refresh!`,
+        codeSnippet: `// Simulasi Operasi DOM & LocalStorage di JavaScript
+class VirtualDOM {
+  constructor() {
+    this.elements = {
+      title: "M3.learn Platform",
+      theme: "dark",
+      counter: 0
+    };
+  }
+  clickButton() {
+    this.elements.counter += 1;
+    console.log(\`🖱️ Event Klik: Counter bertambah menjadi \${this.elements.counter}\`);
+  }
+  saveTheme(theme) {
+    this.elements.theme = theme;
+    console.log(\`💾 LocalStorage Simpan: theme = '\${theme}'\`);
+  }
+}
+
+const vdom = new VirtualDOM();
+vdom.clickButton();
+vdom.clickButton();
+vdom.saveTheme("light");`,
+        exercise: {
+          instruction: "Buat simulasi counter `let count = 0; count += 1;` dan cetak nilainya!",
+          starterCode: `let clickCount = 0;
+clickCount += 1;
+clickCount += 1;
+
+console.log("Total Klik Pengguna:", clickCount);`,
+          expectedHint: "Tingkatkan nilai `clickCount` dan cetak ke console."
+        },
+        quiz: [
+          {
+            question: "Objek browser bawaan apakah yang digunakan untuk menyimpan data permanen yang tidak hilang meskipun tab ditutup?",
+            options: ["sessionStorage", "localStorage", "cookieStorage", "memoryStorage"],
+            correctAnswer: 1,
+            explanation: "`localStorage` menyimpan pasangan key-value secara persisten di browser klien tanpa masa kedaluwarsa."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ==========================================
+  // MODUL 8: Modern Frontend Framework (React Concepts)
+  // ==========================================
+  {
+    id: "js-module-8",
+    order: 8,
+    title: "8. Modern Frontend & React Hooks Concept",
+    subtitle: "Komponen Deklaratif, useState, useEffect & State Management",
+    description: "Mempelajari paradigma UI modern berbasis komponen dan manajemen state reaktif ala React.js.",
+    icon: "Boxes",
+    badge: "React Specialist",
+    color: "#61DAFB",
+    xp: 500,
+    lessons: [
+      {
+        id: "js-8-1",
+        title: "8.1 Komponen Deklaratif & State Hook",
+        summary: "Memahami bagaimana UI reaktif merender ulang saat data state berubah.",
+        content: `### ⚛️ Paradigma UI Modern: React & State
+Alih-alih memanipulasi DOM secara manual, framework modern seperti **React** menggunakan konsep **Komponen Deklaratif** dan **State Hook (\`useState\`)**.
+
+\`\`\`jsx
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Klik: {count}</button>;
+}
+\`\`\``,
+        codeSnippet: `// Simulasi Cara Kerja useState Hook di JavaScript
+function createComponent() {
+  let state = { count: 0, user: "Alex" };
+
+  function setState(newState) {
+    state = { ...state, ...newState };
+    render();
+  }
+
+  function render() {
+    console.log(\`⚛️ [UI Render Ulang] Hello \${state.user} | Skor: \${state.count}\`);
+  }
+
+  return { state, setState, render };
+}
+
+const app = createComponent();
+app.render();
+
+// User berinteraksi
+app.setState({ count: 10 });
+app.setState({ user: "Kevin Pratama", count: 25 });`,
+        exercise: {
+          instruction: "Buat objek state `{ count: 5 }` dan update nilainya menjadi `{ count: 10 }`!",
+          starterCode: `let uiState = { count: 5 };
+uiState = { ...uiState, count: 10 };
+
+console.log("State Terbaru:", uiState);`,
+          expectedHint: "Gunakan spread operator `{ ...uiState, count: 10 }`."
+        },
+        quiz: [
+          {
+            question: "Hook dasar manakah di React yang digunakan untuk mendeklarasikan variabel state reaktif pada functional component?",
+            options: ["useRef", "useEffect", "useState", "useMemo"],
+            correctAnswer: 2,
+            explanation: "`useState` adalah hook fundamental untuk menyimpan dan memperbarui state pada komponen React."
+          }
+        ]
+      }
+    ]
   }
 ];
