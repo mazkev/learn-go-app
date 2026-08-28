@@ -12,6 +12,7 @@ const LabsHub = lazy(() => import("./components/labs/LabsHub"));
 const InterviewPrepLab = lazy(() => import("./components/interview/InterviewPrepLab"));
 const CheatSheet = lazy(() => import("./components/cheatsheet/CheatSheet"));
 const BackupSyncModal = lazy(() => import("./components/sync/BackupSyncModal"));
+const CommandPaletteModal = lazy(() => import("./components/common/CommandPaletteModal"));
 
 const THEME_STORAGE_KEY = "w3_golearn_theme";
 const LANG_STORAGE_KEY = "w3_active_language";
@@ -36,6 +37,7 @@ export default function App() {
   const [tryItCode, setTryItCode] = useState(null);
   const [isTryItMode, setIsTryItMode] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   const [theme, setTheme] = useState(() => {
     try {
@@ -44,6 +46,18 @@ export default function App() {
     } catch {}
     return "light";
   });
+
+  // Global Ctrl + K / Cmd + K shortcut
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -111,6 +125,7 @@ export default function App() {
         onOpenSyncModal={() => setIsSyncModalOpen(true)}
         activeLanguage={activeLanguage}
         onSelectLanguage={handleSelectLanguage}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
       />
 
       {/* Main App Body */}
@@ -201,6 +216,26 @@ export default function App() {
             progress={progress}
             onImportProgress={importProgress}
             onResetProgress={resetAllProgress}
+          />
+        </Suspense>
+      )}
+
+      {/* Global Command Palette (Ctrl + K) */}
+      {isCommandPaletteOpen && (
+        <Suspense fallback={null}>
+          <CommandPaletteModal
+            isOpen={isCommandPaletteOpen}
+            onClose={() => setIsCommandPaletteOpen(false)}
+            activeLanguage={activeLanguage}
+            onSelectLanguage={handleSelectLanguage}
+            onSelectLesson={handleSelectLesson}
+            setActiveTab={(tab) => {
+              setActiveTab(tab);
+              setIsTryItMode(false);
+            }}
+            darkMode={theme === "dark"}
+            setDarkMode={(isDark) => setTheme(isDark ? "dark" : "light")}
+            onOpenSync={() => setIsSyncModalOpen(true)}
           />
         </Suspense>
       )}

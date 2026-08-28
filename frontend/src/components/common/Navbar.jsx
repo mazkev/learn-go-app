@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Menu,
   X,
@@ -9,7 +8,8 @@ import {
   Sun,
   Moon,
   Award,
-  FolderSync
+  FolderSync,
+  Search,
 } from "lucide-react";
 
 export default function Navbar({
@@ -23,7 +23,8 @@ export default function Navbar({
   onOpenSyncModal,
   totalLessonsCount = 32,
   activeLanguage = "go",
-  onSelectLanguage
+  onSelectLanguage,
+  onOpenCommandPalette,
 }) {
   const completedCount = progress.completedLessons.length;
   const progressPercent = Math.min(100, Math.round((completedCount / totalLessonsCount) * 100));
@@ -116,8 +117,23 @@ export default function Navbar({
             })}
           </nav>
 
-          {/* Right: Language Switcher, Stats, Sync, Progress, Theme */}
+          {/* Right: Search, Language Switcher, Stats, Sync, Progress, Theme */}
           <div className="flex items-center gap-2">
+            {/* Quick Search Button (Ctrl + K) */}
+            {onOpenCommandPalette && (
+              <button
+                onClick={onOpenCommandPalette}
+                className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-200/70 dark:bg-white/10 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer border border-slate-300/60 dark:border-white/10 shadow-2xs hover:scale-[1.02]"
+                title="Cari Materi / Aksi Cepat (Ctrl + K)"
+              >
+                <Search size={13} className="text-[#04AA6D]" />
+                <span className="font-medium text-[11px]">Cari...</span>
+                <kbd className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white dark:bg-black/40 border border-slate-300 dark:border-white/10 text-slate-500 dark:text-slate-400">
+                  Ctrl K
+                </kbd>
+              </button>
+            )}
+
             {/* Language Switcher Pill */}
             {onSelectLanguage && (
               <div className="flex items-center p-0.5 rounded-xl bg-slate-200 dark:bg-white/10 text-xs font-bold font-mono">
