@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import QuizArenaLab from "../quiz/QuizArenaLab";
 import CodingChallengeLab from "../leetcode/CodingChallengeLab";
+import MockInterviewSimulator from "./MockInterviewSimulator";
 
 export const INTERVIEW_QUESTIONS = [
   // 1. Memory & Internals
@@ -359,8 +360,20 @@ export default function InterviewPrepLab() {
             </div>
           </div>
 
-          {/* Sub-tab Switcher Pill (3 Mode) */}
+          {/* Sub-tab Switcher Pill (4 Mode) */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+            <button
+              onClick={() => setActiveView("mock")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
+                activeView === "mock"
+                  ? "bg-[#04AA6D] text-white shadow-sm"
+                  : "theme-card-subtle theme-muted hover:theme-heading hover:bg-black/5 dark:hover:bg-white/5"
+              }`}
+            >
+              <Sparkles size={14} />
+              <span>🎙️ Mock Interview Simulator</span>
+            </button>
+
             <button
               onClick={() => setActiveView("bank")}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shrink-0 ${
@@ -401,6 +414,12 @@ export default function InterviewPrepLab() {
       </div>
 
       {/* Body View */}
+      {activeView === "mock" && (
+        <div className="flex-1 overflow-y-auto">
+          <MockInterviewSimulator />
+        </div>
+      )}
+
       {activeView === "challenges" && (
         <div className="flex-1 overflow-y-auto">
           <CodingChallengeLab />
