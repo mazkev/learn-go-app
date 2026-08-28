@@ -13,6 +13,7 @@ const InterviewPrepLab = lazy(() => import("./components/interview/InterviewPrep
 const CheatSheet = lazy(() => import("./components/cheatsheet/CheatSheet"));
 const BackupSyncModal = lazy(() => import("./components/sync/BackupSyncModal"));
 const CommandPaletteModal = lazy(() => import("./components/common/CommandPaletteModal"));
+const StreakDetailModal = lazy(() => import("./components/common/StreakDetailModal"));
 
 const THEME_STORAGE_KEY = "w3_golearn_theme";
 const LANG_STORAGE_KEY = "w3_active_language";
@@ -38,6 +39,7 @@ export default function App() {
   const [isTryItMode, setIsTryItMode] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isStreakModalOpen, setIsStreakModalOpen] = useState(false);
 
   const [theme, setTheme] = useState(() => {
     try {
@@ -126,6 +128,7 @@ export default function App() {
         activeLanguage={activeLanguage}
         onSelectLanguage={handleSelectLanguage}
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        onOpenStreakModal={() => setIsStreakModalOpen(true)}
       />
 
       {/* Main App Body */}
@@ -236,6 +239,17 @@ export default function App() {
             darkMode={theme === "dark"}
             setDarkMode={(isDark) => setTheme(isDark ? "dark" : "light")}
             onOpenSync={() => setIsSyncModalOpen(true)}
+          />
+        </Suspense>
+      )}
+
+      {/* Daily Learning Streak Detail Modal */}
+      {isStreakModalOpen && (
+        <Suspense fallback={null}>
+          <StreakDetailModal
+            isOpen={isStreakModalOpen}
+            onClose={() => setIsStreakModalOpen(false)}
+            progress={progress}
           />
         </Suspense>
       )}

@@ -14,6 +14,7 @@ import {
   ChevronDown,
   Check,
   Zap,
+  Flame,
 } from "lucide-react";
 
 export default function Navbar({
@@ -29,6 +30,7 @@ export default function Navbar({
   activeLanguage = "go",
   onSelectLanguage,
   onOpenCommandPalette,
+  onOpenStreakModal,
 }) {
   const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
   const langDropdownRef = useRef(null);
@@ -187,6 +189,18 @@ export default function Navbar({
                 <kbd className="hidden sm:inline-block text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-white dark:bg-black/40 border border-slate-300 dark:border-white/10 text-slate-500 dark:text-slate-400">
                   Ctrl K
                 </kbd>
+              </button>
+            )}
+
+            {/* Interactive Daily Streak Pill */}
+            {onOpenStreakModal && (
+              <button
+                onClick={onOpenStreakModal}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs font-mono font-bold transition-all cursor-pointer border border-orange-500/30 shadow-2xs hover:scale-105"
+                title="Lihat Rincian Daily Learning Streak"
+              >
+                <Flame size={13} className="text-orange-500 fill-orange-500 animate-pulse" />
+                <span>{progress.currentStreak || 1}d</span>
               </button>
             )}
 
