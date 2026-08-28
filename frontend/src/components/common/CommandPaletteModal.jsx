@@ -18,6 +18,7 @@ import { ROADMAP_MODULES } from "../../data/curriculum";
 import { JAVA_MODULES } from "../../data/javaCurriculum";
 import { PYTHON_MODULES } from "../../data/pythonCurriculum";
 import { JS_MODULES } from "../../data/jsCurriculum";
+import { PHP_MODULES } from "../../data/phpCurriculum";
 import { CHEATSHEET_CATEGORIES } from "../../data/curriculum";
 
 export default function CommandPaletteModal({
@@ -103,6 +104,20 @@ export default function CommandPaletteModal({
         badge: "Bahasa",
         action: () => {
           onSelectLanguage("javascript");
+          setActiveTab("tutorial");
+          onClose();
+        },
+      },
+      {
+        id: "action-lang-php",
+        type: "action",
+        category: "⚡ Aksi Cepat",
+        title: "Ganti Bahasa ke PHP 8 & Laravel",
+        subtitle: "Aktifkan kurikulum dan runtime PHP 8 & Laravel 11",
+        icon: "🐘",
+        badge: "Bahasa",
+        action: () => {
+          onSelectLanguage("php");
           setActiveTab("tutorial");
           onClose();
         },
@@ -260,6 +275,28 @@ export default function CommandPaletteModal({
           badge: "JS/TS Lesson",
           action: () => {
             onSelectLanguage("javascript");
+            setActiveTab("tutorial");
+            onSelectLesson(l.id);
+            onClose();
+          },
+        });
+      });
+    });
+
+    // 8. PHP 8 & Laravel Lessons
+    PHP_MODULES.forEach((mod) => {
+      mod.lessons.forEach((l) => {
+        items.push({
+          id: `lesson-php-${l.id}`,
+          type: "lesson",
+          lang: "php",
+          category: `🐘 PHP: ${mod.title}`,
+          title: l.title,
+          subtitle: l.summary,
+          icon: "🐘",
+          badge: "PHP Lesson",
+          action: () => {
+            onSelectLanguage("php");
             setActiveTab("tutorial");
             onSelectLesson(l.id);
             onClose();

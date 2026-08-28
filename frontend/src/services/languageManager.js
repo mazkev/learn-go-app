@@ -2,10 +2,12 @@ import { ROADMAP_MODULES } from "../data/curriculum";
 import { JAVA_MODULES } from "../data/javaCurriculum";
 import { PYTHON_MODULES } from "../data/pythonCurriculum";
 import { JS_MODULES } from "../data/jsCurriculum";
+import { PHP_MODULES } from "../data/phpCurriculum";
 import { executeGoCode } from "./goRunner";
 import { executeJavaCode } from "./javaRunner";
 import { executePythonCode } from "./pythonRunner";
 import { executeJsCode } from "./jsRunner";
+import { executePhpCode } from "./phpRunner";
 
 export const SUPPORTED_LANGUAGES = [
   {
@@ -67,6 +69,22 @@ const nama = "Developer";
 console.log(\`Halo \${nama}, selamat datang di JavaScript Masterclass!\`);
 console.log("Eksekusi instan di browser V8 engine.");`,
   },
+  {
+    id: "php",
+    name: "PHP 8 & Laravel",
+    shortName: "PHP",
+    icon: "🐘",
+    color: "#8892BF",
+    editorLang: "php",
+    tagline: "Modern PHP 8+, OOP, REST API & Framework Laravel 11",
+    modules: PHP_MODULES,
+    starterCode: `<?php
+// PHP 8 & Laravel di M3.learn
+$nama = "Developer";
+echo "Halo $nama, selamat datang di PHP 8 & Laravel Masterclass!\\n";
+echo "Modern PHP dengan Match Expression & Constructor Promotion.\\n";
+?>`,
+  },
 ];
 
 // In-Memory Execution Memoization Map
@@ -124,6 +142,8 @@ export async function executeMultiCode(rawCode, langId = "go", forceLive = false
     result = await executePythonCode(rawCode);
   } else if (langId === "javascript") {
     result = await executeJsCode(rawCode);
+  } else if (langId === "php") {
+    result = await executePhpCode(rawCode);
   } else {
     result = await executeGoCode(rawCode);
   }

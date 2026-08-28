@@ -68,6 +68,8 @@ export default function W3Sidebar({
                   ? "🐍 PYTHON TUTORIAL"
                   : activeLanguage === "javascript"
                   ? "🟨 JS/TS TUTORIAL"
+                  : activeLanguage === "php"
+                  ? "🐘 PHP TUTORIAL"
                   : "🐹 GO TUTORIAL"
               }
             </span>

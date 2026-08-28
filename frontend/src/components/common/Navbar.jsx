@@ -63,6 +63,7 @@ export default function Navbar({
     { id: "java", name: "Java (OOP & Spring)", icon: "☕", color: "#f89820", badge: "20 Pelajaran" },
     { id: "python", name: "Python 3", icon: "🐍", color: "#3776AB", badge: "16 Pelajaran" },
     { id: "javascript", name: "JavaScript / TS", icon: "🟨", color: "#E5A00D", badge: "16 Pelajaran" },
+    { id: "php", name: "PHP 8 & Laravel", icon: "🐘", color: "#8892BF", badge: "16 Pelajaran" },
   ];
 
   const currentLang = languages.find((l) => l.id === activeLanguage) || languages[0];
