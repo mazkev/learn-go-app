@@ -9,12 +9,14 @@ import {
   Database,
   FlaskConical,
   Sparkles,
-  Blocks
+  Blocks,
+  Scale
 } from "lucide-react";
 import LoadingSpinner from "../common/LoadingSpinner";
 
 // Lazy-load individual simulators on demand for fast initial load
 const VisualCodeBuilder = lazy(() => import("../builder/VisualCodeBuilder"));
+const PolyglotBenchmarkLab = lazy(() => import("../benchmark/PolyglotBenchmarkLab"));
 const CleanArchLab = lazy(() => import("../cleanarch/CleanArchLab"));
 const ProjectStartersLab = lazy(() => import("../starters/ProjectStartersLab"));
 const UnitTestLab = lazy(() => import("../testinglab/UnitTestLab"));
@@ -24,6 +26,12 @@ const GrpcCompareLab = lazy(() => import("../grpccompare/GrpcCompareLab"));
 const GormLab = lazy(() => import("../gormlab/GormLab"));
 
 export const LAB_TABS = [
+  {
+    id: "benchmark",
+    label: "⚖️ 5-Language Benchmark",
+    icon: Scale,
+    description: "Diagram radar & matriks perbandingan performa, RAM, konkurensi, dan kemudahan 5 bahasa",
+  },
   {
     id: "builder",
     label: "🧩 Visual Code Builder",
@@ -74,25 +82,25 @@ export const LAB_TABS = [
   },
 ];
 
-export default function LabsHub({ defaultSubTab = "builder", onOpenTryIt }) {
+export default function LabsHub({ defaultSubTab = "benchmark", onOpenTryIt }) {
   const [activeSubTab, setActiveSubTab] = useState(defaultSubTab);
 
   const currentLab = LAB_TABS.find((t) => t.id === activeSubTab) || LAB_TABS[0];
 
   return (
-    <div className="min-h-full flex flex-col">
-      {/* Sub-Header Toolbar for Labs */}
-      <div className="theme-navbar border-b border-slate-200 dark:border-white/[0.08] px-4 md:px-8 py-3 shrink-0">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#04AA6D]/15 flex items-center justify-center text-[#04AA6D]">
+    <div className="h-[calc(100vh-57px)] flex flex-col theme-card overflow-hidden">
+      {/* Top Labs Hub Toolbar */}
+      <div className="theme-navbar px-4 py-2.5 border-b border-slate-200 dark:border-white/10 shrink-0">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#04AA6D]/15 text-[#04AA6D] flex items-center justify-center font-bold shrink-0">
               <FlaskConical size={18} />
             </div>
             <div>
               <h2 className="text-sm font-extrabold theme-heading flex items-center gap-2">
                 <span>Interactive Labs Workbench</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-mono font-bold">
-                  8 Simulator
+                  9 Simulator
                 </span>
               </h2>
               <p className="text-[11px] theme-muted">{currentLab.description}</p>
@@ -127,6 +135,7 @@ export default function LabsHub({ defaultSubTab = "builder", onOpenTryIt }) {
       {/* Active Lab Body Area with Suspense Lazy Loading */}
       <div className="flex-1 overflow-y-auto">
         <Suspense fallback={<LoadingSpinner message={`Memuat ${currentLab.label}...`} />}>
+          {activeSubTab === "benchmark" && <PolyglotBenchmarkLab />}
           {activeSubTab === "builder" && <VisualCodeBuilder onOpenTryIt={onOpenTryIt} />}
           {activeSubTab === "cleanarch" && <CleanArchLab />}
           {activeSubTab === "starters" && <ProjectStartersLab />}
