@@ -69,14 +69,23 @@ function normalizeMarkdownContent(raw) {
 
   let text = raw;
 
-  // 1. Separate combined numbered lists: e.g. "aturan: 1. **package main** 2. **import**"
-  text = text.replace(/([^\n])\s+(\d+\.\s+)/g, "$1\n$2");
+  // 1. Separate headings from subsequent text if separated only by a single newline:
+  text = text.replace(/^(#{1,6}\s+[^\n]+)\n([^\n#])/gm, "$1\n\n$2");
 
-  // 2. Separate emoji headers into standalone paragraphs: e.g. "...sebelumnya. 📌 Struktur Dasar"
+  // 2. Separate blockquotes:
+  text = text.replace(/([^\n])\n(>\s+)/g, "$1\n\n$2");
+  text = text.replace(/(>\s+[^\n]+)\n([^>\n])/g, "$1\n\n$2");
+
+  // 3. Separate numbered lists:
+  text = text.replace(/([^\n])\s+(\d+\.\s+)/g, "$1\n\n$2");
+  text = text.replace(/([^\n])\n(\d+\.\s+)/g, "$1\n\n$2");
+
+  // 4. Separate bullet items:
+  text = text.replace(/([^\n])\s+(-\s+)/g, "$1\n\n$2");
+  text = text.replace(/([^\n])\n(-\s+)/g, "$1\n\n$2");
+
+  // 5. Separate emoji headers:
   text = text.replace(/([^\n])\s+([📌💡⚡🎯🔥💎🛡️🚀]\s+)/g, "$1\n\n$2");
-
-  // 3. Separate combined bullet points: e.g. "berikut: - item 1 - item 2"
-  text = text.replace(/([^\n])\s+(-\s+)/g, "$1\n$2");
 
   return text;
 }
@@ -91,7 +100,7 @@ function RichContentRenderer({ content }) {
   const rawBlocks = normalized.split(/\n\s*\n/);
 
   return (
-    <div className="space-y-6 text-sm md:text-base theme-body leading-relaxed">
+    <div className="space-y-5 text-sm md:text-base theme-body leading-relaxed">
       {rawBlocks.map((block, idx) => {
         const trimmed = block.trim();
         if (!trimmed) return null;
@@ -182,70 +191,51 @@ function RichContentRenderer({ content }) {
           }
         }
 
-        // 6. Block with Mixed Lines (Paragraph + Numbered Lists / Bullet points)
-        const lines = trimmed.split("\n").map((l) => l.trim()).filter(Boolean);
-        const hasListItems = lines.some((l) => /^\d+\.\s+/.test(l) || /^[-*]\s+/.test(l));
-
-        if (hasListItems) {
+        // 6. Ordered List Item: 1. ...
+        if (/^\d+\.\s+/.test(trimmed)) {
+          const match = trimmed.match(/^(\d+)\.\s+(.*)/s);
+          const num = match ? match[1] : idx + 1;
+          const textOnly = match ? match[2] : trimmed;
           return (
-            <div key={idx} className="space-y-3 my-3">
-              {lines.map((line, lIdx) => {
-                // Ordered List Item: 1. ...
-                if (/^\d+\.\s+/.test(line)) {
-                  const match = line.match(/^(\d+)\.\s+(.*)/);
-                  const num = match ? match[1] : lIdx + 1;
-                  const textOnly = match ? match[2] : line;
-                  return (
-                    <div key={lIdx} className="flex items-start gap-3 p-3.5 rounded-2xl bg-white dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/5 shadow-2xs">
-                      <span className="w-6 h-6 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5 font-mono">
-                        {num}
-                      </span>
-                      <div className="flex-1 leading-relaxed text-slate-800 dark:text-slate-200">
-                        {renderInlineFormatted(textOnly)}
-                      </div>
-                    </div>
-                  );
-                }
-
-                // Unordered List Item: - ...
-                if (/^[-*]\s+/.test(line)) {
-                  const textOnly = line.replace(/^[-*]\s+/, "");
-                  return (
-                    <div key={lIdx} className="flex items-start gap-3 pl-2">
-                      <span className="w-2 h-2 rounded-full bg-[#04AA6D] shrink-0 mt-2" />
-                      <div className="flex-1 leading-relaxed text-slate-800 dark:text-slate-200">
-                        {renderInlineFormatted(textOnly)}
-                      </div>
-                    </div>
-                  );
-                }
-
-                // Regular intro / section line
-                return (
-                  <p key={lIdx} className="leading-relaxed font-bold text-slate-900 dark:text-slate-100">
-                    {renderInlineFormatted(line)}
-                  </p>
-                );
-              })}
+            <div key={idx} className="flex items-start gap-3.5 p-4 rounded-2xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 shadow-2xs my-2 hover:border-[#04AA6D]/40 transition-colors">
+              <span className="w-7 h-7 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-black text-xs flex items-center justify-center shrink-0 mt-0.5 font-mono">
+                {num}
+              </span>
+              <div className="flex-1 leading-relaxed text-slate-800 dark:text-slate-200">
+                {renderInlineFormatted(textOnly)}
+              </div>
             </div>
           );
         }
 
-        // 7. Highlight Feature Callout for Emojis (📌, 💡, ⚡, 🎯, 🔥, 💎, 🛡️, 🚀)
+        // 7. Unordered List Item: - ...
+        if (/^[-*]\s+/.test(trimmed)) {
+          const textOnly = trimmed.replace(/^[-*]\s+/, "");
+          return (
+            <div key={idx} className="flex items-start gap-3 pl-2 my-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#04AA6D] shrink-0 mt-2" />
+              <div className="flex-1 leading-relaxed text-slate-800 dark:text-slate-200">
+                {renderInlineFormatted(textOnly)}
+              </div>
+            </div>
+          );
+        }
+
+        // 8. Highlight Feature Callout for Emojis (📌, 💡, ⚡, 🎯, 🔥, 💎, 🛡️, 🚀)
         if (/^[📌💡⚡🎯🔥💎🛡️🚀]/.test(trimmed)) {
           return (
             <div
               key={idx}
-              className="p-4.5 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200/90 dark:border-white/10 shadow-2xs space-y-2 my-4"
+              className="p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 shadow-2xs space-y-1.5 my-3"
             >
-              <div className="leading-relaxed font-semibold text-slate-900 dark:text-slate-100">
+              <div className="leading-relaxed font-bold text-slate-900 dark:text-slate-100">
                 {renderInlineFormatted(trimmed)}
               </div>
             </div>
           );
         }
 
-        // 8. Standard Clean Paragraph
+        // 9. Standard Clean Paragraph
         return (
           <p key={idx} className="leading-relaxed text-slate-800 dark:text-slate-200">
             {renderInlineFormatted(trimmed)}
