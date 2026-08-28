@@ -1,9 +1,11 @@
 import { ROADMAP_MODULES } from "../data/curriculum";
 import { JAVA_MODULES } from "../data/javaCurriculum";
 import { PYTHON_MODULES } from "../data/pythonCurriculum";
+import { JS_MODULES } from "../data/jsCurriculum";
 import { executeGoCode } from "./goRunner";
 import { executeJavaCode } from "./javaRunner";
 import { executePythonCode } from "./pythonRunner";
+import { executeJsCode } from "./jsRunner";
 
 export const SUPPORTED_LANGUAGES = [
   {
@@ -50,6 +52,20 @@ func main() {
     starterCode: `# Python 3 di M3.learn
 print("Halo dari M3.learn!")
 print("Belajar Python jadi sangat mudah dan ringkas.")`,
+  },
+  {
+    id: "javascript",
+    name: "JavaScript (ES6+ / Node)",
+    shortName: "JS/TS",
+    icon: "🟨",
+    color: "#F7DF1E",
+    editorLang: "javascript",
+    tagline: "Modern ES6+, TypeScript, Async/Await & Node.js",
+    modules: JS_MODULES,
+    starterCode: `// JavaScript ES6+ di M3.learn
+const nama = "Developer";
+console.log(\`Halo \${nama}, selamat datang di JavaScript Masterclass!\`);
+console.log("Eksekusi instan di browser V8 engine.");`,
   },
 ];
 
@@ -106,6 +122,8 @@ export async function executeMultiCode(rawCode, langId = "go", forceLive = false
     result = await executeJavaCode(rawCode);
   } else if (langId === "python") {
     result = await executePythonCode(rawCode);
+  } else if (langId === "javascript") {
+    result = await executeJsCode(rawCode);
   } else {
     result = await executeGoCode(rawCode);
   }

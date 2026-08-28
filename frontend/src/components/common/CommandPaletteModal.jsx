@@ -17,6 +17,7 @@ import {
 import { ROADMAP_MODULES } from "../../data/curriculum";
 import { JAVA_MODULES } from "../../data/javaCurriculum";
 import { PYTHON_MODULES } from "../../data/pythonCurriculum";
+import { JS_MODULES } from "../../data/jsCurriculum";
 import { CHEATSHEET_CATEGORIES } from "../../data/curriculum";
 
 export default function CommandPaletteModal({
@@ -88,6 +89,20 @@ export default function CommandPaletteModal({
         badge: "Bahasa",
         action: () => {
           onSelectLanguage("python");
+          setActiveTab("tutorial");
+          onClose();
+        },
+      },
+      {
+        id: "action-lang-javascript",
+        type: "action",
+        category: "⚡ Aksi Cepat",
+        title: "Ganti Bahasa ke JavaScript / TypeScript",
+        subtitle: "Aktifkan kurikulum dan runtime JS/TS modern",
+        icon: "🟨",
+        badge: "Bahasa",
+        action: () => {
+          onSelectLanguage("javascript");
           setActiveTab("tutorial");
           onClose();
         },
@@ -223,6 +238,28 @@ export default function CommandPaletteModal({
           badge: "Python Lesson",
           action: () => {
             onSelectLanguage("python");
+            setActiveTab("tutorial");
+            onSelectLesson(l.id);
+            onClose();
+          },
+        });
+      });
+    });
+
+    // 7. JavaScript / TypeScript Lessons
+    JS_MODULES.forEach((mod) => {
+      mod.lessons.forEach((l) => {
+        items.push({
+          id: `lesson-js-${l.id}`,
+          type: "lesson",
+          lang: "javascript",
+          category: `🟨 JS/TS: ${mod.title}`,
+          title: l.title,
+          subtitle: l.summary,
+          icon: "🟨",
+          badge: "JS/TS Lesson",
+          action: () => {
+            onSelectLanguage("javascript");
             setActiveTab("tutorial");
             onSelectLesson(l.id);
             onClose();
