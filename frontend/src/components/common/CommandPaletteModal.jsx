@@ -305,7 +305,11 @@ export default function CommandPaletteModal({
       });
     });
 
-    return items;
+    // Precompute lowercase search string once to avoid hundreds of toLowerCase() on every keystroke
+    return items.map((item) => ({
+      ...item,
+      _searchStr: `${item.title || ""} ${item.subtitle || ""} ${item.category || ""} ${item.badge || ""}`.toLowerCase(),
+    }));
   }, [darkMode, onSelectLanguage, onSelectLesson, setActiveTab, setDarkMode, onOpenSync, onClose]);
 
   // Filter items based on query
@@ -315,13 +319,7 @@ export default function CommandPaletteModal({
       // Default: show quick actions and top lessons
       return allItems.slice(0, 15);
     }
-    return allItems.filter(
-      (item) =>
-        item.title.toLowerCase().includes(q) ||
-        item.subtitle.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q) ||
-        item.badge.toLowerCase().includes(q)
-    );
+    return allItems.filter((item) => item._searchStr.includes(q));
   }, [query, allItems]);
 
   // Keyboard navigation

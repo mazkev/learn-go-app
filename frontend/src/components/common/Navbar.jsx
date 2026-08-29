@@ -17,6 +17,21 @@ import {
   Flame,
 } from "lucide-react";
 
+const NAV_LINKS = [
+  { id: "tutorial", label: "Tutorial", icon: BookOpen },
+  { id: "labs", label: "Interactive Labs", icon: FlaskConical },
+  { id: "interview", label: "Interview Prep", icon: Briefcase },
+  { id: "cheatsheet", label: "Cheatsheet", icon: FileCode },
+];
+
+const NAV_LANGUAGES = [
+  { id: "go", name: "Go (Golang)", icon: "🐹", color: "#04AA6D", badge: "34 Pelajaran" },
+  { id: "java", name: "Java (OOP & Spring)", icon: "☕", color: "#f89820", badge: "21 Pelajaran" },
+  { id: "python", name: "Python 3", icon: "🐍", color: "#3776AB", badge: "18 Pelajaran" },
+  { id: "javascript", name: "JavaScript / TS", icon: "🟨", color: "#E5A00D", badge: "9 Pelajaran" },
+  { id: "php", name: "PHP 8 & Laravel", icon: "🐘", color: "#8892BF", badge: "9 Pelajaran" },
+];
+
 export default function Navbar({
   activeTab,
   setActiveTab,
@@ -51,22 +66,7 @@ export default function Navbar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const navLinks = [
-    { id: "tutorial", label: "Tutorial", icon: BookOpen },
-    { id: "labs", label: "Interactive Labs", icon: FlaskConical },
-    { id: "interview", label: "Interview Prep", icon: Briefcase },
-    { id: "cheatsheet", label: "Cheatsheet", icon: FileCode },
-  ];
-
-  const languages = [
-    { id: "go", name: "Go (Golang)", icon: "🐹", color: "#04AA6D", badge: "34 Pelajaran" },
-    { id: "java", name: "Java (OOP & Spring)", icon: "☕", color: "#f89820", badge: "20 Pelajaran" },
-    { id: "python", name: "Python 3", icon: "🐍", color: "#3776AB", badge: "16 Pelajaran" },
-    { id: "javascript", name: "JavaScript / TS", icon: "🟨", color: "#E5A00D", badge: "16 Pelajaran" },
-    { id: "php", name: "PHP 8 & Laravel", icon: "🐘", color: "#8892BF", badge: "16 Pelajaran" },
-  ];
-
-  const currentLang = languages.find((l) => l.id === activeLanguage) || languages[0];
+  const currentLang = NAV_LANGUAGES.find((l) => l.id === activeLanguage) || NAV_LANGUAGES[0];
 
   return (
     <>
@@ -121,7 +121,7 @@ export default function Navbar({
                     <div className="px-2.5 py-1.5 text-[10px] font-mono font-bold theme-muted uppercase tracking-wider border-b border-slate-100 dark:border-white/5 mb-1">
                       Pilih Kurikulum Bahasa
                     </div>
-                    {languages.map((lang) => {
+                    {NAV_LANGUAGES.map((lang) => {
                       const isSelected = lang.id === activeLanguage;
                       return (
                         <button
@@ -155,7 +155,7 @@ export default function Navbar({
 
           {/* Middle: 4 Clean Primary Nav Links (Desktop) */}
           <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((item) => {
+            {NAV_LINKS.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
 
@@ -246,7 +246,7 @@ export default function Navbar({
 
       {/* Mobile Bottom App Navigation Bar (Native App Feel) */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 theme-navbar border-t border-slate-200 dark:border-white/[0.08] px-3 py-2 flex items-center justify-around shadow-2xl backdrop-blur-lg bg-white/90 dark:bg-[#070d19]/90">
-        {navLinks.map((item) => {
+        {NAV_LINKS.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
 
