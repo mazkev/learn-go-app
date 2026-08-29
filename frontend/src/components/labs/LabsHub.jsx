@@ -12,11 +12,13 @@ import {
   Blocks,
   Scale,
   Network,
-  BarChart2
+  BarChart2,
+  Bug
 } from "lucide-react";
 import LoadingSpinner from "../common/LoadingSpinner";
 
 // Lazy-load individual simulators on demand for fast initial load
+const BugHunterGameLab = lazy(() => import("../game/BugHunterGameLab"));
 const AlgorithmVisualizerLab = lazy(() => import("../algo/AlgorithmVisualizerLab"));
 const VisualCodeBuilder = lazy(() => import("../builder/VisualCodeBuilder"));
 const PolyglotBenchmarkLab = lazy(() => import("../benchmark/PolyglotBenchmarkLab"));
@@ -30,6 +32,12 @@ const GrpcCompareLab = lazy(() => import("../grpccompare/GrpcCompareLab"));
 const GormLab = lazy(() => import("../gormlab/GormLab"));
 
 export const LAB_TABS = [
+  {
+    id: "bughunter",
+    label: "👾 Bug Hunter Arena",
+    icon: Bug,
+    description: "Mini-game arkade 60-detik speed debugging: temukan bug tersembunyi dengan combo multiplier dan 5 bahasa",
+  },
   {
     id: "algorithm",
     label: "🎮 Algorithm Visualizer",
@@ -98,7 +106,7 @@ export const LAB_TABS = [
   },
 ];
 
-export default function LabsHub({ defaultSubTab = "algorithm", onOpenTryIt }) {
+export default function LabsHub({ defaultSubTab = "bughunter", onOpenTryIt }) {
   const [activeSubTab, setActiveSubTab] = useState(defaultSubTab);
 
   const currentLab = LAB_TABS.find((t) => t.id === activeSubTab) || LAB_TABS[0];
@@ -116,7 +124,7 @@ export default function LabsHub({ defaultSubTab = "algorithm", onOpenTryIt }) {
               <h2 className="text-sm font-extrabold theme-heading flex items-center gap-2">
                 <span>Interactive Labs Workbench</span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#04AA6D]/15 text-[#04AA6D] font-mono font-bold">
-                  11 Simulator
+                  12 Simulator & Games
                 </span>
               </h2>
               <p className="text-[11px] theme-muted">{currentLab.description}</p>
@@ -151,6 +159,7 @@ export default function LabsHub({ defaultSubTab = "algorithm", onOpenTryIt }) {
       {/* Active Lab Body Area with Suspense Lazy Loading */}
       <div className="flex-1 overflow-y-auto">
         <Suspense fallback={<LoadingSpinner message={`Memuat ${currentLab.label}...`} />}>
+          {activeSubTab === "bughunter" && <BugHunterGameLab />}
           {activeSubTab === "algorithm" && <AlgorithmVisualizerLab />}
           {activeSubTab === "systemdesign" && <SystemDesignStudioLab />}
           {activeSubTab === "benchmark" && <PolyglotBenchmarkLab />}
