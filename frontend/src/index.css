@@ -3,38 +3,42 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @layer base {
+  /* LIGHT THEME (Clean, Crisp, Zero Eye Strain, Warm Slate) */
   :root, [data-theme="light"] {
-    --bg-app: #ffffff;
-    --bg-sidebar: #f8fafc;
-    --bg-header: #ffffff;
+    --bg-app: #f8fafc;
+    --bg-sidebar: #ffffff;
+    --bg-header: rgba(255, 255, 255, 0.92);
     --bg-surface: #ffffff;
     --bg-surface-subtle: #f1f5f9;
     --bg-inset: #f8fafc;
     --border-subtle: #e2e8f0;
     --border-strong: #cbd5e1;
-    --text-heading: #0f172a;
-    --text-body: #334155;
+    --text-heading: #090d16;
+    --text-body: #1e293b;
     --text-muted: #64748b;
-    --w3-green: #04AA6D;
-    --w3-green-hover: #059862;
-    --w3-code-bg: #f1f5f9;
+    --w3-green: #059669;
+    --w3-green-hover: #047857;
+    --w3-code-bg: #0f172a;
+    --accent-glow: rgba(5, 150, 105, 0.15);
   }
 
+  /* DARK THEME (Deep Midnight Obsidian, High-Contrast White, Zero Glare) */
   [data-theme="dark"] {
-    --bg-app: #0f172a;
-    --bg-sidebar: #0b1120;
-    --bg-header: #0b1120;
-    --bg-surface: #1e293b;
-    --bg-surface-subtle: #162032;
-    --bg-inset: #0b1120;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-strong: rgba(255, 255, 255, 0.16);
-    --text-heading: #f8fafc;
-    --text-body: #cbd5e1;
+    --bg-app: #080c14;
+    --bg-sidebar: #060910;
+    --bg-header: rgba(8, 12, 20, 0.88);
+    --bg-surface: #0f172a;
+    --bg-surface-subtle: #131d31;
+    --bg-inset: #070a12;
+    --border-subtle: rgba(255, 255, 255, 0.085);
+    --border-strong: rgba(255, 255, 255, 0.18);
+    --text-heading: #ffffff;
+    --text-body: #e2e8f0;
     --text-muted: #94a3b8;
-    --w3-green: #04AA6D;
-    --w3-green-hover: #059862;
-    --w3-code-bg: #070d19;
+    --w3-green: #10b981;
+    --w3-green-hover: #059669;
+    --w3-code-bg: #060911;
+    --accent-glow: rgba(16, 185, 129, 0.22);
   }
 
   html, body, #root {
@@ -42,14 +46,41 @@
     color: var(--text-body);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     min-height: 100vh;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Selection highlight */
+  ::selection {
+    background-color: rgba(16, 185, 129, 0.25);
+    color: inherit;
+  }
+
+  /* Sleek Minimalist Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.28);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
   }
 }
 
-/* W3 Theme Helper Classes */
+/* Theme Component Helper Classes */
 .theme-navbar {
   background-color: var(--bg-header);
   border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .theme-sidebar {
@@ -87,12 +118,13 @@
 /* W3 Example Code Box */
 .w3-example-box {
   background-color: var(--bg-surface-subtle);
-  border-left: 5px solid var(--w3-green);
+  border-left: 4px solid var(--w3-green);
   border-top: 1px solid var(--border-subtle);
   border-right: 1px solid var(--border-subtle);
   border-bottom: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 20px 24px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
 }
 
 .w3-btn-green {
@@ -105,6 +137,7 @@
 .w3-btn-green:hover {
   background-color: var(--w3-green-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .w3-nav-btn {
@@ -112,7 +145,7 @@
   color: #ffffff;
   font-weight: 700;
   padding: 8px 18px;
-  border-radius: 8px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -122,20 +155,21 @@
 
 .w3-nav-btn:hover {
   background-color: var(--w3-green-hover);
+  box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .gopher-gradient-text {
-  background: linear-gradient(135deg, #00ADD8 0%, #04AA6D 100%);
+  background: linear-gradient(135deg, #00ADD8 0%, #10b981 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Inline Code Badge */
 .inline-code {
-  font-family: 'Fira Code', monospace;
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
   font-size: 0.85em;
   font-weight: 600;
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: 6px;
   background-color: var(--bg-surface-subtle);
   color: #e11d48;
@@ -143,5 +177,7 @@
 }
 
 [data-theme="dark"] .inline-code {
-  color: #fb7185;
+  color: #f43f5e;
+  background-color: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.2);
 }
