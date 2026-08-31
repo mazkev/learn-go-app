@@ -26,6 +26,9 @@ export default defineConfig({
               return 'vendor-react';
             }
           }
+          if (id.includes('src/data/') || id.includes('src\\data\\')) {
+            return 'data-curriculums';
+          }
         }
       }
     },

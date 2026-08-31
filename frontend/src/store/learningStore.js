@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import confetti from "canvas-confetti";
 import { ROADMAP_MODULES } from "../data/curriculum";
 
 const STORAGE_KEY = "golearn_user_progress_v1";
@@ -99,15 +98,17 @@ export function useLearningProgress() {
         return { ...prev, activeDaysHistory: history };
       }
 
-      // Trigger Confetti!
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ["#00ADD8", "#10B981", "#8B5CF6", "#F59E0B"],
-        });
-      } catch {}
+      // Trigger Confetti asynchronously (zero initial bundle impact)
+      import("canvas-confetti")
+        .then((m) => {
+          m.default({
+            particleCount: 80,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ["#00ADD8", "#10B981", "#8B5CF6", "#F59E0B"],
+          });
+        })
+        .catch(() => {});
 
       const nextCompleted = [...prev.completedLessons, lessonId];
       const nextXP = prev.totalXP + xpReward;
