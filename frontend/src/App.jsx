@@ -119,6 +119,42 @@ export default function App() {
     setIsTryItMode(true);
   }, []);
 
+  // Dynamic SEO Page Title and Description based on active view
+  useEffect(() => {
+    let title = "M3.learn • Platform Belajar Pemrograman & Arsitektur Interaktif";
+    let desc = "Platform interaktif belajar Go, Java, Python, JavaScript, dan PHP 8 secara mendalam.";
+
+    if (activeTab === "tutorial") {
+      let lessonTitle = "";
+      for (const mod of activeModules) {
+        const found = mod.lessons.find((l) => l.id === currentLessonId);
+        if (found) {
+          lessonTitle = found.title;
+          break;
+        }
+      }
+      title = `${lessonTitle ? lessonTitle + " • " : ""}Tutorial ${langConfig.name} | M3.learn`;
+      desc = `Pelajari ${lessonTitle || langConfig.name} dengan interaktif di M3.learn. Lengkap dengan latihan, kuis, dan in-browser code runner.`;
+    } else if (activeTab === "labs") {
+      title = "Interactive Labs & System Design Studio | M3.learn";
+      desc = "Eksplorasi 11 lab interaktif: System Design 500k RPS, Visualizer Algoritma & Pathfinding, Bug Hunter Arena, Clean Architecture, dan GORM Studio.";
+    } else if (activeTab === "interview") {
+      title = "Mock Technical Interview Room | M3.learn";
+      desc = "Simulasi wawancara kerja teknis level Senior/Lead di Tier-1 Tech Unicorn dengan penilaian dan scorecard langsung.";
+    } else if (activeTab === "cheatsheet") {
+      title = "Cheatsheet & Code Snippet Reference | M3.learn";
+      desc = "Kumpulan cheatsheet cepat dan cuplikan sintaks siap pakai untuk Go dan bahasa pemrograman lainnya.";
+    }
+
+    document.title = title;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute("content", desc);
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute("content", title);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute("content", desc);
+  }, [activeTab, activeLanguage, currentLessonId, activeModules, langConfig]);
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-slate-100">
       {/* Top Navbar */}

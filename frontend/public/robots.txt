@@ -1,0 +1,6 @@
+# Robots.txt for M3.learn
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://learn-go-app.vercel.app/sitemap.xml
