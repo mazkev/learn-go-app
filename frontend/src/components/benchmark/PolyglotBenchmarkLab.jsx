@@ -19,6 +19,7 @@ import {
   Sliders,
   Scale
 } from "lucide-react";
+import LanguageLogo from "../common/LanguageLogo";
 
 export const LANGUAGES_BENCHMARK = [
   {
@@ -344,7 +345,7 @@ export default function PolyglotBenchmarkLab() {
                     : "bg-white dark:bg-[#162032] text-slate-400 border-slate-200 dark:border-white/10 opacity-60"
                 }`}
               >
-                <span>{lang.icon}</span>
+                <LanguageLogo language={lang.id} size={15} />
                 <span>{lang.name}</span>
                 {isChecked && <CheckCircle2 size={13} className="text-[#04AA6D]" />}
               </button>
@@ -585,7 +586,7 @@ export default function PolyglotBenchmarkLab() {
               >
                 {LANGUAGES_BENCHMARK.map((l) => (
                   <option key={l.id} value={l.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                    {l.icon} {l.name}
+                    {l.name}
                   </option>
                 ))}
               </select>
@@ -605,7 +606,7 @@ export default function PolyglotBenchmarkLab() {
               >
                 {LANGUAGES_BENCHMARK.map((l) => (
                   <option key={l.id} value={l.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                    {l.icon} {l.name}
+                    {l.name}
                   </option>
                 ))}
               </select>
@@ -620,8 +621,10 @@ export default function PolyglotBenchmarkLab() {
                 className="bg-white dark:bg-[#162032] p-5 rounded-3xl border border-slate-200 dark:border-white/10 shadow-xs space-y-4"
               >
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{lang.icon}</span>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center shrink-0 border border-slate-200/60 dark:border-white/5">
+                      <LanguageLogo language={lang.id} size={22} />
+                    </div>
                     <div>
                       <h3 className="text-lg font-black text-slate-900 dark:text-white">{lang.name}</h3>
                       <span className="text-[11px] font-mono text-slate-500">{lang.runtimeType}</span>

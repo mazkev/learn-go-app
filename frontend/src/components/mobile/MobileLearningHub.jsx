@@ -17,8 +17,10 @@ import {
   Compass,
 } from "lucide-react";
 
+import LanguageLogo from "../common/LanguageLogo";
+
 export default function MobileLearningHub({
-  activeLanguage,
+  activeLanguage = "go",
   onSelectLanguage,
   modules,
   currentLessonId,
@@ -30,11 +32,11 @@ export default function MobileLearningHub({
   const [expandedModuleId, setExpandedModuleId] = useState(modules[0]?.id || "");
 
   const languages = [
-    { id: "go", name: "Go", icon: "🐹", color: "#00ADD8" },
-    { id: "java", name: "Java", icon: "☕", color: "#f89820" },
-    { id: "python", name: "Python", icon: "🐍", color: "#3776AB" },
-    { id: "javascript", name: "JS/TS", icon: "🟨", color: "#E5A00D" },
-    { id: "php", name: "PHP", icon: "🐘", color: "#8892BF" },
+    { id: "go", name: "Go", color: "#00ADD8" },
+    { id: "java", name: "Java", color: "#f89820" },
+    { id: "python", name: "Python", color: "#3776AB" },
+    { id: "javascript", name: "JS/TS", color: "#E5A00D" },
+    { id: "php", name: "PHP", color: "#8892BF" },
   ];
 
   const currentLang = languages.find((l) => l.id === activeLanguage) || languages[0];
@@ -90,13 +92,13 @@ export default function MobileLearningHub({
                 <button
                   key={lang.id}
                   onClick={() => onSelectLanguage(lang.id)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-2xl text-xs font-bold font-mono shrink-0 transition-all cursor-pointer border ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-2xl text-xs font-bold font-mono shrink-0 transition-all cursor-pointer border ${
                     isSelected
                       ? "bg-[#04AA6D] text-white border-transparent shadow-md scale-105"
                       : "bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-200"
                   }`}
                 >
-                  <span className="text-sm">{lang.icon}</span>
+                  <LanguageLogo language={lang.id} size={15} />
                   <span>{lang.name}</span>
                   {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
                 </button>
@@ -115,8 +117,9 @@ export default function MobileLearningHub({
 
             <div className="relative z-10 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-mono font-extrabold uppercase tracking-wider text-white">
-                  {currentLang.icon} SEDANG DIPELAJARI
+                <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-mono font-extrabold uppercase tracking-wider text-white">
+                  <LanguageLogo language={currentLang.id} size={14} />
+                  <span>SEDANG DIPELAJARI</span>
                 </span>
                 <span className="text-xs font-mono font-bold text-emerald-100">
                   Pelajaran {currentLesson.id}

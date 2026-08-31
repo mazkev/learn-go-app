@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { Search, CheckCircle, ChevronDown, ChevronRight, BookOpen, X } from "lucide-react";
 import { ROADMAP_MODULES } from "../../data/curriculum";
+import LanguageLogo from "../common/LanguageLogo";
 
 export default function W3Sidebar({
   currentLessonId,
@@ -60,18 +61,9 @@ export default function W3Sidebar({
         {/* Sidebar Header & Search */}
         <div className="p-3 border-b border-slate-200 dark:border-white/[0.08] sticky top-0 bg-inherit z-10 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black tracking-wider uppercase theme-heading flex items-center gap-1.5">
-              <BookOpen size={14} className="text-[#04AA6D]" /> {
-                activeLanguage === "java"
-                  ? "☕ JAVA TUTORIAL"
-                  : activeLanguage === "python"
-                  ? "🐍 PYTHON TUTORIAL"
-                  : activeLanguage === "javascript"
-                  ? "🟨 JS/TS TUTORIAL"
-                  : activeLanguage === "php"
-                  ? "🐘 PHP TUTORIAL"
-                  : "🐹 GO TUTORIAL"
-              }
+            <span className="text-xs font-black tracking-wider uppercase theme-heading flex items-center gap-2">
+              <LanguageLogo language={activeLanguage} size={16} />
+              <span>{activeLanguage === "javascript" ? "JS / TS TUTORIAL" : `${activeLanguage.toUpperCase()} TUTORIAL`}</span>
             </span>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-mono theme-muted">

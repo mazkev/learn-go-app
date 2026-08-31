@@ -18,6 +18,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import LanguageLogo from "../common/LanguageLogo";
 
 export const BUG_BANK = [
   // 1. GO BUGS
@@ -409,7 +410,9 @@ export default function BugHunterGameLab() {
           {/* Target Language Card Header */}
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
-              <span className="text-xl">{currentChallenge.langIcon}</span>
+              <div className="w-6 h-6 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center shrink-0 border border-slate-200/60 dark:border-white/5">
+                <LanguageLogo language={currentChallenge.language} size={16} />
+              </div>
               <span className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">
                 Bahasa: <strong style={{ color: currentChallenge.langColor }}>{currentChallenge.language}</strong>
               </span>

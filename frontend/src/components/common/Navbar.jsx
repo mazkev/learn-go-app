@@ -17,6 +17,9 @@ import {
   Flame,
 } from "lucide-react";
 
+import BrandLogo from "./BrandLogo";
+import LanguageLogo from "./LanguageLogo";
+
 const NAV_LINKS = [
   { id: "tutorial", label: "Tutorial", icon: BookOpen },
   { id: "labs", label: "Interactive Labs", icon: FlaskConical },
@@ -25,11 +28,11 @@ const NAV_LINKS = [
 ];
 
 const NAV_LANGUAGES = [
-  { id: "go", name: "Go (Golang)", icon: "🐹", color: "#04AA6D", badge: "34 Pelajaran" },
-  { id: "java", name: "Java (OOP & Spring)", icon: "☕", color: "#f89820", badge: "21 Pelajaran" },
-  { id: "python", name: "Python 3", icon: "🐍", color: "#3776AB", badge: "18 Pelajaran" },
-  { id: "javascript", name: "JavaScript / TS", icon: "🟨", color: "#E5A00D", badge: "9 Pelajaran" },
-  { id: "php", name: "PHP 8 & Laravel", icon: "🐘", color: "#8892BF", badge: "9 Pelajaran" },
+  { id: "go", name: "Go (Golang)", color: "#00ADD8", badge: "34 Pelajaran" },
+  { id: "java", name: "Java (OOP & Spring)", color: "#f89820", badge: "21 Pelajaran" },
+  { id: "python", name: "Python 3", color: "#3776AB", badge: "18 Pelajaran" },
+  { id: "javascript", name: "JavaScript / TS", color: "#E5A00D", badge: "9 Pelajaran" },
+  { id: "php", name: "PHP 8 & Laravel", color: "#8892BF", badge: "9 Pelajaran" },
 ];
 
 export default function Navbar({
@@ -86,32 +89,29 @@ export default function Navbar({
               </button>
             )}
 
+            {/* Official M3.learn Brand Logo */}
             <div
               onClick={() => setActiveTab("tutorial")}
-              className="flex items-center gap-2 cursor-pointer select-none group"
+              className="flex items-center gap-2.5 cursor-pointer select-none group"
             >
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black shadow-sm group-hover:scale-105 transition-transform"
-                style={{ backgroundColor: currentLang.color }}
-              >
-                <span className="text-base">{currentLang.icon}</span>
-              </div>
+              <BrandLogo size={32} className="group-hover:scale-105 transition-transform" />
               <div className="flex items-baseline gap-1">
                 <span className="font-extrabold text-base md:text-lg theme-heading tracking-tight">
-                  M3.<span style={{ color: currentLang.color }}>learn</span>
+                  M3.<span className="text-[#04AA6D]">learn</span>
                 </span>
               </div>
             </div>
 
-            {/* Compact Language Selector Dropdown */}
+            {/* Compact Official Language Selector Dropdown */}
             {onSelectLanguage && (
               <div className="relative" ref={langDropdownRef}>
                 <button
                   onClick={() => setIsLangDropdownOpen((prev) => !prev)}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-200/80 dark:bg-white/10 text-xs font-bold font-mono theme-heading hover:bg-slate-300/80 dark:hover:bg-white/15 transition-all cursor-pointer border border-slate-300/60 dark:border-white/10 shadow-2xs"
+                  className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-200/80 dark:bg-white/10 text-xs font-bold font-mono theme-heading hover:bg-slate-300/80 dark:hover:bg-white/15 transition-all cursor-pointer border border-slate-300/60 dark:border-white/10 shadow-2xs"
                   title="Pilih Bahasa Pemrograman"
                 >
-                  <span>{currentLang.icon} {currentLang.name.split(" ")[0]}</span>
+                  <LanguageLogo language={currentLang.id} size={15} />
+                  <span>{currentLang.name.split(" ")[0]}</span>
                   <ChevronDown size={12} className={`transition-transform duration-200 ${isLangDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
 
@@ -136,8 +136,10 @@ export default function Navbar({
                               : "theme-body hover:bg-slate-50 dark:hover:bg-white/5"
                           }`}
                         >
-                          <div className="flex items-center gap-2">
-                            <span className="text-base">{lang.icon}</span>
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-6 h-6 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center shrink-0">
+                              <LanguageLogo language={lang.id} size={16} />
+                            </div>
                             <div className="text-left">
                               <div className="leading-tight">{lang.name}</div>
                               <span className="text-[10px] font-normal theme-muted">{lang.badge}</span>

@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { executeMultiCode, SUPPORTED_LANGUAGES } from "../../services/languageManager";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
+import LanguageLogo from "../common/LanguageLogo";
 
 export const CODING_CHALLENGES = [
   {
@@ -763,8 +764,10 @@ export default function CodingChallengeLab() {
                       : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
-                  <span>{meta?.icon}</span>
-                  <span className="hidden sm:inline ml-1 uppercase">{lId}</span>
+                  <div className="flex items-center gap-1.5">
+                    <LanguageLogo language={lId} size={14} />
+                    <span className="hidden sm:inline uppercase">{lId}</span>
+                  </div>
                 </button>
               );
             })}

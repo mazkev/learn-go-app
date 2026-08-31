@@ -20,6 +20,7 @@ import { PYTHON_MODULES } from "../../data/pythonCurriculum";
 import { JS_MODULES } from "../../data/jsCurriculum";
 import { PHP_MODULES } from "../../data/phpCurriculum";
 import { CHEATSHEET_CATEGORIES } from "../../data/curriculum";
+import LanguageLogo from "./LanguageLogo";
 
 export default function CommandPaletteModal({
   isOpen,
@@ -55,10 +56,10 @@ export default function CommandPaletteModal({
       {
         id: "action-lang-go",
         type: "action",
-        category: "⚡ Aksi Cepat",
+        lang: "go",
+        category: "Aksi Cepat",
         title: "Ganti Bahasa ke Go (Golang)",
         subtitle: "Aktifkan kurikulum dan runtime Golang",
-        icon: "🐹",
         badge: "Bahasa",
         action: () => {
           onSelectLanguage("go");
@@ -69,10 +70,10 @@ export default function CommandPaletteModal({
       {
         id: "action-lang-java",
         type: "action",
-        category: "⚡ Aksi Cepat",
+        lang: "java",
+        category: "Aksi Cepat",
         title: "Ganti Bahasa ke Java (OOP & Spring)",
         subtitle: "Aktifkan kurikulum dan runtime Java",
-        icon: "☕",
         badge: "Bahasa",
         action: () => {
           onSelectLanguage("java");
@@ -83,10 +84,10 @@ export default function CommandPaletteModal({
       {
         id: "action-lang-python",
         type: "action",
-        category: "⚡ Aksi Cepat",
+        lang: "python",
+        category: "Aksi Cepat",
         title: "Ganti Bahasa ke Python 3",
         subtitle: "Aktifkan kurikulum dan runtime Python",
-        icon: "🐍",
         badge: "Bahasa",
         action: () => {
           onSelectLanguage("python");
@@ -97,10 +98,10 @@ export default function CommandPaletteModal({
       {
         id: "action-lang-javascript",
         type: "action",
-        category: "⚡ Aksi Cepat",
+        lang: "javascript",
+        category: "Aksi Cepat",
         title: "Ganti Bahasa ke JavaScript / TypeScript",
         subtitle: "Aktifkan kurikulum dan runtime JS/TS modern",
-        icon: "🟨",
         badge: "Bahasa",
         action: () => {
           onSelectLanguage("javascript");
@@ -111,10 +112,10 @@ export default function CommandPaletteModal({
       {
         id: "action-lang-php",
         type: "action",
-        category: "⚡ Aksi Cepat",
+        lang: "php",
+        category: "Aksi Cepat",
         title: "Ganti Bahasa ke PHP 8 & Laravel",
         subtitle: "Aktifkan kurikulum dan runtime PHP 8 & Laravel 11",
-        icon: "🐘",
         badge: "Bahasa",
         action: () => {
           onSelectLanguage("php");
@@ -202,10 +203,9 @@ export default function CommandPaletteModal({
           id: `lesson-go-${l.id}`,
           type: "lesson",
           lang: "go",
-          category: `🐹 Go: ${mod.title}`,
+          category: `Go: ${mod.title}`,
           title: l.title,
           subtitle: l.summary,
-          icon: "🐹",
           badge: "Go Lesson",
           action: () => {
             onSelectLanguage("go");
@@ -224,10 +224,9 @@ export default function CommandPaletteModal({
           id: `lesson-java-${l.id}`,
           type: "lesson",
           lang: "java",
-          category: `☕ Java: ${mod.title}`,
+          category: `Java: ${mod.title}`,
           title: l.title,
           subtitle: l.summary,
-          icon: "☕",
           badge: "Java Lesson",
           action: () => {
             onSelectLanguage("java");
@@ -246,10 +245,9 @@ export default function CommandPaletteModal({
           id: `lesson-python-${l.id}`,
           type: "lesson",
           lang: "python",
-          category: `🐍 Python: ${mod.title}`,
+          category: `Python: ${mod.title}`,
           title: l.title,
           subtitle: l.summary,
-          icon: "🐍",
           badge: "Python Lesson",
           action: () => {
             onSelectLanguage("python");
@@ -268,10 +266,9 @@ export default function CommandPaletteModal({
           id: `lesson-js-${l.id}`,
           type: "lesson",
           lang: "javascript",
-          category: `🟨 JS/TS: ${mod.title}`,
+          category: `JS/TS: ${mod.title}`,
           title: l.title,
           subtitle: l.summary,
-          icon: "🟨",
           badge: "JS/TS Lesson",
           action: () => {
             onSelectLanguage("javascript");
@@ -290,10 +287,9 @@ export default function CommandPaletteModal({
           id: `lesson-php-${l.id}`,
           type: "lesson",
           lang: "php",
-          category: `🐘 PHP: ${mod.title}`,
+          category: `PHP: ${mod.title}`,
           title: l.title,
           subtitle: l.summary,
-          icon: "🐘",
           badge: "PHP Lesson",
           action: () => {
             onSelectLanguage("php");
@@ -420,8 +416,12 @@ export default function CommandPaletteModal({
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <span className="text-xl shrink-0 p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200/60 dark:border-white/5">
-                      {item.icon}
+                    <span className="w-8 h-8 shrink-0 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200/60 dark:border-white/5">
+                      {item.lang ? (
+                        <LanguageLogo language={item.lang} size={18} />
+                      ) : (
+                        <span className="text-base">{item.icon}</span>
+                      )}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">

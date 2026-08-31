@@ -22,6 +22,7 @@ import {
   Building,
   Target
 } from "lucide-react";
+import LanguageLogo from "../common/LanguageLogo";
 
 export const INTERVIEW_PERSONAS = [
   {
@@ -52,7 +53,7 @@ export const INTERVIEW_PERSONAS = [
 
 export const MOCK_INTERVIEW_TRACKS = {
   go: {
-    title: "🐹 Go Backend Engineer Track",
+    title: "Go Backend Engineer Track",
     language: "Go",
     questions: [
       {
@@ -174,7 +175,7 @@ export const MOCK_INTERVIEW_TRACKS = {
     ],
   },
   java: {
-    title: "☕ Java Enterprise Engineer Track",
+    title: "Java Enterprise Engineer Track",
     language: "Java",
     questions: [
       {
@@ -224,7 +225,7 @@ export const MOCK_INTERVIEW_TRACKS = {
     ],
   },
   python: {
-    title: "🐍 Python AI & Backend Track",
+    title: "Python AI & Backend Track",
     language: "Python",
     questions: [
       {
@@ -382,13 +383,18 @@ export default function MockInterviewSimulator() {
                 <button
                   key={key}
                   onClick={() => setSelectedTrackKey(key)}
-                  className={`p-4 rounded-2xl text-left border transition-all cursor-pointer space-y-1 ${
+                  className={`p-4 rounded-2xl text-left border transition-all cursor-pointer space-y-2 ${
                     selectedTrackKey === key
                       ? "bg-[#04AA6D] text-white border-transparent shadow-md scale-102"
                       : "bg-slate-50 dark:bg-black/20 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-white/5 hover:bg-slate-100"
                   }`}
                 >
-                  <h3 className="font-extrabold text-sm">{item.title}</h3>
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-white/20 dark:bg-white/10 flex items-center justify-center shrink-0">
+                      <LanguageLogo language={key} size={16} />
+                    </div>
+                    <h3 className="font-extrabold text-sm">{item.title}</h3>
+                  </div>
                   <p className="text-[11px] opacity-80">{item.questions.length} Studi Kasus Wawancara</p>
                 </button>
               ))}

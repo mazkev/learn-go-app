@@ -4,6 +4,7 @@ import { Play, RotateCcw, ArrowLeft, Terminal, Check, Moon, Sun, Sparkles, Code 
 import { executeMultiCode } from "../../services/languageManager";
 import FriendlyErrorBox from "../common/FriendlyErrorBox";
 import CodeAnatomyModal from "../common/CodeAnatomyModal";
+import LanguageLogo from "../common/LanguageLogo";
 
 export default function W3TryItStudio({
   initialCode,
@@ -107,7 +108,8 @@ export default function W3TryItStudio({
           <span className="h-4 w-px bg-slate-300 dark:bg-white/10 hidden md:block" />
 
           <div className="hidden md:flex items-center gap-2">
-            <span className="font-mono font-black text-xs text-[#04AA6D]">M3.learn Tryit Editor</span>
+            <LanguageLogo language={language} size={16} />
+            <span className="font-mono font-black text-xs text-[#04AA6D]">M3.learn Editor</span>
             <span className="text-xs theme-muted truncate max-w-xs">• {lessonTitle}</span>
           </div>
         </div>
@@ -121,8 +123,8 @@ export default function W3TryItStudio({
             title="Bedah fungsi dan alur kode baris per baris"
           >
             <Sparkles size={13} />
-            <span className="hidden sm:inline">🔬 Bedah Kode</span>
-            <span className="sm:hidden">🔬 Bedah</span>
+            <span className="hidden sm:inline">Bedah Kode</span>
+            <span className="sm:hidden">Bedah</span>
           </button>
 
           <button
