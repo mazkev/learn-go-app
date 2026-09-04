@@ -3097,5 +3097,124 @@ req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)` },
  re := regexp.MustCompile("[0-9]+")
  hasil := re.FindAllString("harga: 5000 qty: 2", -1)` }
     ]
+  },
+  {
+    title: "13. Algoritma Dasar & Problem Solving",
+    snippets: [
+      {
+        label: "Binary Search (Pencarian Biner O(log n))",
+        code: `func BinarySearch(arr []int, target int) int {
+    low, high := 0, len(arr)-1
+    for low <= high {
+        mid := low + (high-low)/2
+        if arr[mid] == target {
+            return mid // Index ditemukan
+        } else if arr[mid] < target {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+    }
+    return -1 // Target tidak ditemukan
+}`
+      },
+      {
+        label: "Two Sum Problem (Hash Map O(n))",
+        code: `func TwoSum(nums []int, target int) []int {
+    seen := make(map[int]int) // value -> index
+    for i, num := range nums {
+        complement := target - num
+        if idx, found := seen[complement]; found {
+            return []int{idx, i}
+        }
+        seen[num] = i
+    }
+    return nil
+}`
+      },
+      {
+        label: "Reverse Slice In-Place (Two Pointers O(n))",
+        code: `func ReverseSlice(arr []int) {
+    for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
+        arr[i], arr[j] = arr[j], arr[i]
+    }
+}`
+      },
+      {
+        label: "Cek Palindrome String (Dua Arah)",
+        code: `func IsPalindrome(s string) bool {
+    runes := []rune(strings.ToLower(s))
+    for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+        if runes[i] != runes[j] {
+            return false
+        }
+    }
+    return true
+}`
+      },
+      {
+        label: "Cari Nilai Maksimum & Minimum (O(n))",
+        code: `func FindMinMax(nums []int) (min, max int) {
+    if len(nums) == 0 {
+        return 0, 0
+    }
+    min, max = nums[0], nums[0]
+    for _, num := range nums[1:] {
+        if num < min {
+            min = num
+        }
+        if num > max {
+            max = num
+        }
+    }
+    return min, max
+}`
+      },
+      {
+        label: "Filter Duplikat Slice (Unique Elements)",
+        code: `func UniqueElements(nums []int) []int {
+    seen := make(map[int]bool)
+    result := make([]int, 0, len(nums))
+    for _, num := range nums {
+        if !seen[num] {
+            seen[num] = true
+            result = append(result, num)
+        }
+    }
+    return result
+}`
+      },
+      {
+        label: "Deret Fibonacci (Iteratif O(n))",
+        code: `func Fibonacci(n int) int {
+    if n <= 1 {
+        return n
+    }
+    a, b := 0, 1
+    for i := 2; i <= n; i++ {
+        a, b = b, a+b
+    }
+    return b
+}`
+      },
+      {
+        label: "Bubble Sort Sederhana (O(n²))",
+        code: `func BubbleSort(arr []int) {
+    n := len(arr)
+    for i := 0; i < n-1; i++ {
+        swapped := false
+        for j := 0; j < n-i-1; j++ {
+            if arr[j] > arr[j+1] {
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                swapped = true
+            }
+        }
+        if !swapped {
+            break // Sudah terurut sempurna
+        }
+    }
+}`
+      }
+    ]
   }
 ];
