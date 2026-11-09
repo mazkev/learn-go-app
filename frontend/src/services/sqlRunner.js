@@ -44,6 +44,30 @@ export async function executeSqlCode(rawCode) {
   }
 }
 
+
+/**
+ * Normalisasi Baris Data: Pre-compute lowercase map untuk O(1) instant column access
+ */
+function normalizeRow(row) {
+  if (!row || typeof row !== 'object') return row;
+  const map = Object.create(null);
+  for (const k of Object.keys(row)) {
+    if (k === '__lowerMap') continue;
+    const lower = k.toLowerCase();
+    map[lower] = row[k];
+    if (lower.includes('.')) {
+      map[lower.split('.').pop()] = row[k];
+    }
+  }
+  Object.defineProperty(row, '__lowerMap', {
+    value: map,
+    enumerable: false,
+    configurable: true,
+    writable: true,
+  });
+  return row;
+}
+
 class SqlEngine {
   constructor() {
     this.tables = new Map();
@@ -173,7 +197,7 @@ class SqlEngine {
         { id: 3, nim: "2026003", nama: "Budi Santoso", jurusan: "Informatika", ipk: 3.45 },
         { id: 4, nim: "2026004", nama: "Rina Kusuma", jurusan: "Sistem Informasi", ipk: 3.70 },
         { id: 5, nim: "2026005", nama: "Dewi Lestari", jurusan: "Teknik Komputer", ipk: 3.90 }
-      ],
+      ].map(normalizeRow),
       autoInc: 6
     });
 
@@ -193,7 +217,7 @@ class SqlEngine {
         { id: 3, nama_depan: "Budi", nama_belakang: "Santoso", divisi: "Engineering", gaji: 11000000, kota: "Jakarta" },
         { id: 4, nama_depan: "Rina", nama_belakang: "Wati", divisi: "HR", gaji: 7500000, kota: "Surabaya" },
         { id: 5, nama_depan: "Agus", nama_belakang: "Setiawan", divisi: "Marketing", gaji: 8000000, kota: "Yogyakarta" }
-      ],
+      ].map(normalizeRow),
       autoInc: 6
     });
 
@@ -213,7 +237,7 @@ class SqlEngine {
         { id: 3, nama: "Dell XPS 15", nama_produk: "Dell XPS 15", kategori: "Laptop", harga: 21000000, stok: 8 },
         { id: 4, nama: "Keychron K2 Mechanical", nama_produk: "Keychron K2 Mechanical", kategori: "Aksesoris", harga: 1200000, stok: 20 },
         { id: 5, nama: "LG UltraFine 4K", nama_produk: "LG UltraFine 4K", kategori: "Monitor", harga: 6500000, stok: 15 }
-      ],
+      ].map(normalizeRow),
       autoInc: 6
     });
 
@@ -260,7 +284,7 @@ class SqlEngine {
         { id: 2, nama: "Budi Santoso", email: "budi@yahoo.com" },
         { id: 3, nama: "Alexandria Siti", email: "siti@gmail.com" },
         { id: 4, nama: "Cindy Claudia", email: "cindy@perusahaan.co.id" }
-      ],
+      ].map(normalizeRow),
       autoInc: 5
     });
 
@@ -283,7 +307,7 @@ class SqlEngine {
         { id: 103, user_id: 2, pelanggan: "Siti Aminah", produk: "Keychron K2 Mechanical", jumlah: 1, total: 1200000, nominal: 1200000, status: "PROSES", catatan: null },
         { id: 104, user_id: 2, pelanggan: "Siti Aminah", produk: "LG UltraFine 4K", jumlah: 1, total: 6500000, nominal: 6500000, status: "PENDING", catatan: null },
         { id: 105, user_id: 4, pelanggan: "Dewi Lestari", produk: "Dell XPS 15", jumlah: 1, total: 21000000, nominal: 21000000, status: "SELESAI", catatan: "Tolong kirim siang" }
-      ],
+      ].map(normalizeRow),
       autoInc: 106
     });
 
@@ -299,7 +323,7 @@ class SqlEngine {
         { id: 1, judul: "Belajar SQL & Relational Database", penulis: "Kevin Pratama", harga: 85000 },
         { id: 2, judul: "Mastering Clean Architecture in Go", penulis: "M3 Team", harga: 145000 },
         { id: 3, judul: "Spring Boot Microservices", penulis: "Enterprise Architect", harga: 175000 }
-      ],
+      ].map(normalizeRow),
       autoInc: 4
     });
 
@@ -315,7 +339,7 @@ class SqlEngine {
         { pemain: "Siti", skor: 1190 },
         { pemain: "Andi", skor: 850 },
         { pemain: "Budi", skor: 670 }
-      ],
+      ].map(normalizeRow),
       autoInc: 6
     });
 
@@ -331,7 +355,7 @@ class SqlEngine {
         { id: 1, nama: "Kevin Pratama", status: "Silver", poin: 150 },
         { id: 2, nama: "Siti Aminah", status: "Silver", poin: 200 },
         { id: 3, nama: "Budi Santoso", status: "Bronze", poin: 50 }
-      ],
+      ].map(normalizeRow),
       autoInc: 4
     });
 
@@ -346,7 +370,7 @@ class SqlEngine {
         { id: 1, produk: "Kaos Polos Cotton 30s", qty: 2 },
         { id: 2, produk: "Topi Baseball Snapback", qty: 1 },
         { id: 3, produk: "Stiker Developer Pack", qty: 5 }
-      ],
+      ].map(normalizeRow),
       autoInc: 4
     });
 
@@ -363,7 +387,7 @@ class SqlEngine {
         { id: 2, produk: "Monitor", jumlah: 5, harga: 2000000 },
         { id: 3, produk: "Mouse", jumlah: 10, harga: 250000 },
         { id: 4, produk: "Keyboard", jumlah: 4, harga: 750000 }
-      ],
+      ].map(normalizeRow),
       autoInc: 5
     });
   }
@@ -410,7 +434,7 @@ class SqlEngine {
     this.tables.set(tableName.toLowerCase(), {
       name: tableName,
       columns,
-      rows: [],
+      rows: [].map(normalizeRow),
       autoInc: 1,
     });
 
@@ -468,7 +492,7 @@ class SqlEngine {
         }
       }
 
-      table.rows.push(row);
+      table.rows.push(normalizeRow(row));
       insertedCount++;
     }
 
@@ -567,7 +591,8 @@ class SqlEngine {
     const whereMatch = restClauses.match(/\bWHERE\s+([\s\S]+?)(?=\bGROUP\s+BY|\bORDER\s+BY|\bLIMIT|$)/i);
     if (whereMatch) {
       const whereCond = whereMatch[1].trim();
-      filteredRows = filteredRows.filter(row => this.evaluateCondition(whereCond, row, mainTable));
+      const wherePredicate = this.compileCondition(whereCond, mainTable);
+      filteredRows = filteredRows.filter(wherePredicate);
     }
 
     // 3. GROUP BY & HAVING
@@ -608,7 +633,8 @@ class SqlEngine {
 
       if (havingMatch) {
         const havingCond = havingMatch[1].trim();
-        projectedRows = projectedRows.filter(row => this.evaluateCondition(havingCond, row, mainTable));
+        const havingPredicate = this.compileCondition(havingCond, mainTable);
+        projectedRows = projectedRows.filter(havingPredicate);
       }
     } else {
       // Proyeksi normal tanpa GROUP BY
@@ -656,7 +682,7 @@ class SqlEngine {
     return this.formatAsciiTable(projectedRows, fields);
   }
 
-  // --- JOIN HANDLER ---
+  // --- HIGH-PERFORMANCE O(N + M) HASH JOIN ENGINE ---
   performJoin(rowsA, tableA, tableB, onCondition, joinType) {
     const onParts = onCondition.split("=");
     if (onParts.length !== 2) throw new Error(`Kondisi ON pada JOIN tidak valid: ${onCondition}`);
@@ -664,43 +690,49 @@ class SqlEngine {
     const leftRef = onParts[0].trim();
     const rightRef = onParts[1].trim();
 
+    // 1. Build Phase: Hash index tabel kanan (O(M))
+    const bIndex = new Map();
+    for (const rB of tableB.rows) {
+      const valB = String(this.resolveColValue(rB, rightRef));
+      if (!bIndex.has(valB)) bIndex.set(valB, []);
+      bIndex.get(valB).push(rB);
+    }
+
+    // 2. Probe Phase: O(1) hash lookup dari tabel kiri (O(N))
     const result = [];
-
     for (const rA of rowsA) {
-      let matched = false;
-      for (const rB of tableB.rows) {
-        const valLeft = this.resolveColValue(rA, leftRef);
-        const valRight = this.resolveColValue(rB, rightRef);
+      const valA = String(this.resolveColValue(rA, leftRef));
+      const matches = bIndex.get(valA);
 
-        if (valLeft !== null && valLeft !== undefined && String(valLeft) === String(valRight)) {
-          // Gabungkan row A dan row B (sediakan akses dengan dan tanpa prefix tabel)
+      if (matches && matches.length > 0) {
+        for (const rB of matches) {
           const combined = {};
-          for (const [k, v] of Object.entries(rA)) {
-            combined[k] = v;
-            combined[`${tableA.name}.${k}`] = v;
+          for (const k in rA) {
+            if (k === '__lowerMap') continue;
+            combined[k] = rA[k];
+            combined[`${tableA.name}.${k}`] = rA[k];
           }
-          for (const [k, v] of Object.entries(rB)) {
-            combined[`${tableB.name}.${k}`] = v;
+          for (const k in rB) {
+            if (k === '__lowerMap') continue;
+            combined[`${tableB.name}.${k}`] = rB[k];
             if (combined[k] === undefined) {
-              combined[k] = v;
+              combined[k] = rB[k];
             }
           }
-          result.push(combined);
-          matched = true;
+          result.push(normalizeRow(combined));
         }
-      }
-
-      if (!matched && (joinType === "LEFT" || joinType === "FULL")) {
+      } else if (joinType === "LEFT" || joinType === "FULL") {
         const nullRow = {};
-        for (const [k, v] of Object.entries(rA)) {
-          nullRow[k] = v;
-          nullRow[`${tableA.name}.${k}`] = v;
+        for (const k in rA) {
+          if (k === '__lowerMap') continue;
+          nullRow[k] = rA[k];
+          nullRow[`${tableA.name}.${k}`] = rA[k];
         }
         for (const c of tableB.columns) {
           nullRow[c.name] = null;
           nullRow[`${tableB.name}.${c.name}`] = null;
         }
-        result.push(nullRow);
+        result.push(normalizeRow(nullRow));
       }
     }
 
@@ -758,91 +790,128 @@ class SqlEngine {
     };
   }
 
-  // --- WHERE CONDITION EVALUATOR ---
-  evaluateCondition(condition, row, table) {
-    // Dukung AND & OR majemuk
-    if (/\s+OR\s+/i.test(condition)) {
-      const parts = condition.split(/\s+OR\s+/i);
-      return parts.some(p => this.evaluateCondition(p.trim(), row, table));
+  // --- PRE-COMPILED WHERE / HAVING CONDITION EVALUATOR ---
+  compileCondition(condition, table) {
+    const cond = condition.trim();
+
+    if (/\s+OR\s+/i.test(cond)) {
+      const parts = cond.split(/\s+OR\s+/i).map(p => this.compileCondition(p.trim(), table));
+      return (row) => parts.some(fn => fn(row));
     }
-    if (/\s+AND\s+/i.test(condition)) {
-      const parts = condition.split(/\s+AND\s+/i);
-      return parts.every(p => this.evaluateCondition(p.trim(), row, table));
+    if (/\s+AND\s+/i.test(cond)) {
+      const parts = cond.split(/\s+AND\s+/i).map(p => this.compileCondition(p.trim(), table));
+      return (row) => parts.every(fn => fn(row));
     }
 
     // 1. IS NULL & IS NOT NULL
-    const isNullMatch = condition.match(/^([a-zA-Z0-9_`.]+)\s+IS\s+(NOT\s+)?NULL$/i);
+    const isNullMatch = cond.match(/^([a-zA-Z0-9_`.]+)\s+IS\s+(NOT\s+)?NULL$/i);
     if (isNullMatch) {
-      const val = this.resolveColValue(row, isNullMatch[1]);
+      const colName = isNullMatch[1];
       const isNot = Boolean(isNullMatch[2]);
-      const isNull = val === null || val === undefined;
-      return isNot ? !isNull : isNull;
+      return (row) => {
+        const val = this.resolveColValue(row, colName);
+        const isNull = val === null || val === undefined;
+        return isNot ? !isNull : isNull;
+      };
     }
 
     // 2. LIKE 'pattern'
-    const likeMatch = condition.match(/^([a-zA-Z0-9_`.]+)\s+LIKE\s+['"]([^'"]+)['"]$/i);
+    const likeMatch = cond.match(/^([a-zA-Z0-9_`.]+)\s+LIKE\s+['"]([^'"]+)['"]$/i);
     if (likeMatch) {
-      const val = String(this.resolveColValue(row, likeMatch[1]) ?? "");
+      const colName = likeMatch[1];
       const pattern = likeMatch[2];
-      const regexStr = "^" + pattern.replace(/%/g, ".*").replace(/_/g, ".") + "$";
-      return new RegExp(regexStr, "i").test(val);
+      const regex = new RegExp("^" + pattern.replace(/%/g, ".*").replace(/_/g, ".") + "$", "i");
+      return (row) => {
+        const val = String(this.resolveColValue(row, colName) ?? "");
+        return regex.test(val);
+      };
     }
 
     // 3. IN (val1, val2)
-    const inMatch = condition.match(/^([a-zA-Z0-9_`.]+)\s+(NOT\s+)?IN\s*\(([^)]+)\)$/i);
+    const inMatch = cond.match(/^([a-zA-Z0-9_`.]+)\s+(NOT\s+)?IN\s*\(([^)]+)\)$/i);
     if (inMatch) {
-      const val = this.resolveColValue(row, inMatch[1]);
+      const colName = inMatch[1];
       const isNot = Boolean(inMatch[2]);
-      const list = this.splitCommaGuarded(inMatch[3]).map(v => this.parseLiteral(v.trim()));
-      const included = list.some(item => String(item) === String(val));
-      return isNot ? !included : included;
+      const set = new Set(this.splitCommaGuarded(inMatch[3]).map(v => String(this.parseLiteral(v.trim()))));
+      return (row) => {
+        const val = this.resolveColValue(row, colName);
+        const included = set.has(String(val));
+        return isNot ? !included : included;
+      };
     }
 
     // 4. BETWEEN a AND b
-    const betweenMatch = condition.match(/^([a-zA-Z0-9_`.]+)\s+BETWEEN\s+(.+?)\s+AND\s+(.+)$/i);
+    const betweenMatch = cond.match(/^([a-zA-Z0-9_`.]+)\s+BETWEEN\s+(.+?)\s+AND\s+(.+)$/i);
     if (betweenMatch) {
-      const val = Number(this.resolveColValue(row, betweenMatch[1]));
+      const colName = betweenMatch[1];
       const low = Number(this.parseLiteral(betweenMatch[2]));
       const high = Number(this.parseLiteral(betweenMatch[3]));
-      return val >= low && val <= high;
+      return (row) => {
+        const val = Number(this.resolveColValue(row, colName));
+        return val >= low && val <= high;
+      };
     }
 
     // 5. Operator Perbandingan: =, !=, <>, >=, <=, >, <
-    const compMatch = condition.match(/^([a-zA-Z0-9_`.]+)\s*(=|!=|<>|>=|<=|>|<)\s*(.+)$/);
+    const compMatch = cond.match(/^([a-zA-Z0-9_`.]+)\s*(=|!=|<>|>=|<=|>|<)\s*(.+)$/);
     if (compMatch) {
       const colName = compMatch[1].trim();
       const op = compMatch[2];
       const rightVal = this.parseLiteral(compMatch[3].trim());
-      const leftVal = this.resolveColValue(row, colName);
+      const numRight = Number(rightVal);
+      const isNum = !isNaN(numRight) && typeof rightVal === 'number';
 
-      if (op === "=") return String(leftVal) === String(rightVal);
-      if (op === "!=" || op === "<>") return String(leftVal) !== String(rightVal);
-      if (op === ">") return Number(leftVal) > Number(rightVal);
-      if (op === "<") return Number(leftVal) < Number(rightVal);
-      if (op === ">=") return Number(leftVal) >= Number(rightVal);
-      if (op === "<=") return Number(leftVal) <= Number(rightVal);
+      if (op === "=") {
+        return (row) => String(this.resolveColValue(row, colName)) === String(rightVal);
+      } else if (op === "!=" || op === "<>") {
+        return (row) => String(this.resolveColValue(row, colName)) !== String(rightVal);
+      } else if (op === ">") {
+        return (row) => Number(this.resolveColValue(row, colName)) > numRight;
+      } else if (op === "<") {
+        return (row) => Number(this.resolveColValue(row, colName)) < numRight;
+      } else if (op === ">=") {
+        return (row) => Number(this.resolveColValue(row, colName)) >= numRight;
+      } else if (op === "<=") {
+        return (row) => Number(this.resolveColValue(row, colName)) <= numRight;
+      }
     }
 
-    return true;
+    return () => true;
   }
 
+  evaluateCondition(condition, row, table) {
+    return this.compileCondition(condition, table)(row);
+  }
+
+  // --- O(1) FAST COLUMN VALUE RESOLVER ---
   resolveColValue(row, colRef) {
     if (!row) return null;
     const cleanRef = colRef.replace(/[`"]/g, "").trim();
 
-    // Cek direct property
+    // 1. Direct property hit
     if (row[cleanRef] !== undefined) return row[cleanRef];
 
-    // Cek case-insensitive
-    for (const [k, v] of Object.entries(row)) {
-      if (k.toLowerCase() === cleanRef.toLowerCase()) return v;
+    // 2. Pre-calculated lowercase map ($O(1)$)
+    if (row.__lowerMap) {
+      const lower = cleanRef.toLowerCase();
+      if (row.__lowerMap[lower] !== undefined) return row.__lowerMap[lower];
+      if (lower.includes(".")) {
+        const colOnly = lower.split(".").pop();
+        if (row.__lowerMap[colOnly] !== undefined) return row.__lowerMap[colOnly];
+      }
     }
 
-    // Jika memiliki prefix nama tabel: mahasiswa.nim
+    // 3. Fallback iteration
+    const targetLower = cleanRef.toLowerCase();
+    for (const k in row) {
+      if (k === "__lowerMap") continue;
+      if (k.toLowerCase() === targetLower) return row[k];
+    }
     if (cleanRef.includes(".")) {
-      const colOnly = cleanRef.split(".").pop();
-      for (const [k, v] of Object.entries(row)) {
-        if (k.toLowerCase() === colOnly.toLowerCase()) return v;
+      const colOnly = cleanRef.split(".").pop().toLowerCase();
+      for (const k in row) {
+        if (k === "__lowerMap") continue;
+        if (k.toLowerCase() === colOnly) return row[k];
       }
     }
 
