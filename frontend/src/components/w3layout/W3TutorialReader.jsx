@@ -727,7 +727,7 @@ export default function W3TutorialReader({
             </div>
             <div className="p-4 font-mono text-xs overflow-x-auto bg-slate-950 shadow-inner">
               {exampleRun.isError ? (
-                <FriendlyErrorBox rawError={exampleRun.text} />
+                <FriendlyErrorBox rawError={exampleRun.text} language={activeLanguage} codeContext={currentLesson?.codeSnippet} />
               ) : (
                 <pre className="text-emerald-400 leading-relaxed">
                   {exampleRun.text}
@@ -810,7 +810,7 @@ export default function W3TutorialReader({
               </div>
               <div className="p-4 font-mono text-xs overflow-x-auto bg-slate-950 shadow-inner">
                 {exerciseRun.isError ? (
-                  <FriendlyErrorBox rawError={exerciseRun.text} />
+                  <FriendlyErrorBox rawError={exerciseRun.text} language={activeLanguage} codeContext={userExerciseCode} />
                 ) : (
                   <pre className="text-emerald-400 leading-relaxed">
                     {exerciseRun.text}

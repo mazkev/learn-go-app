@@ -325,45 +325,56 @@ function translateJavaToExecutableJS(code, stdin = "") {
     };
   `;
 
-  // 3. Normalisasi inisialisasi array Java:
+  // 3. Normalisasi type casting Java:
+  // (double) a -> Number(a), (int) x -> Math.trunc(x), (char) n -> String.fromCharCode(n)
+  js = js.replace(/\((?:double|float)\)\s*([a-zA-Z0-9_$.]+|\([^)]+\))/g, "Number($1)");
+  js = js.replace(/\((?:int|long|short|byte)\)\s*([a-zA-Z0-9_$.]+|\([^)]+\))/g, "Math.trunc($1)");
+  js = js.replace(/\(char\)\s*([a-zA-Z0-9_$.]+|\([^)]+\))/g, "String.fromCharCode($1)");
+  js = js.replace(/\((?:String|[A-Z]\w+)\)\s*([a-zA-Z0-9_$.]+|\([^)]+\))/g, "$1");
+
+  // 4. Normalisasi inisialisasi & alokasi array Java:
   // new int[]{1, 2, 3} -> [1, 2, 3]
   // int[] arr = {1, 2, 3} -> let arr = [1, 2, 3]
+  // new int[5] -> new Array(5).fill(0)
   js = js.replace(/new\s+\w+\[\]\s*\{/g, "[");
   js = js.replace(/=\s*\{([^{}]*)\}/g, "= [$1]");
+  js = js.replace(/new\s+(?:int|double|float|long|short|byte)\[([^\]]+)\]/g, "new Array($1).fill(0)");
+  js = js.replace(/new\s+boolean\[([^\]]+)\]/g, "new Array($1).fill(false)");
+  js = js.replace(/new\s+(?:String|[A-Z]\w+)\[([^\]]+)\]/g, "new Array($1).fill(null)");
 
-  // 4. Inisialisasi Koleksi (List, ArrayList, Map, HashMap, Stack)
+  // 5. Inisialisasi Koleksi (List, ArrayList, Map, HashMap, Stack)
   js = js.replace(/(?:List<\w+>|ArrayList<\w+>)\s+(\w+)\s*=\s*new\s+ArrayList<.*?>\(\);/g, "let $1 = new ArrayList();");
   js = js.replace(/(?:Map<[^>]+>|HashMap<[^>]+>)\s+(\w+)\s*=\s*new\s+HashMap<.*?>\(\);/g, "let $1 = new HashMap();");
   js = js.replace(/(?:Stack<\w+>)\s+(\w+)\s*=\s*new\s+Stack<.*?>\(\);/g, "let $1 = new Stack();");
 
-  // 5. String .toCharArray() konversi: s.toCharArray() -> [...s]
+  // 6. String .toCharArray() konversi: s.toCharArray() -> [...s]
   js = js.replace(/(\w+)\.toCharArray\(\)/g, "[...$1]");
 
-  // 6. Enhanced for-loop Java: for (Type x : collection/array) -> for (let x of collection)
+  // 7. Enhanced for-loop Java: for (Type x : collection/array) -> for (let x of collection)
   js = js.replace(/for\s*\(\s*(?:final\s+)?(?:\w+(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*:\s*([^)]+)\)/g, "for (let $1 of $2)");
 
-  // 7. Traditional for-loop Java: for (int i = 0; ...) -> for (let i = 0; ...)
+  // 8. Traditional for-loop Java: for (int i = 0; ...) -> for (let i = 0; ...)
   js = js.replace(/for\s*\(\s*(?:int|long|double|float|byte|short)\s+(\w+)\s*=/g, "for (let $1 =");
 
-  // 8. Bersihkan anotasi Java (@Override, @SuppressWarnings, dll)
+  // 9. Bersihkan anotasi Java (@Override, @SuppressWarnings, dll)
   js = js.replace(/@\w+\s*/g, "");
 
-  // 9. Method abstract tanpa body pada interface: void jalan(); -> jalan() {}
+  // 10. Method abstract tanpa body pada interface: void jalan(); -> jalan() {}
   js = js.replace(/(?:public|protected|private)?\s*(?:abstract\s+)?(?:\b(?:void|int|double|float|long|boolean|char|String|[A-Z]\w+)(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*\(([^)]*)\)\s*;/g, "$1() {}");
 
-  // 10. Transformasi interface & abstract class ke ES6 class
+  // 11. Transformasi interface & abstract class ke ES6 class
   js = js.replace(/public\s+interface\s+(\w+)/g, "class $1");
   js = js.replace(/interface\s+(\w+)/g, "class $1");
   js = js.replace(/abstract\s+class\s+(\w+)/g, "class $1");
   js = js.replace(/\s+implements\s+[\w\s,]+/g, " ");
 
-  // 11. Transformasi class publik
+  // 12. Transformasi class publik
   js = js.replace(/public\s+class\s+(\w+)/g, "class $1");
 
-  // 12. Ambil semua nama class yang didefinisikan
+  // 13. Ambil semua nama class yang didefinisikan
   const classMatches = [...new Set([...code.matchAll(/(?:class|interface)\s+(\w+)/g)].map((m) => m[1]))];
 
-  // 13. Transformasi constructor class: ClassName(...) { -> constructor(...) {
+  // 14. Transformasi constructor class: ClassName(...) { -> constructor(...) {
   for (const cName of classMatches) {
     const ctorRegex = new RegExp(`(?:public|protected|private)?\\s*${cName}\\s*\\(([^)]*)\\)\\s*\\{`, "g");
     js = js.replace(ctorRegex, (match, params) => {
@@ -371,14 +382,14 @@ function translateJavaToExecutableJS(code, stdin = "") {
     });
   }
 
-  // 14. Transformasi main method: public static void main(...) { -> static main(args = []) {
+  // 15. Transformasi main method: public static void main(...) { -> static main(args = []) {
   js = js.replace(/(?:public\s+)?static\s+void\s+main\s*\([^)]*\)\s*\{/g, "static main(args = []) {");
 
-  // 15. Cari semua static methods
+  // 16. Cari semua static methods
   const staticMethodMatches = [...code.matchAll(/(?:public|private|protected)?\s*static\s+(?:\w+(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*\(/g)].map((m) => m[1]);
   const staticMethodNames = [...new Set(staticMethodMatches.filter((m) => m !== "main"))];
 
-  // 16. Transformasi methods:
+  // 17. Transformasi methods:
   // Static methods
   js = js.replace(/(?:public|private|protected)?\s*static\s+(?:\w+(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*\(([^)]*)\)\s*\{/g, (match, name, params) => {
     return `static ${name}(${cleanParamTypes(params)}) {`;
@@ -388,20 +399,22 @@ function translateJavaToExecutableJS(code, stdin = "") {
     return `${name}(${cleanParamTypes(params)}) {`;
   });
 
-  // 17. Panggilan static method tanpa prefix dalam static main: isValid(...) -> this.isValid(...)
+  // 18. Panggilan static method tanpa prefix dalam static main: isValid(...) -> this.isValid(...)
   for (const sMethod of staticMethodNames) {
     const callRegex = new RegExp(`(?<!\\bstatic\\s+)(?<![\\w.])${sMethod}\\s*\\(`, "g");
     js = js.replace(callRegex, `this.${sMethod}(`);
   }
 
-  // 18. Transformasi property / field class
+  // 19. Transformasi property / field class
   js = js.replace(/(?:public|private|protected)\s+(?:static\s+)?(?:final\s+)?(?:\w+(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*(=\s*[^;]+)?;/g, (match, name, val) => {
     return val ? `${name} ${val};` : `${name};`;
   });
 
-  // 19. Transformasi variabel lokal dalam block / method
+  // 20. Transformasi variabel lokal dalam block / method
   js = js.replace(/\b(int|double|float|long|short|byte|boolean|char|String|var)\s+(\w+)\s*=/g, "let $2 =");
+  js = js.replace(/\b(int|double|float|long|short|byte|boolean|char|String|var)\s+(\w+)\s*;/g, "let $2;");
   js = js.replace(/\b(?:int|double|String|boolean|float|long|char)\[\]\s+(\w+)\s*=/g, "let $1 =");
+  js = js.replace(/\b(?:int|double|String|boolean|float|long|char)\[\]\s+(\w+)\s*;/g, "let $1;");
   js = js.replace(/\b([A-Z]\w+(?:<[^>]+>)?)\s+(\w+)\s*=\s*new\s+/g, "let $2 = new ");
 
   // 20. Output statements: System.out.println, print, printf

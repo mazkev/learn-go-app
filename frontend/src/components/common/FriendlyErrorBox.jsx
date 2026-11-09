@@ -14,7 +14,38 @@ import { explainPolyglotError } from "../../services/errorExplainer";
 
 export default function FriendlyErrorBox({ rawError, codeContext = "", language = "go" }) {
   const [showRawLog, setShowRawLog] = useState(false);
-  const diagnosis = explainPolyglotError(rawError, codeContext, language);
+
+  // Auto-deteksi bahasa jika masih default 'go' namun log error / konteks berasal dari bahasa lain
+  let resolvedLanguage = language;
+  const lowerErr = String(rawError || "").toLowerCase();
+  const lowerContext = String(codeContext || "").toLowerCase();
+
+  if (
+    lowerErr.includes("main.java") ||
+    lowerErr.includes(".java:") ||
+    lowerErr.includes("openjdk") ||
+    lowerErr.includes("exception in thread") ||
+    lowerContext.includes("public class") ||
+    lowerContext.includes("system.out.println")
+  ) {
+    resolvedLanguage = "java";
+  } else if (
+    lowerErr.includes(".py") ||
+    lowerErr.includes("traceback (most recent call last)") ||
+    lowerContext.includes("def main(") ||
+    lowerContext.includes("if __name__ ==")
+  ) {
+    resolvedLanguage = "python";
+  } else if (
+    lowerErr.includes(".php") ||
+    lowerErr.includes("fatal error:") ||
+    lowerErr.includes("parse error:") ||
+    lowerContext.includes("<?php")
+  ) {
+    resolvedLanguage = "php";
+  }
+
+  const diagnosis = explainPolyglotError(rawError, codeContext, resolvedLanguage);
 
   if (!rawError || !diagnosis) return null;
 
@@ -29,7 +60,7 @@ export default function FriendlyErrorBox({ rawError, codeContext = "", language 
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] uppercase font-bold tracking-wider text-rose-500 font-mono">
-                AI Smart Code Doctor ({String(language).toUpperCase()})
+                AI Smart Code Doctor ({String(resolvedLanguage).toUpperCase()})
               </span>
             </div>
             <h4 className="text-sm font-black text-rose-600 dark:text-rose-400">

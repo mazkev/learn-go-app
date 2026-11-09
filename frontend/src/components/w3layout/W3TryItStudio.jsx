@@ -240,7 +240,7 @@ export default function W3TryItStudio({
 
           <div className="p-4 flex-1 overflow-y-auto font-mono text-xs shadow-inner">
             {output.isError ? (
-              <FriendlyErrorBox rawError={output.text} />
+              <FriendlyErrorBox rawError={output.text} language={language} codeContext={editorRef.current ? editorRef.current.getValue() : initialCode} />
             ) : (
               <pre className="whitespace-pre-wrap leading-relaxed text-slate-800 dark:text-emerald-400">
                 {output.text}
