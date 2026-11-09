@@ -323,6 +323,47 @@ function translateJavaToExecutableJS(code, stdin = "") {
       toUpperCase: (c) => String(c).toUpperCase(),
       toLowerCase: (c) => String(c).toLowerCase()
     };
+
+    if (!Error.prototype.getMessage) {
+      Error.prototype.getMessage = function() {
+        return this.message || String(this);
+      };
+    }
+    if (!Error.prototype.printStackTrace) {
+      Error.prototype.printStackTrace = function() {
+        out.println(this.stack || this.message);
+      };
+    }
+
+    class Exception extends Error {
+      constructor(msg = "") { super(msg); this.name = "Exception"; }
+    }
+    class RuntimeException extends Exception {
+      constructor(msg = "") { super(msg); this.name = "RuntimeException"; }
+    }
+    class ArithmeticException extends RuntimeException {
+      constructor(msg = "/ by zero") { super(msg); this.name = "ArithmeticException"; }
+    }
+    class NullPointerException extends RuntimeException {
+      constructor(msg = "Cannot invoke method on null") { super(msg); this.name = "NullPointerException"; }
+    }
+    class ArrayIndexOutOfBoundsException extends RuntimeException {
+      constructor(msg = "Index out of bounds") { super(msg); this.name = "ArrayIndexOutOfBoundsException"; }
+    }
+    class IllegalArgumentException extends RuntimeException {
+      constructor(msg = "") { super(msg); this.name = "IllegalArgumentException"; }
+    }
+
+    const _get = (arr, idx) => {
+      if (Array.isArray(arr) && (idx < 0 || idx >= arr.length)) {
+        throw new ArrayIndexOutOfBoundsException("Index " + idx + " out of bounds for length " + arr.length);
+      }
+      return arr[idx];
+    };
+    const _divide = (a, b) => {
+      if (b === 0) throw new ArithmeticException("/ by zero");
+      return a / b;
+    };
   `;
 
   // 3. Normalisasi type casting Java:
@@ -359,7 +400,19 @@ function translateJavaToExecutableJS(code, stdin = "") {
   // 9. Bersihkan anotasi Java (@Override, @SuppressWarnings, dll)
   js = js.replace(/@\w+\s*/g, "");
 
-  // 10. Method abstract tanpa body pada interface: void jalan(); -> jalan() {}
+  // 10. Transformasi catch bertipe: catch (ArithmeticException e) -> catch (e)
+  js = js.replace(/catch\s*\(\s*(?:[\w\s|<>]+)\s+(\w+)\s*\)/g, (match, varName) => `catch (${varName})`);
+
+  // 11. Transformasi throws Exception pada method signature
+  js = js.replace(/\s+throws\s+[\w\s,]+/g, " ");
+
+  // 12. Pembagian dengan pengecekan division by zero
+  js = js.replace(/([a-zA-Z0-9_$]+)\s*\/\s*([a-zA-Z0-9_$]+)/g, "_divide($1, $2)");
+
+  // 13. Akses array dengan bounds checking
+  js = js.replace(/(?<![.\w])([a-zA-Z0-9_$]+)\[([a-zA-Z0-9_$+\-*/\s]+)\](?!\s*=)/g, "_get($1, $2)");
+
+  // 14. Method abstract tanpa body pada interface: void jalan(); -> jalan() {}
   js = js.replace(/(?:public|protected|private)?\s*(?:abstract\s+)?(?:\b(?:void|int|double|float|long|boolean|char|String|[A-Z]\w+)(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*\(([^)]*)\)\s*;/g, "$1() {}");
 
   // 11. Transformasi interface & abstract class ke ES6 class
