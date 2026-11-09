@@ -382,27 +382,81 @@ function translateJavaToExecutableJS(code, stdin = "") {
     return -1;
   }
 
-  // 13. Ekstraksi dan pemrosesan class blocks (Field deklarasi & `this.` injection)
-  let transformedClassesResult = "";
-  let lastClassIdx = 0;
-  const classBlockRegex = /class\s+(\w+)(?:\s+extends\s+\w+)?\s*\{/g;
-  let classBlockMatch;
+  // 13. Ekstraksi dan pemrosesan class blocks (Field deklarasi, inheritance hierarchy & `this.` injection)
+  const classBlocks = [];
+  const classFieldsMap = new Map();
+  const classParentsMap = new Map();
 
-  while ((classBlockMatch = classBlockRegex.exec(js)) !== null) {
-    const className = classBlockMatch[1];
-    const headerStart = classBlockMatch.index;
-    const bodyStart = headerStart + classBlockMatch[0].length - 1;
+  const classHeaderScanRegex = /class\s+(\w+)(?:\s+extends\s+(\w+))?\s*\{/g;
+  let scanMatch;
+
+  // Pass 1: Identifikasi semua class, parent, dan deklarasi field level terluar (depth 0)
+  while ((scanMatch = classHeaderScanRegex.exec(js)) !== null) {
+    const cName = scanMatch[1];
+    const pName = scanMatch[2] || null;
+    const headerStart = scanMatch.index;
+    const bodyStart = headerStart + scanMatch[0].length - 1;
     const bodyEnd = findMatchingBrace(js, bodyStart);
 
     if (bodyEnd === -1) continue;
 
-    transformedClassesResult += js.slice(lastClassIdx, headerStart);
-    transformedClassesResult += classBlockMatch[0];
+    classParentsMap.set(cName, pName);
 
-    let classBody = js.slice(bodyStart + 1, bodyEnd);
-    const classFields = [];
+    const cBody = js.slice(bodyStart + 1, bodyEnd);
+    const directFields = [];
 
-    // Fields dideklarasikan pada depth 0 di dalam class body (bukan di dalam method)
+    cBody.replace(/^\s*(?:(?:public|private|protected)\s+)?(static\s+)?(?:final\s+)?(?:\b(?:int|double|float|long|short|byte|boolean|char|String|[A-Z]\w+)(?:<[^>]+>)?(?:\[\])*)\s+([a-zA-Z0-9_$]+)\s*(=\s*[^;]+)?\s*;/gm, (m, stat, name, val, offset) => {
+      const prefix = cBody.slice(0, offset);
+      let depth = 0;
+      for (const ch of prefix) {
+        if (ch === '{') depth++;
+        else if (ch === '}') depth--;
+      }
+      if (depth === 0) {
+        directFields.push({ name, isStatic: Boolean(stat) });
+      }
+    });
+
+    classFieldsMap.set(cName, directFields);
+
+    classBlocks.push({
+      cName,
+      pName,
+      headerStart,
+      bodyStart,
+      bodyEnd,
+      headerText: scanMatch[0],
+    });
+
+    classHeaderScanRegex.lastIndex = bodyEnd + 1;
+  }
+
+  // Helper untuk mendapatkan seluruh field class termasuk yang diwarisi dari parent (Inheritance)
+  function getAllClassFields(cName) {
+    const all = [];
+    let cur = cName;
+    const visited = new Set();
+    while (cur && !visited.has(cur)) {
+      visited.add(cur);
+      const fields = classFieldsMap.get(cur) || [];
+      all.push(...fields);
+      cur = classParentsMap.get(cur);
+    }
+    return all;
+  }
+
+  // Pass 2: Rekonstruksi class body dengan field terwarisi & injeksi `this.`
+  let transformedClassesResult = "";
+  let lastClassIdx = 0;
+
+  for (const block of classBlocks) {
+    transformedClassesResult += js.slice(lastClassIdx, block.headerStart);
+    transformedClassesResult += block.headerText;
+
+    let classBody = js.slice(block.bodyStart + 1, block.bodyEnd);
+    const allFields = getAllClassFields(block.cName);
+
+    // Ganti deklarasi field langsung di depth 0
     classBody = classBody.replace(/^\s*(?:(?:public|private|protected)\s+)?(static\s+)?(?:final\s+)?(?:\b(?:int|double|float|long|short|byte|boolean|char|String|[A-Z]\w+)(?:<[^>]+>)?(?:\[\])*)\s+([a-zA-Z0-9_$]+)\s*(=\s*[^;]+)?\s*;/gm, (m, stat, name, val, offset) => {
       const prefix = classBody.slice(0, offset);
       let depth = 0;
@@ -411,14 +465,13 @@ function translateJavaToExecutableJS(code, stdin = "") {
         else if (ch === '}') depth--;
       }
       if (depth === 0) {
-        classFields.push({ name, isStatic: Boolean(stat) });
         return (stat ? "static " : "") + name + (val ? ` ${val};` : ";");
       }
       return m;
     });
 
-    // Injeksi `this.` untuk akses bare field di dalam method (hindari teks dalam tanda petik)
-    for (const f of classFields) {
+    // Injeksi `this.` untuk akses bare field (termasuk field terwarisi dari parent)
+    for (const f of allFields) {
       if (!f.isStatic) {
         const safeRegex = new RegExp(`("[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|'[^'\\\\]*(?:\\\\.[^'\\\\]*)*')|(?<![\\w.])${f.name}(?![\\w:])`, 'g');
         classBody = classBody.replace(safeRegex, (match, strLiteral, offset) => {
@@ -448,9 +501,9 @@ function translateJavaToExecutableJS(code, stdin = "") {
     }
 
     transformedClassesResult += classBody + "}";
-    lastClassIdx = bodyEnd + 1;
-    classBlockRegex.lastIndex = bodyEnd + 1;
+    lastClassIdx = block.bodyEnd + 1;
   }
+
   transformedClassesResult += js.slice(lastClassIdx);
   js = transformedClassesResult;
 
