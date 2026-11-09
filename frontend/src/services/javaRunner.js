@@ -367,29 +367,112 @@ function translateJavaToExecutableJS(code, stdin = "") {
   js = js.replace(/interface\s+(\w+)/g, "class $1");
   js = js.replace(/abstract\s+class\s+(\w+)/g, "class $1");
   js = js.replace(/\s+implements\s+[\w\s,]+/g, " ");
-
-  // 12. Transformasi class publik
   js = js.replace(/public\s+class\s+(\w+)/g, "class $1");
 
-  // 13. Ambil semua nama class yang didefinisikan
+  // 12. Helper untuk mencari pasangan kurung kurawal class
+  function findMatchingBrace(str, startIndex) {
+    let depth = 0;
+    for (let i = startIndex; i < str.length; i++) {
+      if (str[i] === '{') depth++;
+      else if (str[i] === '}') {
+        depth--;
+        if (depth === 0) return i;
+      }
+    }
+    return -1;
+  }
+
+  // 13. Ekstraksi dan pemrosesan class blocks (Field deklarasi & `this.` injection)
+  let transformedClassesResult = "";
+  let lastClassIdx = 0;
+  const classBlockRegex = /class\s+(\w+)(?:\s+extends\s+\w+)?\s*\{/g;
+  let classBlockMatch;
+
+  while ((classBlockMatch = classBlockRegex.exec(js)) !== null) {
+    const className = classBlockMatch[1];
+    const headerStart = classBlockMatch.index;
+    const bodyStart = headerStart + classBlockMatch[0].length - 1;
+    const bodyEnd = findMatchingBrace(js, bodyStart);
+
+    if (bodyEnd === -1) continue;
+
+    transformedClassesResult += js.slice(lastClassIdx, headerStart);
+    transformedClassesResult += classBlockMatch[0];
+
+    let classBody = js.slice(bodyStart + 1, bodyEnd);
+    const classFields = [];
+
+    // Fields dideklarasikan pada depth 0 di dalam class body (bukan di dalam method)
+    classBody = classBody.replace(/^\s*(?:(?:public|private|protected)\s+)?(static\s+)?(?:final\s+)?(?:\b(?:int|double|float|long|short|byte|boolean|char|String|[A-Z]\w+)(?:<[^>]+>)?(?:\[\])*)\s+([a-zA-Z0-9_$]+)\s*(=\s*[^;]+)?\s*;/gm, (m, stat, name, val, offset) => {
+      const prefix = classBody.slice(0, offset);
+      let depth = 0;
+      for (const ch of prefix) {
+        if (ch === '{') depth++;
+        else if (ch === '}') depth--;
+      }
+      if (depth === 0) {
+        classFields.push({ name, isStatic: Boolean(stat) });
+        return (stat ? "static " : "") + name + (val ? ` ${val};` : ";");
+      }
+      return m;
+    });
+
+    // Injeksi `this.` untuk akses bare field di dalam method (hindari teks dalam tanda petik)
+    for (const f of classFields) {
+      if (!f.isStatic) {
+        const safeRegex = new RegExp(`("[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|'[^'\\\\]*(?:\\\\.[^'\\\\]*)*')|(?<![\\w.])${f.name}(?![\\w:])`, 'g');
+        classBody = classBody.replace(safeRegex, (match, strLiteral, offset) => {
+          if (strLiteral) return strLiteral; // Abaikan teks di dalam string literal tanda petik
+
+          const prefix = classBody.slice(0, offset);
+          let depth = 0;
+          for (const ch of prefix) {
+            if (ch === '{') depth++;
+            else if (ch === '}') depth--;
+          }
+          if (depth === 0) return match; // Baris deklarasi field di class level
+
+          // Jika method memiliki parameter dengan nama sama, jangan timpa
+          const methodHeaderIdx = prefix.lastIndexOf('(');
+          const methodBraceIdx = prefix.lastIndexOf('{');
+          if (methodHeaderIdx !== -1 && methodHeaderIdx < methodBraceIdx) {
+            const paramList = prefix.slice(methodHeaderIdx, methodBraceIdx);
+            if (new RegExp(`\\b${f.name}\\b`).test(paramList)) {
+              return match;
+            }
+          }
+
+          return `this.${match}`;
+        });
+      }
+    }
+
+    transformedClassesResult += classBody + "}";
+    lastClassIdx = bodyEnd + 1;
+    classBlockRegex.lastIndex = bodyEnd + 1;
+  }
+  transformedClassesResult += js.slice(lastClassIdx);
+  js = transformedClassesResult;
+
+  // 14. Ambil semua nama class yang didefinisikan
   const classMatches = [...new Set([...code.matchAll(/(?:class|interface)\s+(\w+)/g)].map((m) => m[1]))];
 
-  // 14. Transformasi constructor class: ClassName(...) { -> constructor(...) {
+  // 15. Transformasi constructor class: ClassName(...) { -> constructor(...) {
   for (const cName of classMatches) {
-    const ctorRegex = new RegExp(`(?:public|protected|private)?\\s*${cName}\\s*\\(([^)]*)\\)\\s*\\{`, "g");
+    const ctorRegex = new RegExp(`(?:public|protected|private)?\\s*\\b${cName}\\s*\\(([^)]*)\\)\\s*\\{`, "g");
     js = js.replace(ctorRegex, (match, params) => {
       return `constructor(${cleanParamTypes(params)}) {`;
     });
   }
 
-  // 15. Transformasi main method: public static void main(...) { -> static main(args = []) {
+  // 16. Transformasi main method: public static void main(...) { -> static main(args = []) {
   js = js.replace(/(?:public\s+)?static\s+void\s+main\s*\([^)]*\)\s*\{/g, "static main(args = []) {");
 
-  // 16. Cari semua static methods
+  // 17. Cari semua static methods
   const staticMethodMatches = [...code.matchAll(/(?:public|private|protected)?\s*static\s+(?:\w+(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*\(/g)].map((m) => m[1]);
   const staticMethodNames = [...new Set(staticMethodMatches.filter((m) => m !== "main"))];
 
-  // 17. Transformasi methods:
+  // 18. Transformasi methods:
   // Static methods
   js = js.replace(/(?:public|private|protected)?\s*static\s+(?:\w+(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*\(([^)]*)\)\s*\{/g, (match, name, params) => {
     return `static ${name}(${cleanParamTypes(params)}) {`;
@@ -399,18 +482,13 @@ function translateJavaToExecutableJS(code, stdin = "") {
     return `${name}(${cleanParamTypes(params)}) {`;
   });
 
-  // 18. Panggilan static method tanpa prefix dalam static main: isValid(...) -> this.isValid(...)
+  // 19. Panggilan static method tanpa prefix dalam static main: isValid(...) -> this.isValid(...)
   for (const sMethod of staticMethodNames) {
     const callRegex = new RegExp(`(?<!\\bstatic\\s+)(?<![\\w.])${sMethod}\\s*\\(`, "g");
     js = js.replace(callRegex, `this.${sMethod}(`);
   }
 
-  // 19. Transformasi property / field class
-  js = js.replace(/(?:public|private|protected)\s+(?:static\s+)?(?:final\s+)?(?:\w+(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*(=\s*[^;]+)?;/g, (match, name, val) => {
-    return val ? `${name} ${val};` : `${name};`;
-  });
-
-  // 20. Transformasi variabel lokal dalam block / method
+  // 20. Transformasi variabel lokal dalam method
   js = js.replace(/\b(int|double|float|long|short|byte|boolean|char|String|var)\s+(\w+)\s*=/g, "let $2 =");
   js = js.replace(/\b(int|double|float|long|short|byte|boolean|char|String|var)\s+(\w+)\s*;/g, "let $2;");
   js = js.replace(/\b(?:int|double|String|boolean|float|long|char)\[\]\s+(\w+)\s*=/g, "let $1 =");
