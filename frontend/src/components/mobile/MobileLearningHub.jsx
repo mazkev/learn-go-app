@@ -37,6 +37,7 @@ export default function MobileLearningHub({
     { id: "python", name: "Python", color: "#3776AB" },
     { id: "javascript", name: "JS/TS", color: "#E5A00D" },
     { id: "php", name: "PHP", color: "#8892BF" },
+    { id: "sql", name: "SQL", color: "#336791" },
   ];
 
   const currentLang = languages.find((l) => l.id === activeLanguage) || languages[0];

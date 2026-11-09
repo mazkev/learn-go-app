@@ -37,6 +37,14 @@ export default function FriendlyErrorBox({ rawError, codeContext = "", language 
   ) {
     resolvedLanguage = "python";
   } else if (
+    lowerErr.includes("sql error:") ||
+    lowerErr.includes("table ") ||
+    lowerContext.includes("create table") ||
+    lowerContext.includes("select ") ||
+    lowerContext.includes("insert into")
+  ) {
+    resolvedLanguage = "sql";
+  } else if (
     lowerErr.includes(".php") ||
     lowerErr.includes("fatal error:") ||
     lowerErr.includes("parse error:") ||

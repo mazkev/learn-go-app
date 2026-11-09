@@ -8,6 +8,8 @@ import { executeJavaCode } from "./javaRunner";
 import { executePythonCode } from "./pythonRunner";
 import { executeJsCode } from "./jsRunner";
 import { executePhpCode } from "./phpRunner";
+import { executeSqlCode } from "./sqlRunner";
+import { SQL_MODULES } from "../data/sqlCurriculum";
 
 export const SUPPORTED_LANGUAGES = [
   {
@@ -85,6 +87,28 @@ echo "Halo $nama, selamat datang di PHP 8 & Laravel Masterclass!\\n";
 echo "Modern PHP dengan Match Expression & Constructor Promotion.\\n";
 ?>`,
   },
+  {
+    id: "sql",
+    name: "SQL (Database Relasional)",
+    shortName: "SQL",
+    icon: "🗄️",
+    color: "#336791",
+    editorLang: "sql",
+    tagline: "DDL, DML, Relational Queries, Joins & Aggregations",
+    modules: SQL_MODULES,
+    starterCode: `-- SQL Relational Database di M3.learn
+CREATE TABLE produk (
+  id INT PRIMARY KEY,
+  nama VARCHAR(50),
+  harga INT
+);
+
+INSERT INTO produk VALUES
+  (1, 'Laptop Ultra', 15000000),
+  (2, 'Mouse Wireless', 350000);
+
+SELECT * FROM produk;`,
+  },
 ];
 
 // In-Memory Execution Memoization Map
@@ -144,6 +168,8 @@ export async function executeMultiCode(rawCode, langId = "go", forceLive = false
     result = await executeJsCode(rawCode);
   } else if (langId === "php") {
     result = await executePhpCode(rawCode);
+  } else if (langId === "sql") {
+    result = await executeSqlCode(rawCode);
   } else {
     result = await executeGoCode(rawCode);
   }

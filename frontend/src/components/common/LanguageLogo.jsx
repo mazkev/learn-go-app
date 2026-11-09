@@ -180,6 +180,26 @@ export function PhpLogo({ size = 20, className = "" }) {
   );
 }
 
+
+export function SqlLogo({ size = 20, className = "" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      role="img"
+      aria-label="SQL Database Official Logo"
+    >
+      <ellipse cx="12" cy="5" rx="9" ry="3" stroke="#336791" strokeWidth="2.2" />
+      <path d="M3 5V19C3 20.66 7.03 22 12 22C16.97 22 21 20.66 21 19V5" stroke="#336791" strokeWidth="2.2" />
+      <path d="M3 12C3 13.66 7.03 15 12 15C16.97 15 21 13.66 21 12" stroke="#336791" strokeWidth="2.2" />
+    </svg>
+  );
+}
+
 /**
  * Universal Language Logo Dispatcher
  */
@@ -201,6 +221,10 @@ export default function LanguageLogo({ language = "go", size = 18, className = "
       return <JavaScriptLogo size={size} className={className} />;
     case "php":
       return <PhpLogo size={size} className={className} />;
+    case "sql":
+    case "sqlite":
+    case "rdbms":
+      return <SqlLogo size={size} className={className} />;
     default:
       return <GoLogo size={size} className={className} />;
   }

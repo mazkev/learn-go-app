@@ -33,6 +33,7 @@ const NAV_LANGUAGES = [
   { id: "python", name: "Python 3", color: "#3776AB", badge: "18 Pelajaran" },
   { id: "javascript", name: "JavaScript / TS", color: "#E5A00D", badge: "9 Pelajaran" },
   { id: "php", name: "PHP 8 & Laravel", color: "#8892BF", badge: "9 Pelajaran" },
+  { id: "sql", name: "SQL (Relational DB)", color: "#336791", badge: "16 Pelajaran" },
 ];
 
 export default function Navbar({

@@ -21,6 +21,8 @@ export function explainPolyglotError(rawErrorMessage = "", codeContext = "", lan
     return explainJsError(err, codeContext);
   } else if (lang === "php") {
     return explainPhpError(err, codeContext);
+  } else if (lang === "sql" || lang === "sqlite" || lang === "database") {
+    return explainSqlError(err, codeContext);
   }
 
   // Fallback generic
@@ -244,5 +246,40 @@ export function explainPhpError(err = "", codeContext = "") {
     explanation: err,
     solution: "Periksa file PHP dan pastikan diawali dengan tag '<?php'.",
     badgeColor: "text-slate-500 bg-slate-500/10 border-slate-500/30",
+  };
+}
+
+// 6. SQL DIAGNOSTIC ENGINE
+export function explainSqlError(err = "", codeContext = "") {
+  const lower = err.toLowerCase();
+
+  if (lower.includes("tidak ditemukan") || lower.includes("not found") || lower.includes("no such table")) {
+    const tableMatch = err.match(/tabel '([^']+)'/i) || err.match(/table '([^']+)'/i);
+    const tableName = tableMatch ? tableMatch[1] : "tersebut";
+    return {
+      title: `Tabel '${tableName}' Belum Dibuat`,
+      summary: "Database tidak menemukan tabel yang dimaksud dalam query Anda.",
+      explanation: "Sebelum melakukan SELECT, INSERT, atau UPDATE, tabel harus dibuat terlebih dahulu menggunakan perintah CREATE TABLE.",
+      solution: `Jalankan 'CREATE TABLE ${tableName} (...);' sebelum query ini.`,
+      badgeColor: "text-amber-500 bg-amber-500/10 border-amber-500/30",
+    };
+  }
+
+  if (lower.includes("sintaks") || lower.includes("syntax error")) {
+    return {
+      title: "Kesalahan Penulisan Sintaks SQL",
+      summary: "Terdapat kata kunci atau tanda baca SQL yang tidak sesuai standar.",
+      explanation: "Periksa penulisan kata kunci (SELECT, FROM, WHERE), pastikan nama kolom dipisahkan dengan koma, dan setiap string diapit tanda petik satu (').",
+      solution: "Periksa kembali ejaan query SQL dan pastikan diakhiri dengan titik koma (;).",
+      badgeColor: "text-rose-500 bg-rose-500/10 border-rose-500/30",
+    };
+  }
+
+  return {
+    title: "SQL Execution Issue",
+    summary: "Terjadi kendala saat mengeksekusi query database.",
+    explanation: err,
+    solution: "Periksa skema tabel dan kecocokan tipe data kolom yang di-query.",
+    badgeColor: "text-blue-500 bg-blue-500/10 border-blue-500/30",
   };
 }
