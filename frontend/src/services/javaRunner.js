@@ -262,6 +262,7 @@ function translateJavaToExecutableJS(code, stdin = "") {
       get(i) { return this[i]; }
       set(i, val) { this[i] = val; return val; }
       size() { return this.length; }
+      stream() { return new JavaStream(this); }
       remove(i) {
         if (typeof i === 'number') return this.splice(i, 1)[0];
         const idx = this.indexOf(i);
@@ -364,6 +365,73 @@ function translateJavaToExecutableJS(code, stdin = "") {
       if (b === 0) throw new ArithmeticException("/ by zero");
       return a / b;
     };
+
+    class JavaStream {
+      constructor(items) {
+        this._items = Array.isArray(items) ? [...items] : [];
+      }
+      filter(predicate) {
+        return new JavaStream(this._items.filter(predicate));
+      }
+      map(mapper) {
+        return new JavaStream(this._items.map(mapper));
+      }
+      forEach(consumer) {
+        this._items.forEach(consumer);
+      }
+      count() {
+        return this._items.length;
+      }
+      collect(collector) {
+        return this._items;
+      }
+      toList() {
+        const list = new ArrayList();
+        this._items.forEach(x => list.add(x));
+        return list;
+      }
+    }
+
+    if (!Array.prototype.stream) {
+      Array.prototype.stream = function() {
+        return new JavaStream(this);
+      };
+    }
+
+    const List = {
+      of: (...items) => {
+        const l = new ArrayList();
+        items.forEach(x => l.add(x));
+        return l;
+      }
+    };
+
+    class Runnable {}
+
+    class Thread {
+      constructor(target) {
+        if (typeof target === 'function') {
+          this._target = target;
+        } else if (target && typeof target.run === 'function') {
+          this._target = () => target.run();
+        } else {
+          this._target = () => this.run();
+        }
+      }
+      run() {}
+      start() {
+        try {
+          this._target();
+        } catch (e) {
+          out.println(e.message || String(e));
+        }
+      }
+      join() {}
+      static sleep(ms) {}
+      static currentThread() {
+        return { getName: () => "main", getId: () => 1 };
+      }
+    }
   `;
 
   // 3. Normalisasi type casting Java:
@@ -414,6 +482,44 @@ function translateJavaToExecutableJS(code, stdin = "") {
 
   // 14. Method abstract tanpa body pada interface: void jalan(); -> jalan() {}
   js = js.replace(/(?:public|protected|private)?\s*(?:abstract\s+)?(?:\b(?:void|int|double|float|long|boolean|char|String|[A-Z]\w+)(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*\(([^)]*)\)\s*;/g, "$1() {}");
+
+  // Normalisasi numeric literal suffix Java (1L, 3L, 2.5f, 3.14d)
+  js = js.replace(/\b(\d+(?:\.\d+)?)[LlFfDd]\b/g, "$1");
+
+  // Bersihkan keyword Java yang tidak ada / ilegal di JS (synchronized, volatile, native, final, dll)
+  js = js.replace(/\b(synchronized|volatile|transient|native|strictfp)\b/g, "");
+
+  // Transformasi Java Records (Java 14+)
+  js = js.replace(/(?:public\s+)?record\s+([A-Za-z0-9_$]+)\s*\(([^)]*)\)\s*\{([^}]*)\}/g, (match, rName, paramsRaw, rBody) => {
+    const rawParts = paramsRaw.split(",").map(p => p.trim()).filter(Boolean);
+    const fieldNames = rawParts.map(p => p.split(/\s+/).pop());
+
+    const ctorParams = fieldNames.join(", ");
+    const fieldInits = fieldNames.map(f => `this._${f} = ${f};\n    this.${f} = () => this._${f};`).join("\n    ");
+    const toStringParts = fieldNames.map(f => `"${f}=" + this._${f}`).join(' + ", " + ');
+
+    return `class ${rName} {
+  constructor(${ctorParams}) {
+    ${fieldInits}
+  }
+  toString() {
+    return "${rName}[" + ${toStringParts ? toStringParts : '""'} + "]";
+  }
+  ${rBody}
+}`;
+  });
+
+  // Method references: System.out::println -> (x) => out.println(x)
+  js = js.replace(/\bSystem\.out::println\b/g, "(x) => out.println(x)");
+  js = js.replace(/\b([A-Z]\w+)::(\w+)\b/g, "(x) => $1.$2(x)");
+
+  // Transformasi Java Lambda Expression (->) ke JS Arrow (=>):
+  // () ->
+  js = js.replace(/\(\s*\)\s*->/g, "() =>");
+  // (a, b) ->
+  js = js.replace(/\(([^)]*)\)\s*->/g, (m, params) => `(${cleanParamTypes(params)}) =>`);
+  // n ->
+  js = js.replace(/(?<![.\w])([a-zA-Z0-9_$]+)\s*->/g, "($1) =>");
 
   // 11. Transformasi interface & abstract class ke ES6 class
   js = js.replace(/public\s+interface\s+(\w+)/g, "class $1");
@@ -541,7 +647,10 @@ function translateJavaToExecutableJS(code, stdin = "") {
           // Jika method memiliki parameter dengan nama sama, jangan timpa
           const methodHeaderIdx = prefix.lastIndexOf('(');
           const methodBraceIdx = prefix.lastIndexOf('{');
-          if (methodHeaderIdx !== -1 && methodHeaderIdx < methodBraceIdx) {
+          const headerBeforeParen = methodHeaderIdx !== -1 ? prefix.slice(0, methodHeaderIdx).trim() : "";
+          const isControlStatement = /\b(if|while|for|catch|switch)$/.test(headerBeforeParen);
+
+          if (!isControlStatement && methodHeaderIdx !== -1 && methodHeaderIdx < methodBraceIdx) {
             const paramList = prefix.slice(methodHeaderIdx, methodBraceIdx);
             if (new RegExp(`\\b${f.name}\\b`).test(paramList)) {
               return match;
@@ -549,6 +658,33 @@ function translateJavaToExecutableJS(code, stdin = "") {
           }
 
           return `this.${match}`;
+        });
+      } else {
+        const safeRegex = new RegExp(`("[^"\\\\]*(?:\\\\.[^"\\\\]*)*"|'[^'\\\\]*(?:\\\\.[^'\\\\]*)*')|(?<![\\w.])${f.name}(?![\\w:])`, 'g');
+        classBody = classBody.replace(safeRegex, (match, strLiteral, offset) => {
+          if (strLiteral) return strLiteral;
+
+          const prefix = classBody.slice(0, offset);
+          let depth = 0;
+          for (const ch of prefix) {
+            if (ch === '{') depth++;
+            else if (ch === '}') depth--;
+          }
+          if (depth === 0) return match;
+
+          const methodHeaderIdx = prefix.lastIndexOf('(');
+          const methodBraceIdx = prefix.lastIndexOf('{');
+          const headerBeforeParen = methodHeaderIdx !== -1 ? prefix.slice(0, methodHeaderIdx).trim() : "";
+          const isControlStatement = /\b(if|while|for|catch|switch)$/.test(headerBeforeParen);
+
+          if (!isControlStatement && methodHeaderIdx !== -1 && methodHeaderIdx < methodBraceIdx) {
+            const paramList = prefix.slice(methodHeaderIdx, methodBraceIdx);
+            if (new RegExp(`\\b${f.name}\\b`).test(paramList)) {
+              return match;
+            }
+          }
+
+          return `${block.cName}.${match}`;
         });
       }
     }
@@ -599,7 +735,8 @@ function translateJavaToExecutableJS(code, stdin = "") {
   js = js.replace(/\b(int|double|float|long|short|byte|boolean|char|String|var)\s+(\w+)\s*;/g, "let $2;");
   js = js.replace(/\b(?:int|double|String|boolean|float|long|char)\[\]\s+(\w+)\s*=/g, "let $1 =");
   js = js.replace(/\b(?:int|double|String|boolean|float|long|char)\[\]\s+(\w+)\s*;/g, "let $1;");
-  js = js.replace(/\b([A-Z]\w+(?:<[^>]+>)?)\s+(\w+)\s*=\s*new\s+/g, "let $2 = new ");
+  js = js.replace(/\b([A-Z]\w*(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*=/g, "let $2 =");
+  js = js.replace(/\b([A-Z]\w*(?:<[^>]+>)?(?:\[\])*)\s+(\w+)\s*;/g, "let $2;");
 
   // 20. Output statements: System.out.println, print, printf
   js = js.replace(/System\.out\.println\(([\s\S]*?)\);/g, "out.println($1);");
