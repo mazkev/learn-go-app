@@ -46,7 +46,8 @@ export async function executeSqlCode(rawCode) {
 
 class SqlEngine {
   constructor() {
-    this.tables = new Map(); // tableName (lowercase) -> { name, columns: [], rows: [], autoInc: 1 }
+    this.tables = new Map();
+    this.seedDefaultDatabase();
   }
 
   executeScript(script) {
@@ -104,7 +105,11 @@ class SqlEngine {
   executeStatement(stmt) {
     const upper = stmt.trim().toUpperCase();
 
-    if (upper.startsWith("CREATE TABLE")) {
+    if (upper === "SHOW TABLES" || upper === "SHOW TABLES;") {
+      return this.handleShowTables();
+    } else if (upper.startsWith("DESCRIBE ") || upper.startsWith("DESC ")) {
+      return this.handleDescribe(stmt);
+    } else if (upper.startsWith("CREATE TABLE")) {
       return this.handleCreateTable(stmt);
     } else if (upper.startsWith("DROP TABLE")) {
       return this.handleDropTable(stmt);
@@ -119,6 +124,248 @@ class SqlEngine {
     } else {
       throw new Error(`Sintaks SQL tidak dikenali atau belum didukung: "${stmt.slice(0, 40)}..."`);
     }
+  }
+
+
+  handleShowTables() {
+    const tableNames = Array.from(this.tables.keys()).sort();
+    const rows = tableNames.map(t => ({ Tables_in_database: t }));
+    return this.formatAsciiTable(rows, [{ raw: "Tables_in_database", colName: "Tables_in_database" }]);
+  }
+
+  handleDescribe(stmt) {
+    const match = stmt.match(/^(?:DESCRIBE|DESC)\s+([a-zA-Z0-9_`]+)/i);
+    if (!match) throw new Error("Sintaks DESCRIBE tidak valid. Format: DESCRIBE <nama_tabel>");
+    const tableName = match[1].replace(/[`"]/g, "").toLowerCase();
+    const table = this.tables.get(tableName);
+    if (!table) throw new Error(`Tabel '${match[1]}' tidak ditemukan.`);
+
+    const rows = table.columns.map(c => ({
+      Field: c.name,
+      Type: c.type,
+      Null: c.isNotNull ? "NO" : "YES",
+      Key: c.isPrimaryKey ? "PRI" : "",
+      Default: c.defaultVal !== undefined ? String(c.defaultVal) : "NULL",
+    }));
+
+    return this.formatAsciiTable(rows, [
+      { raw: "Field", colName: "Field" },
+      { raw: "Type", colName: "Type" },
+      { raw: "Null", colName: "Null" },
+      { raw: "Key", colName: "Key" },
+      { raw: "Default", colName: "Default" },
+    ]);
+  }
+
+  seedDefaultDatabase() {
+    this.tables.set("mahasiswa", {
+      name: "mahasiswa",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "nim", type: "VARCHAR(10)", isNotNull: true },
+        { name: "nama", type: "VARCHAR(50)", isNotNull: true },
+        { name: "jurusan", type: "VARCHAR(30)", isNotNull: false },
+        { name: "ipk", type: "DECIMAL(3,2)", isNotNull: false }
+      ],
+      rows: [
+        { id: 1, nim: "2026001", nama: "Kevin Pratama", jurusan: "Informatika", ipk: 3.92 },
+        { id: 2, nim: "2026002", nama: "Siti Aminah", jurusan: "Sistem Informasi", ipk: 3.85 },
+        { id: 3, nim: "2026003", nama: "Budi Santoso", jurusan: "Informatika", ipk: 3.45 },
+        { id: 4, nim: "2026004", nama: "Rina Kusuma", jurusan: "Sistem Informasi", ipk: 3.70 },
+        { id: 5, nim: "2026005", nama: "Dewi Lestari", jurusan: "Teknik Komputer", ipk: 3.90 }
+      ],
+      autoInc: 6
+    });
+
+    this.tables.set("karyawan", {
+      name: "karyawan",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "nama_depan", type: "VARCHAR(30)", isNotNull: true },
+        { name: "nama_belakang", type: "VARCHAR(30)", isNotNull: true },
+        { name: "divisi", type: "VARCHAR(30)", isNotNull: true },
+        { name: "gaji", type: "INT", isNotNull: true },
+        { name: "kota", type: "VARCHAR(30)", isNotNull: false }
+      ],
+      rows: [
+        { id: 1, nama_depan: "Kevin", nama_belakang: "Pratama", divisi: "Engineering", gaji: 12500000, kota: "Jakarta" },
+        { id: 2, nama_depan: "Siti", nama_belakang: "Aminah", divisi: "Design", gaji: 9500000, kota: "Bandung" },
+        { id: 3, nama_depan: "Budi", nama_belakang: "Santoso", divisi: "Engineering", gaji: 11000000, kota: "Jakarta" },
+        { id: 4, nama_depan: "Rina", nama_belakang: "Wati", divisi: "HR", gaji: 7500000, kota: "Surabaya" },
+        { id: 5, nama_depan: "Agus", nama_belakang: "Setiawan", divisi: "Marketing", gaji: 8000000, kota: "Yogyakarta" }
+      ],
+      autoInc: 6
+    });
+
+    this.tables.set("produk", {
+      name: "produk",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "nama", type: "VARCHAR(50)", isNotNull: true },
+        { name: "nama_produk", type: "VARCHAR(50)", isNotNull: true },
+        { name: "kategori", type: "VARCHAR(30)", isNotNull: true },
+        { name: "harga", type: "INT", isNotNull: true },
+        { name: "stok", type: "INT", isNotNull: false }
+      ],
+      rows: [
+        { id: 1, nama: "MacBook Pro M3", nama_produk: "MacBook Pro M3", kategori: "Laptop", harga: 24000000, stok: 12 },
+        { id: 2, nama: "Logitech MX Master", nama_produk: "Logitech MX Master", kategori: "Aksesoris", harga: 1400000, stok: 35 },
+        { id: 3, nama: "Dell XPS 15", nama_produk: "Dell XPS 15", kategori: "Laptop", harga: 21000000, stok: 8 },
+        { id: 4, nama: "Keychron K2 Mechanical", nama_produk: "Keychron K2 Mechanical", kategori: "Aksesoris", harga: 1200000, stok: 20 },
+        { id: 5, nama: "LG UltraFine 4K", nama_produk: "LG UltraFine 4K", kategori: "Monitor", harga: 6500000, stok: 15 }
+      ],
+      autoInc: 6
+    });
+
+    const userRows = [
+      { id: 1, nama: "Kevin Pratama", email: "kevin@gmail.com", kota: "Jakarta" },
+      { id: 2, nama: "Siti Aminah", email: "siti@gmail.com", kota: "Bandung" },
+      { id: 3, nama: "Budi Santoso", email: "budi@yahoo.com", kota: "Surabaya" },
+      { id: 4, nama: "Dewi Lestari", email: "dewi@outlook.com", kota: "Semarang" }
+    ];
+
+    this.tables.set("users", {
+      name: "users",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "nama", type: "VARCHAR(50)", isNotNull: true },
+        { name: "email", type: "VARCHAR(50)", isNotNull: true },
+        { name: "kota", type: "VARCHAR(30)", isNotNull: false }
+      ],
+      rows: userRows.map(r => ({ ...r })),
+      autoInc: 5
+    });
+
+    this.tables.set("pelanggan", {
+      name: "pelanggan",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "nama", type: "VARCHAR(50)", isNotNull: true },
+        { name: "email", type: "VARCHAR(50)", isNotNull: true },
+        { name: "kota", type: "VARCHAR(30)", isNotNull: false }
+      ],
+      rows: userRows.map(r => ({ ...r })),
+      autoInc: 5
+    });
+
+    this.tables.set("pengguna", {
+      name: "pengguna",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "nama", type: "VARCHAR(50)", isNotNull: true },
+        { name: "email", type: "VARCHAR(50)", isNotNull: true }
+      ],
+      rows: [
+        { id: 1, nama: "Alexander Kevin", email: "kevin@gmail.com" },
+        { id: 2, nama: "Budi Santoso", email: "budi@yahoo.com" },
+        { id: 3, nama: "Alexandria Siti", email: "siti@gmail.com" },
+        { id: 4, nama: "Cindy Claudia", email: "cindy@perusahaan.co.id" }
+      ],
+      autoInc: 5
+    });
+
+    this.tables.set("pesanan", {
+      name: "pesanan",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "user_id", type: "INT", isNotNull: true },
+        { name: "pelanggan", type: "VARCHAR(50)", isNotNull: true },
+        { name: "produk", type: "VARCHAR(50)", isNotNull: true },
+        { name: "jumlah", type: "INT", isNotNull: false },
+        { name: "total", type: "INT", isNotNull: true },
+        { name: "nominal", type: "INT", isNotNull: true },
+        { name: "status", type: "VARCHAR(20)", isNotNull: true },
+        { name: "catatan", type: "VARCHAR(50)", isNotNull: false }
+      ],
+      rows: [
+        { id: 101, user_id: 1, pelanggan: "Kevin Pratama", produk: "MacBook Pro M3", jumlah: 1, total: 24000000, nominal: 24000000, status: "SELESAI", catatan: "Packing aman ya" },
+        { id: 102, user_id: 1, pelanggan: "Kevin Pratama", produk: "Logitech MX Master", jumlah: 2, total: 2800000, nominal: 2800000, status: "SELESAI", catatan: "Warna Space Grey" },
+        { id: 103, user_id: 2, pelanggan: "Siti Aminah", produk: "Keychron K2 Mechanical", jumlah: 1, total: 1200000, nominal: 1200000, status: "PROSES", catatan: null },
+        { id: 104, user_id: 2, pelanggan: "Siti Aminah", produk: "LG UltraFine 4K", jumlah: 1, total: 6500000, nominal: 6500000, status: "PENDING", catatan: null },
+        { id: 105, user_id: 4, pelanggan: "Dewi Lestari", produk: "Dell XPS 15", jumlah: 1, total: 21000000, nominal: 21000000, status: "SELESAI", catatan: "Tolong kirim siang" }
+      ],
+      autoInc: 106
+    });
+
+    this.tables.set("buku", {
+      name: "buku",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "judul", type: "VARCHAR(100)", isNotNull: true },
+        { name: "penulis", type: "VARCHAR(50)", isNotNull: true },
+        { name: "harga", type: "INT", isNotNull: true }
+      ],
+      rows: [
+        { id: 1, judul: "Belajar SQL & Relational Database", penulis: "Kevin Pratama", harga: 85000 },
+        { id: 2, judul: "Mastering Clean Architecture in Go", penulis: "M3 Team", harga: 145000 },
+        { id: 3, judul: "Spring Boot Microservices", penulis: "Enterprise Architect", harga: 175000 }
+      ],
+      autoInc: 4
+    });
+
+    this.tables.set("skor_game", {
+      name: "skor_game",
+      columns: [
+        { name: "pemain", type: "VARCHAR(30)", isNotNull: true },
+        { name: "skor", type: "INT", isNotNull: true }
+      ],
+      rows: [
+        { pemain: "Dewi", skor: 1580 },
+        { pemain: "Kevin", skor: 1420 },
+        { pemain: "Siti", skor: 1190 },
+        { pemain: "Andi", skor: 850 },
+        { pemain: "Budi", skor: 670 }
+      ],
+      autoInc: 6
+    });
+
+    this.tables.set("anggota", {
+      name: "anggota",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "nama", type: "VARCHAR(50)", isNotNull: true },
+        { name: "status", type: "VARCHAR(20)", isNotNull: true },
+        { name: "poin", type: "INT", isNotNull: true }
+      ],
+      rows: [
+        { id: 1, nama: "Kevin Pratama", status: "Silver", poin: 150 },
+        { id: 2, nama: "Siti Aminah", status: "Silver", poin: 200 },
+        { id: 3, nama: "Budi Santoso", status: "Bronze", poin: 50 }
+      ],
+      autoInc: 4
+    });
+
+    this.tables.set("keranjang", {
+      name: "keranjang",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "produk", type: "VARCHAR(50)", isNotNull: true },
+        { name: "qty", type: "INT", isNotNull: true }
+      ],
+      rows: [
+        { id: 1, produk: "Kaos Polos Cotton 30s", qty: 2 },
+        { id: 2, produk: "Topi Baseball Snapback", qty: 1 },
+        { id: 3, produk: "Stiker Developer Pack", qty: 5 }
+      ],
+      autoInc: 4
+    });
+
+    this.tables.set("penjualan", {
+      name: "penjualan",
+      columns: [
+        { name: "id", type: "INT", isPrimaryKey: true, isNotNull: true },
+        { name: "produk", type: "VARCHAR(50)", isNotNull: true },
+        { name: "jumlah", type: "INT", isNotNull: true },
+        { name: "harga", type: "INT", isNotNull: true }
+      ],
+      rows: [
+        { id: 1, produk: "Laptop", jumlah: 2, harga: 10000000 },
+        { id: 2, produk: "Monitor", jumlah: 5, harga: 2000000 },
+        { id: 3, produk: "Mouse", jumlah: 10, harga: 250000 },
+        { id: 4, produk: "Keyboard", jumlah: 4, harga: 750000 }
+      ],
+      autoInc: 5
+    });
   }
 
   // --- DDL: CREATE TABLE ---
